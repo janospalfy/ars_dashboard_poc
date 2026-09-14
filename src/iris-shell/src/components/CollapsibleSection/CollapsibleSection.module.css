@@ -1,0 +1,26 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--oi-spacing-m);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.body {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--oi-spacing-m);
+}

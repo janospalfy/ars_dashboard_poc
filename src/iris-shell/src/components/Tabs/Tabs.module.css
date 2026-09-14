@@ -68,8 +68,8 @@
 }
 
 .tab:hover .tabContent {
-  background-color: var(--oi-background-color-primary);
-  border-color: var(--oi-border-color-muted);
+  background-color: var(--oi-background-color-tertiary);
+  border-color: transparent;
 }
 
 .tab:hover,
@@ -89,7 +89,7 @@
   gap: var(--oi-spacing-xs);
   height: 28px;
   padding: var(--oi-spacing-xs) var(--oi-spacing-s);
-  border-radius: var(--oi-border-radius-l);
+  border-radius: var(--oi-border-radius-default);
   color: inherit;
   border: var(--oi-border-width-default) var(--oi-border-style-solid) transparent;
   transition: background-color var(--oi-motion-duration-short)
@@ -98,8 +98,8 @@
 }
 
 .tabContentSelected {
-  background-color: var(--oi-background-color-primary);
-  border-color: var(--oi-border-color-muted);
+  background-color: var(--oi-background-color-tertiary);
+  border-color: transparent;
 }
 
 .label {
