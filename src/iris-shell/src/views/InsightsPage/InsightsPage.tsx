@@ -1,105 +1,128 @@
-import { useMemo, useState, type MouseEvent } from 'react';
+import { useState } from 'react';
 import { AppShell } from '../AppShell/AppShell.js';
-import { navigate } from '../../lib/router.js';
-import { useUsers } from '../../lib/usersStore.js';
 import { Card } from '../../components/Card/Card.js';
-import { Tabs } from '../../components/Tabs/Tabs.js';
+import { Tabs, type TabItem } from '../../components/Tabs/Tabs.js';
 import { Select } from '../../components/Select/Select.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
-import { Badge } from '../../components/Badge/Badge.js';
-import { Link } from '../../components/Link/Link.js';
-import { DataTable, type DataTableColumn } from '../../components/DataTable/DataTable.js';
+import { Menu, type MenuEntry } from '../../components/Menu/Menu.js';
+import { ResourceIcon } from '../../components/ResourceIcon/ResourceIcon.js';
 import { StatCard } from '../../components/StatCard/StatCard.js';
-import { BarChart } from '../../components/BarChart/BarChart.js';
 import { DonutChart } from '../../components/DonutChart/DonutChart.js';
-import {
-  STAT_CARDS,
-  USERS_BY_DIRECTORY,
-  USERS_BY_REGION,
-  DISTRIBUTION,
-  RECENT_USER_ACTIVITY,
-  type RecentUserActivity,
-} from './mockInsights.js';
-import type { User } from '../UsersPage/mockUsers.js';
+import { BarChart } from '../../components/BarChart/BarChart.js';
+import { STAT_CARDS, USERS_BY_SOURCE, GROUPS_BY_SOURCE, COMPUTERS_BY_SOURCE } from './mockInsights.js';
 import styles from './InsightsPage.module.css';
 
-const TABS = [
-  { value: 'overview', label: 'Overview' },
-  { value: 'operations', label: 'Operations' },
-  { value: 'directories', label: 'Directories' },
+const OVERVIEW_TAB = 'overview';
+
+type ChartType = 'donut' | 'bar';
+
+const TABS: TabItem[] = [
+  { value: OVERVIEW_TAB, label: 'Overview', icon: 'PresentationChart' },
+  { value: 'active-roles', label: 'Active Roles', icon: 'UsersThree' },
+  { value: 'active-directory', label: 'Active Directory', icon: 'TreeStructure' },
+  { value: 'entra-id', label: 'Entra ID', icon: 'CloudCheck' },
+  { value: 'exchange', label: 'Microsoft Exchange', icon: 'Mailbox' },
+  { value: 'licensing', label: 'Licensing', icon: 'ShieldCheck' },
 ];
 
-type RecentRow = User & RecentUserActivity;
+/** Category tabs (everything but Overview) — placeholder detail pages,
+ *  matching the real dashboard's per-category KPI pages which aren't built
+ *  in this prototype yet. */
+const CATEGORY_DETAILS: Record<string, { title: string; description: string; icon: string }> = {
+  'active-roles': {
+    title: 'Active Roles',
+    description: 'Active Roles configuration KPIs',
+    icon: 'UsersThree',
+  },
+  'active-directory': {
+    title: 'Active Directory',
+    description: 'Active Directory KPIs',
+    icon: 'TreeStructure',
+  },
+  'entra-id': { title: 'Entra ID', description: 'Entra ID KPIs', icon: 'CloudCheck' },
+  exchange: {
+    title: 'Microsoft Exchange',
+    description: 'Microsoft Exchange (on-premises) KPIs',
+    icon: 'Mailbox',
+  },
+  licensing: {
+    title: 'Licensing',
+    description: 'Licensing and compliance KPIs',
+    icon: 'ShieldCheck',
+  },
+};
 
-const RECENT_COLUMNS: DataTableColumn<RecentRow>[] = [
-  {
-    key: 'name',
-    header: 'Name',
-    icon: 'IdentificationCard',
-    minWidth: '180px',
-    grow: 2,
-    cell: (u) => (
-      <Link
-        href={`#/users/${u.id}`}
-        onClick={(e: MouseEvent<HTMLAnchorElement>) => {
-          e.preventDefault();
-          navigate(`#/users/${u.id}`);
-        }}
-      >
-        {u.name}
-      </Link>
-    ),
-  },
-  {
-    key: 'email',
-    header: 'Email',
-    icon: 'Envelope',
-    minWidth: '220px',
-    grow: 3,
-    cell: (u) => <span>{u.email}</span>,
-  },
-  {
-    key: 'role',
-    header: 'Role',
-    icon: 'UserCircleCheck',
-    width: '120px',
-    cell: (u) => <Badge tone={u.role === 'Admin' ? 'info' : 'neutral'}>{u.role}</Badge>,
-  },
-  {
-    key: 'department',
-    header: 'Department',
-    icon: 'Buildings',
-    minWidth: '160px',
-    grow: 1,
-    cell: (u) => <span>{u.department}</span>,
-  },
-  {
-    key: 'lastActive',
-    header: 'Last active',
-    icon: 'Clock',
-    width: '140px',
-    cell: (u) => <span>{u.lastActive}</span>,
-  },
-];
+/** Per-chart-card overflow menu — lets each chart card switch its own
+ *  visualization between the two shapes the real dashboard's chart data
+ *  supports (a two/one-segment source breakdown reads equally well as
+ *  either a donut or a bar chart). */
+function chartMenuItems(chartType: ChartType, onChange: (type: ChartType) => void): MenuEntry[] {
+  return [
+    { kind: 'section', label: 'Chart type' },
+    {
+      kind: 'item',
+      label: 'Donut chart',
+      icon: 'ChartDonut',
+      selected: chartType === 'donut',
+      onSelect: () => onChange('donut'),
+    },
+    {
+      kind: 'item',
+      label: 'Bar chart',
+      icon: 'ChartBar',
+      selected: chartType === 'bar',
+      onSelect: () => onChange('bar'),
+    },
+  ];
+}
+
+function ChartCardMenu({
+  chartLabel,
+  chartType,
+  onChange,
+}: {
+  chartLabel: string;
+  chartType: ChartType;
+  onChange: (type: ChartType) => void;
+}) {
+  return (
+    <Menu
+      ariaLabel={`${chartLabel} chart options`}
+      align="end"
+      items={chartMenuItems(chartType, onChange)}
+      trigger={({ ref, onClick, expanded }) => (
+        <IconButton
+          ref={ref as React.Ref<HTMLButtonElement>}
+          icon="DotsThree"
+          ariaLabel={`${chartLabel} chart options`}
+          size="s"
+          aria-haspopup="menu"
+          aria-expanded={expanded}
+          onClick={onClick}
+        />
+      )}
+    />
+  );
+}
+
+function SourceChart({ type, data }: { type: ChartType; data: { label: string; value: number }[] }) {
+  return type === 'donut' ? <DonutChart segments={data} /> : <BarChart data={data} />;
+}
 
 /**
  * InsightsPage — read-only analytics dashboard. Hosted at #/insights.
  */
 export function InsightsPage() {
-  const [tab, setTab] = useState('overview');
-  const { getUser } = useUsers();
-
-  // Overlay activity metadata (role/department/lastActive) onto real users so
-  // each row's link resolves to a valid UserDetailPage.
-  const recentRows = useMemo<RecentRow[]>(
-    () =>
-      RECENT_USER_ACTIVITY.map((meta): RecentRow | null => {
-        const u = getUser(meta.id);
-        return u ? { ...u, ...meta } : null;
-      }).filter((r): r is RecentRow => r !== null),
-    [getUser],
-  );
+  const [tab, setTab] = useState(OVERVIEW_TAB);
+  const category = CATEGORY_DETAILS[tab];
+  const [chartTypes, setChartTypes] = useState<Record<string, ChartType>>({
+    users: 'donut',
+    groups: 'donut',
+    computers: 'donut',
+  });
+  const setChartType = (id: string, type: ChartType) =>
+    setChartTypes((prev) => ({ ...prev, [id]: type }));
 
   return (
     <AppShell
@@ -108,34 +131,20 @@ export function InsightsPage() {
       showSecondarySidebar={false}
     >
       <div className={styles.page}>
-        {false && (
-          <header className={styles.titleRow}>
-            <h1 className={styles.pageTitle}>Insights</h1>
-          </header>
-        )}
-
         <Tabs items={TABS} value={tab} onChange={setTab} ariaLabel="Insights sections" />
 
-        {tab === 'overview' && (
+        {tab === OVERVIEW_TAB && (
           <>
             <div className={styles.filters}>
               <div className={styles.filtersLeft}>
-                <Select label="Object Type: All" />
-                <Select label="Directory: All" />
+                <Select label="Domains: All Domains" />
+                <Select label="Tenants: All Tenants" />
               </div>
               <div className={styles.filtersRight}>
                 <Tooltip label="Refresh">
                   <IconButton
                     icon="ArrowsClockwise"
                     ariaLabel="Refresh"
-                    variant="secondary"
-                    className={styles.filtersGhostAction}
-                  />
-                </Tooltip>
-                <Tooltip label="Customize">
-                  <IconButton
-                    icon="Sliders"
-                    ariaLabel="Customize"
                     variant="secondary"
                     className={styles.filtersGhostAction}
                   />
@@ -158,7 +167,6 @@ export function InsightsPage() {
                     key={s.id}
                     label={s.label}
                     value={s.value}
-                    trend={s.trend}
                     className={styles.noShadowCard}
                   />
                 ))}
@@ -166,45 +174,74 @@ export function InsightsPage() {
 
               <div className={styles.chartGrid}>
                 <Card
-                  title="Users by Directory"
-                  helper="Active accounts per source"
+                  title="Users by Source"
                   className={styles.noShadowCard}
+                  actions={
+                    <ChartCardMenu
+                      chartLabel="Users by Source"
+                      chartType={chartTypes.users}
+                      onChange={(type) => setChartType('users', type)}
+                    />
+                  }
                 >
-                  <BarChart data={USERS_BY_DIRECTORY} color="blue" />
+                  <SourceChart type={chartTypes.users} data={USERS_BY_SOURCE} />
                 </Card>
                 <Card
-                  title="Users by Region"
-                  helper="Distribution across geographies"
+                  title="Groups by Source"
                   className={styles.noShadowCard}
+                  actions={
+                    <ChartCardMenu
+                      chartLabel="Groups by Source"
+                      chartType={chartTypes.groups}
+                      onChange={(type) => setChartType('groups', type)}
+                    />
+                  }
                 >
-                  <BarChart data={USERS_BY_REGION} color="purple" />
+                  <SourceChart type={chartTypes.groups} data={GROUPS_BY_SOURCE} />
                 </Card>
                 <Card
-                  title="Object Distribution"
-                  helper="Managed objects by type"
-                  className={`${styles.noShadowCard} ${styles.distributionCard}`}
+                  title="Computers / Devices by Source"
+                  className={styles.noShadowCard}
+                  actions={
+                    <ChartCardMenu
+                      chartLabel="Computers / Devices by Source"
+                      chartType={chartTypes.computers}
+                      onChange={(type) => setChartType('computers', type)}
+                    />
+                  }
                 >
-                  <DonutChart segments={DISTRIBUTION} />
+                  <SourceChart type={chartTypes.computers} data={COMPUTERS_BY_SOURCE} />
                 </Card>
               </div>
-            </div>
 
-            <section className={styles.recent}>
-              <header className={styles.recentHead}>
-                <h2 className={styles.recentTitle}>Recent Users</h2>
-                <p className={styles.recentHelper}>Most recent identity activity</p>
-              </header>
-              <DataTable rows={recentRows} columns={RECENT_COLUMNS} ariaLabel="Recent users" />
-            </section>
+              <div className={styles.categoryGrid}>
+                {Object.entries(CATEGORY_DETAILS).map(([value, c]) => (
+                  <button
+                    key={value}
+                    type="button"
+                    className={styles.categoryCard}
+                    onClick={() => setTab(value)}
+                  >
+                    <ResourceIcon icon={c.icon} size="l" ariaLabel="" />
+                    <span className={styles.categoryTitle}>{c.title}</span>
+                    <span className={styles.categoryDescription}>{c.description}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </>
         )}
 
-        {tab !== 'overview' && (
-          <Card title={tab === 'operations' ? 'Operations' : 'Directories'}>
-            <p className={styles.empty}>Coming soon.</p>
+        {category && (
+          <Card
+            title={category.title}
+            actions={<ResourceIcon icon={category.icon} size="default" ariaLabel="" />}
+          >
+            <p className={styles.empty}>{category.description} — coming soon.</p>
           </Card>
         )}
       </div>
     </AppShell>
   );
 }
+

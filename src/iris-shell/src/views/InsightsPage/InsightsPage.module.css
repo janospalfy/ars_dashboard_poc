@@ -69,7 +69,7 @@
 
 .statGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--oi-spacing-m);
 }
 
@@ -86,30 +86,43 @@
   line-height: var(--oi-text-body-s-line-height);
 }
 
-/* Recent Users — same heading + helper as Card, but no container chrome. */
-.recent {
-  display: flex;
-  flex-direction: column;
-  gap: var(--oi-spacing-l);
-  margin-top: var(--oi-spacing-m);
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--oi-spacing-m);
 }
 
-.recentHead {
+.categoryCard {
   display: flex;
   flex-direction: column;
-  gap: var(--oi-spacing-xs);
+  align-items: flex-start;
+  gap: var(--oi-spacing-s);
+  padding: var(--oi-spacing-m);
+  background-color: var(--oi-background-color-primary);
+  border: 0.5px var(--oi-border-style-solid) var(--oi-border-color-default);
+  border-radius: var(--oi-border-radius-l);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--oi-motion-duration-short) var(--oi-motion-ease-move);
 }
 
-.recentTitle {
-  margin: 0;
-  font-size: var(--oi-text-heading-05-font-size);
-  line-height: var(--oi-text-heading-05-line-height);
-  font-weight: var(--oi-text-heading-05-font-weight);
+.categoryCard:hover {
+  border-color: var(--oi-border-color-strong);
+}
+
+.categoryCard:focus-visible {
+  outline: 2px solid var(--oi-border-color-focus);
+  outline-offset: 2px;
+}
+
+.categoryTitle {
+  font-size: var(--oi-text-heading-06-font-size);
+  line-height: var(--oi-text-heading-06-line-height);
+  font-weight: var(--oi-text-heading-06-font-weight);
   color: var(--oi-content-color-primary);
 }
 
-.recentHelper {
-  margin: 0;
+.categoryDescription {
   font-size: var(--oi-text-caption-font-size);
   line-height: var(--oi-text-caption-line-height);
   font-weight: var(--oi-text-caption-font-weight);
@@ -118,14 +131,16 @@
 
 @media (max-width: 1100px) {
   .statGrid,
-  .chartGrid {
+  .chartGrid,
+  .categoryGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 720px) {
   .statGrid,
-  .chartGrid {
+  .chartGrid,
+  .categoryGrid {
     grid-template-columns: minmax(0, 1fr);
   }
 }
