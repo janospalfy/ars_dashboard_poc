@@ -10,6 +10,7 @@ import { ResourceIcon } from '../../components/ResourceIcon/ResourceIcon.js';
 import { StatCard } from '../../components/StatCard/StatCard.js';
 import { DonutChart } from '../../components/DonutChart/DonutChart.js';
 import { BarChart } from '../../components/BarChart/BarChart.js';
+import { showToast } from '../../lib/toastStore.js';
 import { STAT_CARDS, USERS_BY_SOURCE, GROUPS_BY_SOURCE, COMPUTERS_BY_SOURCE } from './mockInsights.js';
 import styles from './InsightsPage.module.css';
 
@@ -110,6 +111,49 @@ function SourceChart({ type, data }: { type: ChartType; data: { label: string; v
   return type === 'donut' ? <DonutChart segments={data} /> : <BarChart data={data} />;
 }
 
+const EXPORT_MENU_ITEMS: MenuEntry[] = [
+  {
+    kind: 'item',
+    label: 'Export as PDF',
+    icon: 'FilePdf',
+    onSelect: () => showToast('Export as PDF — coming soon'),
+  },
+  {
+    kind: 'item',
+    label: 'Export as Excel',
+    icon: 'FileXls',
+    onSelect: () => showToast('Export as Excel — coming soon'),
+  },
+  {
+    kind: 'item',
+    label: 'Export as Word',
+    icon: 'FileDoc',
+    onSelect: () => showToast('Export as Word — coming soon'),
+  },
+];
+
+function ExportMenu() {
+  return (
+    <Menu
+      ariaLabel="Export options"
+      align="end"
+      items={EXPORT_MENU_ITEMS}
+      trigger={({ ref, onClick, expanded }) => (
+        <IconButton
+          ref={ref as React.Ref<HTMLButtonElement>}
+          icon="Export"
+          ariaLabel="Export options"
+          variant="secondary"
+          className={styles.filtersGhostAction}
+          aria-haspopup="menu"
+          aria-expanded={expanded}
+          onClick={onClick}
+        />
+      )}
+    />
+  );
+}
+
 /**
  * InsightsPage — read-only analytics dashboard. Hosted at #/insights.
  */
@@ -147,16 +191,10 @@ export function InsightsPage() {
                     ariaLabel="Refresh"
                     variant="secondary"
                     className={styles.filtersGhostAction}
+                    onClick={() => window.location.reload()}
                   />
                 </Tooltip>
-                <Tooltip label="Export">
-                  <IconButton
-                    icon="Export"
-                    ariaLabel="Export"
-                    variant="secondary"
-                    className={styles.filtersGhostAction}
-                  />
-                </Tooltip>
+                <ExportMenu />
               </div>
             </div>
 
