@@ -5,3 +5,5 @@ shell-product = active-roles
 shell-mode = shell
 shell-page = insights
 shell-default-page = #/insights
+vercel-setup = done
+
