@@ -1,0 +1,7 @@
+project-name = Active Roles Dashboard
+project-description = Test how easily we can modernize the existing Active Roles Dashboard by replacing the current Bootstrap-based UI with our Iris UI. The goal is to see how much effort this would take and whether we can bring the existing dashboard experience in line with the new WebUI direction.
+git-remote = https://github.com/janospalfy/ars_dashboard_poc
+shell-product = active-roles
+shell-mode = shell
+shell-page = insights
+shell-default-page = #/insights
