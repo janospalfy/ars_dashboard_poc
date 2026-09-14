@@ -29,6 +29,11 @@ import styles from './InsightsPage.module.css';
 
 const OVERVIEW_TAB = 'overview';
 
+/** Temporarily hide the built-out Active Roles KPI content (metric groups +
+ *  drill-down) and fall back to the generic "coming soon" placeholder like
+ *  the other categories. Flip back to true to restore it. */
+const SHOW_ACTIVE_ROLES_DETAIL = false;
+
 type ChartType = 'donut' | 'bar';
 
 interface SelectedMetric {
@@ -374,7 +379,7 @@ export function InsightsPage() {
               </div>
             </div>
 
-            {tab === 'active-roles' ? (
+            {tab === 'active-roles' && SHOW_ACTIVE_ROLES_DETAIL ? (
               <div className={styles.metricGroups}>
                 {ACTIVE_ROLES_METRIC_GROUPS.map((group) => (
                   <CollapsibleSection key={group.title} title={group.title}>
