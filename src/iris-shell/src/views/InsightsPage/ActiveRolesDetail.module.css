@@ -1,0 +1,12 @@
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-l);
+}
+
+.breakdown {
+  margin: 0 0 var(--oi-spacing-m);
+  color: var(--oi-content-color-secondary);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}

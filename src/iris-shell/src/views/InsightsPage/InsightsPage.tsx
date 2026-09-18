@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { AppShell } from '../AppShell/AppShell.js';
 import { Card } from '../../components/Card/Card.js';
 import { Tabs, type TabItem } from '../../components/Tabs/Tabs.js';
@@ -11,72 +11,15 @@ import { Icon } from '../../components/Icon/Icon.js';
 import { StatCard } from '../../components/StatCard/StatCard.js';
 import { DonutChart } from '../../components/DonutChart/DonutChart.js';
 import { BarChart } from '../../components/BarChart/BarChart.js';
-import { MetricTile } from '../../components/MetricTile/MetricTile.js';
-import { CollapsibleSection } from '../../components/CollapsibleSection/CollapsibleSection.js';
-import { DataTable, type DataTableColumn } from '../../components/DataTable/DataTable.js';
-import { Link } from '../../components/Link/Link.js';
+import { ActiveRolesDetail } from './ActiveRolesDetail.js';
 import { PerformanceTestsPanel } from './PerformanceTestsPanel.js';
 import { showToast } from '../../lib/toastStore.js';
-import {
-  STAT_CARDS,
-  USERS_BY_SOURCE,
-  GROUPS_BY_SOURCE,
-  COMPUTERS_BY_SOURCE,
-  ACTIVE_ROLES_METRIC_GROUPS,
-  buildDrillDownRows,
-  type DrillDownRow,
-} from './mockInsights.js';
+import { STAT_CARDS, USERS_BY_SOURCE, GROUPS_BY_SOURCE, COMPUTERS_BY_SOURCE } from './mockInsights.js';
 import styles from './InsightsPage.module.css';
 
 const OVERVIEW_TAB = 'overview';
 
-/** Temporarily hide the built-out Active Roles KPI content (metric groups +
- *  drill-down) and fall back to the generic "coming soon" placeholder like
- *  the other categories. Flip back to true to restore it. */
-const SHOW_ACTIVE_ROLES_DETAIL = false;
-
 type ChartType = 'donut' | 'bar';
-
-interface SelectedMetric {
-  label: string;
-  value: number;
-}
-
-const DRILLDOWN_COLUMNS: DataTableColumn<DrillDownRow>[] = [
-  {
-    key: 'name',
-    header: 'Name',
-    icon: 'IdentificationCard',
-    minWidth: '160px',
-    grow: 1,
-    cell: (r) => <span>{r.name}</span>,
-  },
-  {
-    key: 'distinguishedName',
-    header: 'Distinguished Name',
-    icon: 'TreeStructure',
-    minWidth: '280px',
-    grow: 2,
-    cell: (r) => <span>{r.distinguishedName}</span>,
-  },
-  {
-    key: 'membership',
-    header: 'Membership',
-    icon: 'UsersThree',
-    width: '140px',
-    cell: (r) => <span>{r.membership}</span>,
-  },
-  {
-    key: 'link',
-    header: '',
-    width: '48px',
-    cell: () => (
-      <Link href="#" onClick={(e) => e.preventDefault()}>
-        Open
-      </Link>
-    ),
-  },
-];
 
 const TABS: TabItem[] = [
   { value: OVERVIEW_TAB, label: 'Overview', icon: 'PresentationChart' },
@@ -228,18 +171,7 @@ export function InsightsPage() {
   const setChartType = (id: string, type: ChartType) =>
     setChartTypes((prev) => ({ ...prev, [id]: type }));
 
-  const [selectedMetric, setSelectedMetric] = useState<SelectedMetric | null>(null);
-  const setTab = (value: string) => {
-    setTabState(value);
-    setSelectedMetric(null);
-  };
-  const toggleMetric = (m: SelectedMetric) =>
-    setSelectedMetric((prev) => (prev?.label === m.label ? null : m));
-
-  const drillDownRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    if (selectedMetric) drillDownRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, [selectedMetric]);
+  const setTab = (value: string) => setTabState(value);
 
   return (
     <AppShell
@@ -380,38 +312,8 @@ export function InsightsPage() {
               </div>
             </div>
 
-            {tab === 'active-roles' && SHOW_ACTIVE_ROLES_DETAIL ? (
-              <div className={styles.metricGroups}>
-                {ACTIVE_ROLES_METRIC_GROUPS.map((group) => (
-                  <CollapsibleSection key={group.title} title={group.title}>
-                    {group.metrics.map((m) => (
-                      <MetricTile
-                        key={m.label}
-                        label={m.label}
-                        value={m.value}
-                        selected={selectedMetric?.label === m.label}
-                        onClick={() => toggleMetric(m)}
-                      />
-                    ))}
-                  </CollapsibleSection>
-                ))}
-
-                {selectedMetric && (
-                  <div ref={drillDownRef}>
-                    <Card title={selectedMetric.label}>
-                      <DataTable
-                        rows={buildDrillDownRows(selectedMetric.value)}
-                        columns={DRILLDOWN_COLUMNS}
-                        ariaLabel={selectedMetric.label}
-                        emptyState={{
-                          title: 'No objects',
-                          description: 'This KPI currently has no matching objects.',
-                        }}
-                      />
-                    </Card>
-                  </div>
-                )}
-              </div>
+            {tab === 'active-roles' ? (
+              <ActiveRolesDetail />
             ) : (
               <Card
                 title={category.title}
