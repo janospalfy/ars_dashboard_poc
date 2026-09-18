@@ -104,7 +104,7 @@
   gap: var(--oi-spacing-s);
   padding: var(--oi-spacing-m);
   background-color: var(--oi-background-color-primary);
-  border: 0.5px var(--oi-border-style-solid) var(--oi-border-color-default);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
   border-top: 3px var(--oi-border-style-solid) var(--oi-background-color-brand);
   border-radius: var(--oi-border-radius-l);
   text-align: left;

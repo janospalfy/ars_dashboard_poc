@@ -50,7 +50,7 @@ export default function App() {
             <WipPage title="Management units" icon="FolderSimpleStar" />
           )}
           {route.name === 'insights' && <InsightsLandingPage />}
-          {route.name === 'insightsDashboard' && <InsightsPage />}
+          {route.name === 'insightsDashboard' && <InsightsPage initialTab={route.params.tab} />}
           {route.name === 'assessments' && (
             <WipPage
               title="Assessments"

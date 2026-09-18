@@ -2,6 +2,7 @@ import { AppShell } from '../AppShell/AppShell.js';
 import { ContentHeader } from '../../components/ContentHeader/ContentHeader.js';
 import { Icon } from '../../components/Icon/Icon.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
+import { Tooltip } from '../../components/Tooltip/Tooltip.js';
 import { navigate } from '../../lib/router.js';
 import { ACTIVE_ROLES_VERTICAL, type VerticalNavEntry } from '../../lib/verticals.js';
 import styles from './InsightsLandingPage.module.css';
@@ -17,20 +18,25 @@ interface HubCard {
   description: string;
   icon: string;
   route: string;
-  statLabel: string;
-  statValue: string;
-  trendValue: string;
+  statLabel?: string;
+  statValue?: string;
+  trendValue?: string;
+  categories?: { value: string; label: string; icon: string }[];
 }
 
 const HUB_CARDS: HubCard[] = [
   {
     title: 'Dashboard',
-    description: 'KPI dashboards across Active Roles, Active Directory, Entra ID, Exchange, and Licensing.',
+    description: 'KPI dashboards across Active Roles, Active Directory, Entra ID, Microsoft Exchange, and Licensing.',
     icon: 'Gauge',
     route: '#/insights/dashboard',
-    statLabel: 'Objects tracked',
-    statValue: '1,228',
-    trendValue: '3.1% vs last week',
+    categories: [
+      { value: 'active-roles', label: 'Active Roles configuration KPIs', icon: 'UsersThree' },
+      { value: 'active-directory', label: 'Active Directory KPIs', icon: 'TreeStructure' },
+      { value: 'entra-id', label: 'Entra ID KPIs', icon: 'CloudCheck' },
+      { value: 'exchange', label: 'Microsoft Exchange (on-premises) KPIs', icon: 'Mailbox' },
+      { value: 'licensing', label: 'Licensing and compliance KPIs', icon: 'ShieldCheck' },
+    ],
   },
   {
     title: 'Assessments',
@@ -43,7 +49,7 @@ const HUB_CARDS: HubCard[] = [
   },
   {
     title: 'Snapshots',
-    description: 'Capture and compare point-in-time KPI snapshots.',
+    description: 'Capture and compare point-in-time KPI snapshots to track how your environment changes over time.',
     icon: 'Camera',
     route: '#/snapshots',
     statLabel: 'Snapshots captured',
@@ -78,12 +84,12 @@ const QUICK_LINK_DESCRIPTIONS: Record<string, string> = {
     'Perform the tasks relating to approval of administrative operations. The scope of your responsibilities depends upon your role in the approval workflow processes.',
 };
 
-function HubCardTile({ card }: { card: HubCard }) {
+function HubCardTile({ card, className }: { card: HubCard; className?: string }) {
   return (
     <div
       role="button"
       tabIndex={0}
-      className={styles.hubCard}
+      className={className ? `${styles.hubCard} ${className}` : styles.hubCard}
       onClick={() => navigate(card.route)}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -97,27 +103,59 @@ function HubCardTile({ card }: { card: HubCard }) {
           <Icon name={card.icon} size="20px" />
         </span>
         <span className={styles.hubTitle}>{card.title}</span>
-        <IconButton
-          icon="CaretRight"
-          ariaLabel=""
-          variant="secondary"
-          size="s"
-          tabIndex={-1}
-          className={styles.hubNavButton}
-        />
+        {!card.categories && (
+          <IconButton
+            icon="CaretRight"
+            ariaLabel=""
+            variant="secondary"
+            size="s"
+            tabIndex={-1}
+            className={styles.hubNavButton}
+          />
+        )}
       </div>
       <div className={styles.hubCardBody}>
         <p className={styles.hubDescription}>{card.description}</p>
-        <div className={styles.hubStatRow}>
-          <span className={styles.hubStatLabel}>{card.statLabel}</span>
-          <div className={styles.hubStatValueRow}>
-            <span className={styles.hubStatValue}>{card.statValue}</span>
-            <span className={styles.hubStatTrend}>
-              <Icon name="TrendUp" size="16px" />
-              {card.trendValue}
-            </span>
+        {card.categories && (
+          <div className={styles.hubCategoryList}>
+            {card.categories.map((cat) => (
+              <button
+                key={cat.value}
+                type="button"
+                className={styles.hubCategoryRow}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`#/insights/dashboard/${cat.value}`);
+                }}
+              >
+                <span className={styles.hubCategoryIcon}>
+                  <Icon name={cat.icon} size="20px" />
+                </span>
+                <span className={styles.hubCategoryLabel}>{cat.label}</span>
+                <IconButton
+                  icon="CaretRight"
+                  ariaLabel=""
+                  variant="secondary"
+                  size="s"
+                  tabIndex={-1}
+                  className={styles.hubCategoryChevron}
+                />
+              </button>
+            ))}
           </div>
-        </div>
+        )}
+        {card.statLabel && (
+          <div className={styles.hubStatRow}>
+            <span className={styles.hubStatLabel}>{card.statLabel}</span>
+            <div className={styles.hubStatValueRow}>
+              <span className={styles.hubStatValue}>{card.statValue}</span>
+              <span className={styles.hubStatTrend}>
+                <Icon name="TrendUp" size="16px" />
+                {card.trendValue}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -127,38 +165,38 @@ function QuickLinkTile({ entry }: { entry: VerticalNavEntry }) {
   const route = QUICK_LINK_ROUTES[entry.value];
   const disabled = entry.disabled || !route;
   return (
-    <div
-      role="button"
-      tabIndex={disabled ? -1 : 0}
-      aria-disabled={disabled || undefined}
-      className={styles.quickLinkTile}
-      title={disabled ? `${entry.label} — not available yet` : undefined}
-      onClick={disabled ? undefined : () => navigate(route!)}
-      onKeyDown={
-        disabled
-          ? undefined
-          : (e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                navigate(route!);
+    <Tooltip label={disabled ? `${entry.label} — not available yet` : QUICK_LINK_DESCRIPTIONS[entry.value]}>
+      <div
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        aria-disabled={disabled || undefined}
+        className={styles.quickLinkTile}
+        onClick={disabled ? undefined : () => navigate(route!)}
+        onKeyDown={
+          disabled
+            ? undefined
+            : (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  navigate(route!);
+                }
               }
-            }
-      }
-    >
-      <IconButton
-        icon="CaretRight"
-        ariaLabel=""
-        variant="secondary"
-        size="s"
-        tabIndex={-1}
-        className={styles.quickLinkNavButton}
-      />
-      <span className={styles.quickLinkIconTile}>
-        <Icon name={entry.icon} size="24px" />
-      </span>
-      <span className={styles.quickLinkLabel}>{entry.label}</span>
-      <span className={styles.quickLinkDescription}>{QUICK_LINK_DESCRIPTIONS[entry.value]}</span>
-    </div>
+        }
+      >
+        <span className={styles.quickLinkIconTile}>
+          <Icon name={entry.icon} size="20px" />
+        </span>
+        <span className={styles.quickLinkLabel}>{entry.label}</span>
+        <IconButton
+          icon="CaretRight"
+          ariaLabel=""
+          variant="secondary"
+          size="s"
+          tabIndex={-1}
+          className={styles.quickLinkNavButton}
+        />
+      </div>
+    </Tooltip>
   );
 }
 
@@ -174,18 +212,22 @@ export function InsightsLandingPage() {
       activeGlobalItem="insights"
       showSecondarySidebar={false}
     >
-      <ContentHeader
-        variant="detail"
-        icon="PresentationChart"
-        title="Insights"
-        subtitle="Dashboards, assessments, and snapshots for your Active Roles environment."
-      />
-
       <div className={styles.page}>
+        <div className={styles.headerInset}>
+          <ContentHeader
+            variant="detail"
+            icon="PresentationChart"
+            title="Insights"
+            subtitle="Dashboards, assessments, and snapshots for your Active Roles environment."
+          />
+        </div>
+
         <div className={styles.hubGrid}>
-          {HUB_CARDS.map((card) => (
-            <HubCardTile key={card.title} card={card} />
-          ))}
+          <HubCardTile card={HUB_CARDS[0]} className={styles.hubCardPrimary} />
+          <div className={styles.hubSecondaryStack}>
+            <HubCardTile card={HUB_CARDS[1]} />
+            <HubCardTile card={HUB_CARDS[2]} />
+          </div>
         </div>
 
         <h2 className={styles.sectionTitle}>Quick links</h2>

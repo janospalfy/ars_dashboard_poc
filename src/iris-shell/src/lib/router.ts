@@ -24,7 +24,7 @@ export type Route =
   | { name: 'accessTemplates'; params: Record<string, never> }
   | { name: 'managementUnits'; params: Record<string, never> }
   | { name: 'insights'; params: Record<string, never> }
-  | { name: 'insightsDashboard'; params: Record<string, never> }
+  | { name: 'insightsDashboard'; params: { tab?: string } }
   | { name: 'assessments'; params: Record<string, never> }
   | { name: 'snapshots'; params: Record<string, never> }
   | { name: 'services'; params: Record<string, never> }
@@ -57,6 +57,7 @@ const ROUTES: RouteDef[] = [
   { name: 'accessTemplates', pattern: /^#\/access-templates$/, keys: [] },
   { name: 'managementUnits', pattern: /^#\/management-units$/, keys: [] },
   { name: 'insights', pattern: /^#\/insights$/, keys: [] },
+  { name: 'insightsDashboard', pattern: /^#\/insights\/dashboard\/([^/]+)$/, keys: ['tab'] },
   { name: 'insightsDashboard', pattern: /^#\/insights\/dashboard$/, keys: [] },
   { name: 'assessments', pattern: /^#\/assessments$/, keys: [] },
   { name: 'snapshots', pattern: /^#\/snapshots$/, keys: [] },

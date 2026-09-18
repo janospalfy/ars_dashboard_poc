@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AppShell } from '../AppShell/AppShell.js';
 import { Card } from '../../components/Card/Card.js';
 import { ContentHeader } from '../../components/ContentHeader/ContentHeader.js';
@@ -7,7 +7,6 @@ import { Select } from '../../components/Select/Select.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
 import { Menu, type MenuEntry } from '../../components/Menu/Menu.js';
-import { Icon } from '../../components/Icon/Icon.js';
 import { StatCard } from '../../components/StatCard/StatCard.js';
 import { DonutChart } from '../../components/DonutChart/DonutChart.js';
 import { BarChart } from '../../components/BarChart/BarChart.js';
@@ -48,7 +47,7 @@ const CATEGORY_DETAILS: Record<string, { title: string; description: string; ico
   'entra-id': { title: 'Entra ID', description: 'Entra ID KPIs', icon: 'CloudCheck' },
   exchange: {
     title: 'Microsoft Exchange',
-    description: 'Microsoft Exchange (on-premises) KPIs',
+    description: 'Microsoft Exchange KPIs',
     icon: 'Mailbox',
   },
   licensing: {
@@ -161,8 +160,13 @@ function ExportMenu() {
 /**
  * InsightsPage — read-only analytics dashboard. Hosted at #/insights.
  */
-export function InsightsPage() {
-  const [tab, setTabState] = useState(OVERVIEW_TAB);
+export function InsightsPage({ initialTab }: { initialTab?: string }) {
+  const [tab, setTabState] = useState(
+    initialTab && CATEGORY_DETAILS[initialTab] ? initialTab : OVERVIEW_TAB,
+  );
+  useEffect(() => {
+    if (initialTab && CATEGORY_DETAILS[initialTab]) setTabState(initialTab);
+  }, [initialTab]);
   const category = CATEGORY_DETAILS[tab];
   const [chartTypes, setChartTypes] = useState<Record<string, ChartType>>({
     users: 'donut',
@@ -264,40 +268,6 @@ export function InsightsPage() {
                 >
                   <SourceChart type={chartTypes.computers} data={COMPUTERS_BY_SOURCE} />
                 </Card>
-              </div>
-
-              <div className={styles.categoryGrid}>
-                {Object.entries(CATEGORY_DETAILS).map(([value, c]) => {
-                  return (
-                    <div
-                      key={value}
-                      role="button"
-                      tabIndex={0}
-                      className={styles.categoryCard}
-                      onClick={() => setTab(value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          setTab(value);
-                        }
-                      }}
-                    >
-                      <IconButton
-                        icon="CaretRight"
-                        ariaLabel=""
-                        variant="secondary"
-                        size="s"
-                        tabIndex={-1}
-                        className={styles.categoryNavButton}
-                      />
-                      <span className={styles.categoryIconTile}>
-                        <Icon name={c.icon} size="24px" />
-                      </span>
-                      <span className={styles.categoryTitle}>{c.title}</span>
-                      <span className={styles.categoryDescription}>{c.description}</span>
-                    </div>
-                  );
-                })}
               </div>
             </div>
           </>
