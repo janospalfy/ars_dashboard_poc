@@ -1,0 +1,66 @@
+.controls {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--oi-spacing-m);
+}
+
+.selectors {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+  flex-wrap: wrap;
+}
+
+.runRow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-m);
+  margin-left: auto;
+}
+
+.status {
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-heading-06-font-weight);
+  color: var(--oi-content-color-secondary);
+}
+
+.spinner {
+  animation: perf-spin 0.7s linear infinite;
+}
+
+@keyframes perf-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}
+
+.empty {
+  margin: var(--oi-spacing-m) 0 0;
+  color: var(--oi-content-color-tertiary);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
+.chartWrap {
+  margin-top: var(--oi-spacing-l);
+}
+
+.chartTitle {
+  margin: 0 0 var(--oi-spacing-s);
+  font-size: var(--oi-text-heading-06-font-size);
+  line-height: var(--oi-text-heading-06-line-height);
+  font-weight: var(--oi-text-heading-06-font-weight);
+  color: var(--oi-content-color-primary);
+}

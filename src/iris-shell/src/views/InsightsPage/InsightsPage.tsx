@@ -15,6 +15,7 @@ import { MetricTile } from '../../components/MetricTile/MetricTile.js';
 import { CollapsibleSection } from '../../components/CollapsibleSection/CollapsibleSection.js';
 import { DataTable, type DataTableColumn } from '../../components/DataTable/DataTable.js';
 import { Link } from '../../components/Link/Link.js';
+import { PerformanceTestsPanel } from './PerformanceTestsPanel.js';
 import { showToast } from '../../lib/toastStore.js';
 import {
   STAT_CARDS,
@@ -419,6 +420,8 @@ export function InsightsPage() {
                 <p className={styles.empty}>{category.description} — coming soon.</p>
               </Card>
             )}
+
+            {tab === 'active-roles' && <PerformanceTestsPanel />}
           </>
         )}
       </div>
