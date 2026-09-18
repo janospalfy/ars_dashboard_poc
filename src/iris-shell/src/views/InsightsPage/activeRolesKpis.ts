@@ -26,6 +26,8 @@ export interface KpiDefinition {
   value: number;
   /** Also appears in the "Governance and Risk" category. */
   risk?: boolean;
+  /** Shown as a headline tile rather than a row in the configuration table. */
+  pinned?: boolean;
   namePrefix: string;
   columns: KpiColumn[];
   breakdown?: KpiBreakdown;
@@ -38,6 +40,7 @@ export const AR_CONFIGURATION_KPIS: KpiDefinition[] = [
     id: 'ar-admins',
     label: 'Active Roles Admins',
     value: 1,
+    pinned: true,
     namePrefix: 'AR-Admin',
     columns: [
       { key: 'name', header: 'Name', type: 'text' },
@@ -49,6 +52,7 @@ export const AR_CONFIGURATION_KPIS: KpiDefinition[] = [
     id: 'ar-servers',
     label: 'AR Servers',
     value: 7,
+    pinned: true,
     namePrefix: 'ARSRV',
     columns: [
       { key: 'name', header: 'Server Name', type: 'text' },
@@ -60,6 +64,7 @@ export const AR_CONFIGURATION_KPIS: KpiDefinition[] = [
     id: 'managed-domains',
     label: 'Managed Domains',
     value: 6,
+    pinned: true,
     namePrefix: 'corp',
     columns: [
       { key: 'name', header: 'Name', type: 'text' },
@@ -343,6 +348,13 @@ export const AR_CONFIGURATION_KPIS: KpiDefinition[] = [
 export const AR_GOVERNANCE_KPIS: KpiDefinition[] = AR_CONFIGURATION_KPIS.filter((k) => k.risk).sort((a, b) =>
   a.label.localeCompare(b.label),
 );
+
+/** The 3 most-referenced counts, shown as headline tiles. */
+export const AR_PINNED_KPIS: KpiDefinition[] = AR_CONFIGURATION_KPIS.filter((k) => k.pinned);
+
+/** The remaining configuration KPIs, shown as table rows rather than tiles
+ *  (a flat wall of 22+ tiles doesn't scale — see activeRolesKpis.ts header). */
+export const AR_CONFIGURATION_TABLE_KPIS: KpiDefinition[] = AR_CONFIGURATION_KPIS.filter((k) => !k.pinned);
 
 export interface DatabaseTopologyRow {
   id: string;

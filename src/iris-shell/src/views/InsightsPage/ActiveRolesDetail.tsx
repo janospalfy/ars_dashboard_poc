@@ -1,11 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Card } from '../../components/Card/Card.js';
 import { CollapsibleSection } from '../../components/CollapsibleSection/CollapsibleSection.js';
 import { MetricTile } from '../../components/MetricTile/MetricTile.js';
+import { MetricCardGroup } from '../../components/MetricCardGroup/MetricCardGroup.js';
+import { TextInput } from '../../components/TextInput/TextInput.js';
 import { DataTable, type DataTableColumn } from '../../components/DataTable/DataTable.js';
 import {
-  AR_CONFIGURATION_KPIS,
+  AR_CONFIGURATION_TABLE_KPIS,
   AR_GOVERNANCE_KPIS,
+  AR_PINNED_KPIS,
   DATABASE_TOPOLOGY_ROWS,
   buildKpiRows,
   type KpiDefinition,
@@ -45,16 +48,49 @@ function KpiGrid({
   );
 }
 
+interface ConfigTableRow {
+  id: string;
+  kpi: KpiDefinition;
+}
+
+function configTableColumns(onToggle: (kpi: KpiDefinition) => void): DataTableColumn<ConfigTableRow>[] {
+  return [
+    {
+      key: 'label',
+      header: 'KPI',
+      minWidth: '220px',
+      grow: 1,
+      cell: (r) => (
+        <button type="button" className={styles.kpiLink} onClick={() => onToggle(r.kpi)}>
+          {r.kpi.label}
+        </button>
+      ),
+    },
+    { key: 'value', header: 'Value', width: '100px', cell: (r) => <span>{r.kpi.value}</span> },
+  ];
+}
+
 /**
  * ActiveRolesDetail — full port of the real dashboard's Active Roles KPI
- * page (Pages/ActiveRoles.cshtml): the "Active Roles Configuration" and
- * "Governance and Risk" tile categories, per-KPI drill-down (columns vary by
- * KPI — see activeRolesKpis.ts), and the Database & Replication Topology
- * table.
+ * page (Pages/ActiveRoles.cshtml): headline tiles + a searchable table for
+ * the "Active Roles Configuration" KPIs (22+ items reads better as rows than
+ * as a wall of tiles), the "Governance and Risk" tile category, per-KPI
+ * drill-down (columns vary by KPI — see activeRolesKpis.ts), and the
+ * Database & Replication Topology table.
  */
 export function ActiveRolesDetail() {
   const [selected, setSelected] = useState<KpiDefinition | null>(null);
   const toggle = (kpi: KpiDefinition) => setSelected((prev) => (prev?.id === kpi.id ? null : kpi));
+
+  const [configSearch, setConfigSearch] = useState('');
+  const configRows: ConfigTableRow[] = useMemo(() => {
+    const q = configSearch.trim().toLowerCase();
+    return AR_CONFIGURATION_TABLE_KPIS.filter((k) => !q || k.label.toLowerCase().includes(q)).map((kpi) => ({
+      id: kpi.id,
+      kpi,
+    }));
+  }, [configSearch]);
+  const configColumns = useMemo(() => configTableColumns(toggle), []);
 
   const drillDownRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -74,13 +110,41 @@ export function ActiveRolesDetail() {
 
   return (
     <div className={styles.groups}>
-      <CollapsibleSection title="Active Roles Configuration">
-        <KpiGrid kpis={AR_CONFIGURATION_KPIS} selectedId={selected?.id ?? null} onToggle={toggle} />
-      </CollapsibleSection>
-
       <CollapsibleSection title="Governance and Risk">
         <KpiGrid kpis={AR_GOVERNANCE_KPIS} selectedId={selected?.id ?? null} onToggle={toggle} />
       </CollapsibleSection>
+
+      <MetricCardGroup
+        title="Active Roles Configuration overview"
+        items={AR_PINNED_KPIS.map((kpi) => ({
+          label: kpi.label,
+          value: kpi.value,
+          selected: selected?.id === kpi.id,
+          onClick: () => toggle(kpi),
+        }))}
+      />
+
+      <Card
+        title="Active Roles Configuration"
+        actions={
+          <TextInput
+            iconLead="MagnifyingGlass"
+            placeholder="Search KPIs…"
+            value={configSearch}
+            onChange={(e) => setConfigSearch(e.target.value)}
+            aria-label="Search configuration KPIs"
+            className={styles.search}
+          />
+        }
+      >
+        <DataTable
+          rows={configRows}
+          columns={configColumns}
+          ariaLabel="Active Roles Configuration KPIs"
+          onRowAction={(r) => toggle(r.kpi)}
+          emptyState={{ title: 'No matching KPIs', description: 'Try a different search term.' }}
+        />
+      </Card>
 
       <Card title="Database & Replication Topology">
         <DataTable rows={DATABASE_TOPOLOGY_ROWS} columns={DB_TOPOLOGY_COLUMNS} ariaLabel="Database topology" />
@@ -110,3 +174,4 @@ export function ActiveRolesDetail() {
     </div>
   );
 }
+

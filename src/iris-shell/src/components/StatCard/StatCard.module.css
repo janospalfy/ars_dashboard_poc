@@ -35,7 +35,7 @@
   font-family: var(--oi-font-family-code);
   font-size: var(--oi-text-heading-03-font-size);
   line-height: var(--oi-text-heading-03-line-height);
-  font-weight: var(--oi-font-weight-400);
+  font-weight: 500;
   color: var(--oi-content-color-primary);
   font-variant-numeric: tabular-nums;
 }

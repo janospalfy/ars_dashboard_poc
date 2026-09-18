@@ -1,18 +1,19 @@
 import { useState } from 'react';
 import { AppShell } from '../AppShell/AppShell.js';
 import { Card } from '../../components/Card/Card.js';
+import { ContentHeader } from '../../components/ContentHeader/ContentHeader.js';
 import { Tabs, type TabItem } from '../../components/Tabs/Tabs.js';
 import { Select } from '../../components/Select/Select.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
 import { Menu, type MenuEntry } from '../../components/Menu/Menu.js';
-import { ResourceIcon } from '../../components/ResourceIcon/ResourceIcon.js';
 import { Icon } from '../../components/Icon/Icon.js';
 import { StatCard } from '../../components/StatCard/StatCard.js';
 import { DonutChart } from '../../components/DonutChart/DonutChart.js';
 import { BarChart } from '../../components/BarChart/BarChart.js';
 import { ActiveRolesDetail } from './ActiveRolesDetail.js';
 import { PerformanceTestsPanel } from './PerformanceTestsPanel.js';
+import { navigate } from '../../lib/router.js';
 import { showToast } from '../../lib/toastStore.js';
 import { STAT_CARDS, USERS_BY_SOURCE, GROUPS_BY_SOURCE, COMPUTERS_BY_SOURCE } from './mockInsights.js';
 import styles from './InsightsPage.module.css';
@@ -175,10 +176,17 @@ export function InsightsPage() {
 
   return (
     <AppShell
-      breadcrumb={[{ label: 'Insights' }]}
+      breadcrumb={[{ label: 'Insights', onClick: () => navigate('#/insights') }, { label: 'Dashboard' }]}
       activeGlobalItem="insights"
       showSecondarySidebar={false}
     >
+      <ContentHeader
+        variant="detail"
+        icon="Gauge"
+        title="Dashboard"
+        onBack={() => navigate('#/insights')}
+        backLabel="Back to Insights"
+      />
       <div className={styles.page}>
         <Tabs items={TABS} value={tab} onChange={setTab} ariaLabel="Insights sections" />
 
@@ -297,7 +305,8 @@ export function InsightsPage() {
 
         {category && (
           <>
-            <div className={`${styles.filters} ${styles.filtersEnd}`}>
+            <div className={styles.titleRow}>
+              <h2 className={styles.pageTitle}>{category.title}</h2>
               <div className={styles.filtersRight}>
                 <Tooltip label="Refresh">
                   <IconButton
@@ -315,10 +324,7 @@ export function InsightsPage() {
             {tab === 'active-roles' ? (
               <ActiveRolesDetail />
             ) : (
-              <Card
-                title={category.title}
-                actions={<ResourceIcon icon={category.icon} size="default" ariaLabel="" />}
-              >
+              <Card>
                 <p className={styles.empty}>{category.description} — coming soon.</p>
               </Card>
             )}

@@ -1,4 +1,4 @@
-import { useRoute } from './lib/router.js';
+import { navigate, useRoute } from './lib/router.js';
 import { UsersProvider } from './lib/usersStore.js';
 import { DirectoryProvider } from './lib/directoryStore.js';
 import { FIRST_NODE_ID } from './lib/directoryData.js';
@@ -13,6 +13,7 @@ import { TreeDetailPage } from './views/TreeView/TreeDetailPage.js';
 import { FavoritesPage } from './views/FavoritesView/FavoritesPage.js';
 import { WipPage } from './views/WipPage/WipPage.js';
 import { InsightsPage } from './views/InsightsPage/InsightsPage.js';
+import { InsightsLandingPage } from './views/InsightsPage/InsightsLandingPage.js';
 import { ServicesPage } from './views/ServicesPage/ServicesPage.js';
 import { IdentityManagerPage } from './views/IdentityManagerPage/IdentityManagerPage.js';
 import { IdentityInsightsPage } from './views/IdentityManagerPage/IdentityInsightsPage.js';
@@ -48,7 +49,30 @@ export default function App() {
           {route.name === 'managementUnits' && (
             <WipPage title="Management units" icon="FolderSimpleStar" />
           )}
-          {route.name === 'insights' && <InsightsPage />}
+          {route.name === 'insights' && <InsightsLandingPage />}
+          {route.name === 'insightsDashboard' && <InsightsPage />}
+          {route.name === 'assessments' && (
+            <WipPage
+              title="Assessments"
+              icon="ClipboardText"
+              breadcrumb={[{ label: 'Insights', onClick: () => navigate('#/insights') }, { label: 'Assessments' }]}
+              activeGlobalItem="insights"
+              showSecondarySidebar={false}
+              onBack={() => navigate('#/insights')}
+              backLabel="Back to Insights"
+            />
+          )}
+          {route.name === 'snapshots' && (
+            <WipPage
+              title="Snapshots"
+              icon="Camera"
+              breadcrumb={[{ label: 'Insights', onClick: () => navigate('#/insights') }, { label: 'Snapshots' }]}
+              activeGlobalItem="insights"
+              showSecondarySidebar={false}
+              onBack={() => navigate('#/insights')}
+              backLabel="Back to Insights"
+            />
+          )}
           {route.name === 'services' && <ServicesPage />}
           {route.name === 'identityHome' && <IdentityManagerPage />}
           {route.name === 'identityInsights' && <IdentityInsightsPage />}

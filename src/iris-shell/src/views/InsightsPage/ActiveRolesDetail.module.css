@@ -4,6 +4,26 @@
   gap: var(--oi-spacing-l);
 }
 
+.search {
+  width: 220px;
+}
+
+.kpiLink {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--oi-content-color-link);
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.kpiLink:hover {
+  color: var(--oi-content-color-link-hover);
+  text-decoration: underline;
+}
+
 .breakdown {
   margin: 0 0 var(--oi-spacing-m);
   color: var(--oi-content-color-secondary);

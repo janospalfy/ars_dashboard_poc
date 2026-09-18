@@ -1,0 +1,25 @@
+.indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+  font-weight: var(--oi-text-caption-font-weight);
+  white-space: nowrap;
+}
+
+.tone_neutral {
+  color: var(--oi-content-color-tertiary);
+}
+
+.tone_success {
+  color: var(--oi-content-color-success);
+}
+
+.tone_warning {
+  color: var(--oi-content-color-warning);
+}
+
+.tone_error {
+  color: var(--oi-content-color-error);
+}

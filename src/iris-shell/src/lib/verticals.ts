@@ -85,8 +85,8 @@ export const ACTIVE_ROLES_VERTICAL: Vertical = {
   defaultRoute: '#/insights',
   aiTitle: 'Active Roles AI',
   mainNav: [
-    { value: 'directory', label: 'Directory management', icon: 'TreeView' },
     { value: 'insights', label: 'Insights', icon: 'PresentationChart' },
+    { value: 'directory', label: 'Directory management', icon: 'TreeView' },
     { value: 'approval', label: 'Approval', icon: 'SealCheck', disabled: true },
     { value: 'customization', label: 'Customization', icon: 'Wrench', disabled: true },
   ],

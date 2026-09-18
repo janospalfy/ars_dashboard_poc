@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Card } from '../../components/Card/Card.js';
 import { Button } from '../../components/Button/Button.js';
-import { Badge, type BadgeTone } from '../../components/Badge/Badge.js';
+import { StatusIndicator, type StatusIndicatorTone } from '../../components/StatusIndicator/StatusIndicator.js';
 import { MultiSelect } from '../../components/MultiSelect/MultiSelect.js';
 import { DataTable, type DataTableColumn } from '../../components/DataTable/DataTable.js';
 import { BarChart } from '../../components/BarChart/BarChart.js';
@@ -16,7 +16,7 @@ import {
 } from './mockPerformanceTests.js';
 import styles from './PerformanceTestsPanel.module.css';
 
-const STATUS_TONE: Record<PerfStatus, BadgeTone> = {
+const STATUS_TONE: Record<PerfStatus, StatusIndicatorTone> = {
   Ok: 'success',
   Warn: 'warning',
   Fail: 'error',
@@ -40,7 +40,7 @@ const RESULT_COLUMNS: DataTableColumn<ResultRow>[] = [
     key: 'status',
     header: 'Status',
     width: '110px',
-    cell: (r) => <Badge tone={STATUS_TONE[r.status]}>{r.status}</Badge>,
+    cell: (r) => <StatusIndicator tone={STATUS_TONE[r.status]}>{r.status}</StatusIndicator>,
   },
   {
     key: 'latency',
