@@ -10,8 +10,6 @@ import { Menu, type MenuEntry } from '../../components/Menu/Menu.js';
 import { StatCard } from '../../components/StatCard/StatCard.js';
 import { DonutChart } from '../../components/DonutChart/DonutChart.js';
 import { BarChart } from '../../components/BarChart/BarChart.js';
-import { ActiveRolesDetail } from './ActiveRolesDetail.js';
-import { PerformanceTestsPanel } from './PerformanceTestsPanel.js';
 import { navigate } from '../../lib/router.js';
 import { showToast } from '../../lib/toastStore.js';
 import { STAT_CARDS, USERS_BY_SOURCE, GROUPS_BY_SOURCE, COMPUTERS_BY_SOURCE } from './mockInsights.js';
@@ -291,15 +289,9 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
               </div>
             </div>
 
-            {tab === 'active-roles' ? (
-              <ActiveRolesDetail />
-            ) : (
-              <Card>
-                <p className={styles.empty}>{category.description} — coming soon.</p>
-              </Card>
-            )}
-
-            {tab === 'active-roles' && <PerformanceTestsPanel />}
+            <Card>
+              <p className={styles.empty}>{category.description} — coming soon.</p>
+            </Card>
           </>
         )}
       </div>
