@@ -174,7 +174,10 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
   const setChartType = (id: string, type: ChartType) =>
     setChartTypes((prev) => ({ ...prev, [id]: type }));
 
-  const setTab = (value: string) => setTabState(value);
+  const setTab = (value: string) => {
+    setTabState(value);
+    navigate(value === OVERVIEW_TAB ? '#/insights/dashboard' : `#/insights/dashboard/${value}`);
+  };
 
   return (
     <AppShell
