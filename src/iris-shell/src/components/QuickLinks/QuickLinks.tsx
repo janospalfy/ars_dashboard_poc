@@ -27,6 +27,13 @@ function findNavEntry(value: string): VerticalNavEntry | undefined {
 
 const QUICK_LINK_VALUES = ['directory', 'customization', 'settings', 'approval'];
 
+const QUICK_LINK_LABELS: Record<string, string> = {
+  directory: 'Open directory view',
+  customization: 'Customize UI',
+  settings: 'Manage settings',
+  approval: 'View approvals',
+};
+
 /** Copy lifted verbatim from the classic Active Roles Web Interface home
  *  screen (Home.aspx) tile descriptions. */
 const QUICK_LINK_DESCRIPTIONS: Record<string, string> = {
@@ -54,7 +61,7 @@ function QuickLinkCard({ entry }: { entry: VerticalNavEntry }) {
         <span className={styles.cardDesc}>{QUICK_LINK_DESCRIPTIONS[entry.value]}</span>
       </span>
       <span className={styles.cardLink}>
-        <span>{disabled ? 'Not available yet' : `Open ${entry.label}`}</span>
+        <span>{disabled ? 'Not available yet' : QUICK_LINK_LABELS[entry.value]}</span>
         {!disabled && <Icon name="ArrowRight" size="16px" className={styles.cardLinkArrow} />}
       </span>
     </>
