@@ -20,6 +20,7 @@ import styles from './AppShell.module.css';
 const GLOBAL_NAV_ROUTES: Record<string, string | undefined> = {
   directory: '#/users',
   insights: '#/insights',
+  arHome: '#/home',
   services: '#/services',
   home: '#/identity',
   instance: '#/safeguard',

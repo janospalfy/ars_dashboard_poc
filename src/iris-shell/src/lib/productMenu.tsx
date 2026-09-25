@@ -14,7 +14,7 @@ interface ProductEntry {
 }
 
 const PRODUCTS: ProductEntry[] = [
-  { id: 'active-roles', label: 'Active Roles', icon: 'active-roles', route: '#/insights' },
+  { id: 'active-roles', label: 'Active Roles', icon: 'active-roles', route: '#/home' },
   { id: 'identity-manager', label: 'Identity Manager', icon: 'identity-manager', route: '#/identity' },
   { id: 'safeguard', label: 'Safeguard', icon: 'safeguard', route: '#/safeguard' },
   { id: 'services', label: 'On Demand Services', icon: 'services', route: '#/services' },

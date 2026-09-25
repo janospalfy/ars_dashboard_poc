@@ -3,12 +3,19 @@ import { BorderBeam } from 'border-beam';
 import { cx } from '../../lib/cx.js';
 import { navigate } from '../../lib/router.js';
 import { useAppShell } from '../../lib/appShellContext.js';
-import { IDENTITY_COMMAND_ITEMS, filterItems } from '../../lib/commands.js';
-import { Icon } from '../../components/Icon/Icon.js';
-import { ComposerButton } from '../../components/AiPanel/AiPanel.js';
+import { filterItems, type CommandItem } from '../../lib/commands.js';
+import { Icon } from '../Icon/Icon.js';
+import { ComposerButton } from '../AiPanel/AiPanel.js';
 import styles from './HomeLauncher.module.css';
 
-const PLACEHOLDER = 'Search or ask Identity Manager AI anything';
+export interface HomeLauncherProps {
+  /** Jump-to destinations searched as the user types. */
+  commandItems: CommandItem[];
+  /** Full placeholder text, e.g. "Search or ask Active Roles AI anything". */
+  placeholder: string;
+  /** Short AI name used inline, e.g. "Active Roles AI". */
+  aiName: string;
+}
 
 /**
  * HomeLauncher — the Home hero search/ask bar. A real input with a muted
@@ -16,7 +23,7 @@ const PLACEHOLDER = 'Search or ask Identity Manager AI anything';
  * plus an inline options panel (search matches + Ask AI) instead of opening
  * the ⌘K modal.
  */
-export function HomeLauncher() {
+export function HomeLauncher({ commandItems, placeholder, aiName }: HomeLauncherProps) {
   const { setAiOpen, setPendingAiPrompt } = useAppShell();
   const [query, setQuery] = useState('');
   const [focused, setFocused] = useState(false);
@@ -24,11 +31,8 @@ export function HomeLauncher() {
 
   const q = query.trim();
   const matches = useMemo(
-    () =>
-      q
-        ? filterItems(IDENTITY_COMMAND_ITEMS, q).slice(0, 5)
-        : IDENTITY_COMMAND_ITEMS.slice(0, 5),
-    [q],
+    () => (q ? filterItems(commandItems, q).slice(0, 5) : commandItems.slice(0, 5)),
+    [q, commandItems],
   );
 
   // Clear any pending blur-close timer if the launcher unmounts (e.g. on nav).
@@ -78,7 +82,7 @@ export function HomeLauncher() {
           <input
             className={styles.input}
             type="text"
-            placeholder={PLACEHOLDER}
+            placeholder={placeholder}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={onFocus}
@@ -105,7 +109,7 @@ export function HomeLauncher() {
           <button type="button" className={styles.option} onClick={askAi}>
             <Icon name="Sparkle" size="16px" className={styles.optIcon} />
             <span className={styles.optLabel}>
-              {q ? `Ask IMOD AI about “${q}”` : 'Ask IMOD AI anything'}
+              {q ? `Ask ${aiName} about “${q}”` : `Ask ${aiName} anything`}
             </span>
           </button>
 

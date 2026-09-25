@@ -12,6 +12,7 @@ import { TreeListPage } from './views/TreeView/TreeListPage.js';
 import { TreeDetailPage } from './views/TreeView/TreeDetailPage.js';
 import { FavoritesPage } from './views/FavoritesView/FavoritesPage.js';
 import { WipPage } from './views/WipPage/WipPage.js';
+import { HomePage } from './views/HomePage/HomePage.js';
 import { InsightsPage } from './views/InsightsPage/InsightsPage.js';
 import { InsightsLandingPage } from './views/InsightsPage/InsightsLandingPage.js';
 import { ServicesPage } from './views/ServicesPage/ServicesPage.js';
@@ -39,6 +40,7 @@ export default function App() {
             <TreeDetailPage nodeId={route.params.nodeId} objectId={route.params.objectId} />
           )}
           {route.name === 'favoritesList' && <FavoritesPage />}
+          {route.name === 'arHome' && <HomePage />}
           {route.name === 'groups' && <WipPage title="Groups" icon="UsersThree" />}
           {route.name === 'devices' && <WipPage title="Devices" icon="Devices" />}
           {route.name === 'agents' && <WipPage title="Agents" icon="Robot" />}
@@ -67,6 +69,39 @@ export default function App() {
               title="Snapshots"
               icon="Camera"
               breadcrumb={[{ label: 'Insights', onClick: () => navigate('#/insights') }, { label: 'Snapshots' }]}
+              activeGlobalItem="insights"
+              showSecondarySidebar={false}
+              onBack={() => navigate('#/insights')}
+              backLabel="Back to Insights"
+            />
+          )}
+          {route.name === 'customization' && (
+            <WipPage
+              title="Customization"
+              icon="Wrench"
+              breadcrumb={[{ label: 'Insights', onClick: () => navigate('#/insights') }, { label: 'Customization' }]}
+              activeGlobalItem="insights"
+              showSecondarySidebar={false}
+              onBack={() => navigate('#/insights')}
+              backLabel="Back to Insights"
+            />
+          )}
+          {route.name === 'approval' && (
+            <WipPage
+              title="Approval"
+              icon="SealCheck"
+              breadcrumb={[{ label: 'Insights', onClick: () => navigate('#/insights') }, { label: 'Approval' }]}
+              activeGlobalItem="insights"
+              showSecondarySidebar={false}
+              onBack={() => navigate('#/insights')}
+              backLabel="Back to Insights"
+            />
+          )}
+          {route.name === 'settings' && (
+            <WipPage
+              title="Settings"
+              icon="GearFine"
+              breadcrumb={[{ label: 'Insights', onClick: () => navigate('#/insights') }, { label: 'Settings' }]}
               activeGlobalItem="insights"
               showSecondarySidebar={false}
               onBack={() => navigate('#/insights')}

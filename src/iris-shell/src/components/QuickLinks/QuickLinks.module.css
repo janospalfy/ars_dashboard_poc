@@ -1,0 +1,124 @@
+.section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-l);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.quickLinkGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--oi-spacing-m);
+}
+
+/* ── Quick link card: title + description + link, bordered white tile ── */
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--oi-spacing-m);
+  min-height: 124px;
+  padding: var(--oi-spacing-m) var(--oi-spacing-l);
+  background-color: var(--oi-background-color-primary);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+  border-radius: var(--oi-border-radius-l);
+  text-align: left;
+  text-decoration: none;
+}
+
+.card:focus-visible {
+  outline: none;
+  box-shadow: var(--oi-focus-ring);
+}
+
+.cardDisabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-s);
+  min-width: 0;
+}
+
+.cardTitleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+}
+
+.cardTitleIcon {
+  flex-shrink: 0;
+  color: var(--oi-content-color-primary);
+}
+
+.cardTitle {
+  font-size: var(--oi-text-body-s-strong-font-size);
+  line-height: var(--oi-text-body-s-strong-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.cardDesc {
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-tertiary);
+}
+
+.cardLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-link);
+}
+
+.card:hover .cardLink {
+  color: var(--oi-content-color-link-hover);
+}
+
+.cardLinkArrow {
+  transition: transform var(--oi-motion-duration-default) var(--oi-motion-ease-enter);
+}
+
+.card:hover .cardLinkArrow {
+  transform: translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardLinkArrow {
+    transition: none;
+  }
+
+  .card:hover .cardLinkArrow {
+    transform: none;
+  }
+}
+
+.cardDisabled .cardLink {
+  color: var(--oi-content-color-tertiary);
+}
+
+@media (max-width: 1100px) {
+  .quickLinkGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .quickLinkGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

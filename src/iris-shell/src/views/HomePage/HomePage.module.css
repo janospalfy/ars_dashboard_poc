@@ -1,0 +1,47 @@
+.page {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--oi-spacing-xl);
+  padding: var(--oi-spacing-xxl) var(--oi-spacing-l);
+  min-width: 0;
+}
+
+/* ── Hero: greeting + launcher ── */
+.hero {
+  width: 100%;
+  max-width: 936px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--oi-spacing-xl);
+  padding-top: var(--oi-spacing-xl);
+  padding-bottom: var(--oi-spacing-s);
+  text-align: center;
+}
+
+.greeting {
+  margin: 0;
+  font-size: var(--oi-font-size-m);
+  line-height: var(--oi-line-height-m);
+  font-weight: var(--oi-font-weight-400);
+  color: var(--oi-content-color-primary);
+}
+
+.divider {
+  width: 100%;
+  max-width: 936px;
+  margin: 0;
+  border: none;
+  border-top: 0.5px var(--oi-border-style-solid) var(--oi-border-color-default);
+}
+
+.quickLinksWrap {
+  width: 100%;
+  max-width: 936px;
+}

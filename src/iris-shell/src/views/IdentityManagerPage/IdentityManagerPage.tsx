@@ -6,7 +6,8 @@ import { navigate } from '../../lib/router.js';
 import { useAppShell } from '../../lib/appShellContext.js';
 import { Icon } from '../../components/Icon/Icon.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
-import { HomeLauncher } from './HomeLauncher.js';
+import { HomeLauncher } from '../../components/HomeLauncher/HomeLauncher.js';
+import { IDENTITY_COMMAND_ITEMS } from '../../lib/commands.js';
 import { HOME_USER_NAME, HOME_CHIPS, HOME_STAT_TILES, HOME_ACTION_CARDS } from './mockIdentityHome.js';
 import styles from './IdentityManagerPage.module.css';
 
@@ -36,7 +37,11 @@ export function IdentityManagerPage() {
             Welcome, {HOME_USER_NAME}! Ask anything or tell us what you need.
           </h1>
 
-          <HomeLauncher />
+          <HomeLauncher
+            commandItems={IDENTITY_COMMAND_ITEMS}
+            placeholder="Search or ask Identity Manager AI anything"
+            aiName="IMOD AI"
+          />
 
           <div className={styles.chips}>
             {HOME_CHIPS.map((c) => (

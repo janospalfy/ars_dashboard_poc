@@ -10,7 +10,6 @@
   padding: var(--oi-spacing-xl);
   min-width: 0;
 }
-
 /* Cancels out .page's own padding so the (now non-sticky, in-flow) header
    can supply its usual full-bleed inset instead of being padded twice. */
 .headerInset {
@@ -229,100 +228,6 @@
   outline-offset: 2px;
 }
 
-.sectionTitle {
-  margin: 0;
-  margin-top: var(--oi-spacing-m);
-  font-size: var(--oi-text-heading-05-font-size);
-  line-height: var(--oi-text-heading-05-line-height);
-  font-weight: var(--oi-text-heading-05-font-weight);
-  color: var(--oi-content-color-primary);
-}
-
-.quickLinkGrid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--oi-spacing-m);
-}
-
-.quickLinkTile {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: var(--oi-spacing-s);
-  padding: var(--oi-spacing-s) var(--oi-spacing-m);
-  background-color: var(--oi-background-color-primary);
-  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
-  border-radius: var(--oi-border-radius-l);
-  text-align: left;
-  cursor: pointer;
-  transition:
-    border-color var(--oi-motion-duration-default) var(--oi-motion-ease-enter),
-    box-shadow var(--oi-motion-duration-default) var(--oi-motion-ease-enter),
-    transform var(--oi-motion-duration-default) var(--oi-motion-ease-enter);
-}
-
-.quickLinkTile:hover:not(.quickLinkTileDisabled) {
-  border-color: var(--oi-content-color-link-hover);
-  box-shadow: var(--oi-shadow-low);
-  transform: translateY(-2px);
-}
-
-.quickLinkTile:focus-visible {
-  outline: 2px solid var(--oi-border-color-focus);
-  outline-offset: 2px;
-}
-
-.quickLinkTileDisabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .quickLinkTile {
-    transition: none;
-  }
-
-  .quickLinkTile:hover:not(.quickLinkTileDisabled) {
-    transform: none;
-  }
-}
-
-.quickLinkIconTile {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  flex-shrink: 0;
-  border-radius: var(--oi-border-radius-default);
-  background-color: color-mix(in srgb, var(--oi-background-color-brand) 16%, transparent);
-  color: var(--oi-content-color-brand);
-}
-
-.quickLinkNavButton {
-  margin-left: auto;
-  flex-shrink: 0;
-  pointer-events: none;
-  transition: background-color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
-}
-
-.quickLinkTile:hover .quickLinkNavButton {
-  background-color: var(--oi-button-background-secondary-hover);
-}
-
-.quickLinkLabel {
-  font-size: var(--oi-text-body-s-font-size);
-  line-height: var(--oi-text-body-s-line-height);
-  font-weight: var(--oi-text-heading-06-font-weight);
-  color: var(--oi-content-color-primary);
-}
-
-@media (max-width: 1100px) {
-  .quickLinkGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 720px) {
   .hubGrid {
     flex-direction: column;
@@ -330,9 +235,5 @@
 
   .hubSecondaryStack {
     flex-direction: row;
-  }
-
-  .quickLinkGrid {
-    grid-template-columns: minmax(0, 1fr);
   }
 }

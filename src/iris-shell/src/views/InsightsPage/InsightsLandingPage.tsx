@@ -2,16 +2,8 @@ import { AppShell } from '../AppShell/AppShell.js';
 import { ContentHeader } from '../../components/ContentHeader/ContentHeader.js';
 import { Icon } from '../../components/Icon/Icon.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
-import { Tooltip } from '../../components/Tooltip/Tooltip.js';
 import { navigate } from '../../lib/router.js';
-import { ACTIVE_ROLES_VERTICAL, type VerticalNavEntry } from '../../lib/verticals.js';
 import styles from './InsightsLandingPage.module.css';
-
-/** Maps a nav entry's `value` to a route hash — mirrors AppShell's
- *  GLOBAL_NAV_ROUTES for the one entry ("directory") that's actually wired. */
-const QUICK_LINK_ROUTES: Record<string, string | undefined> = {
-  directory: '#/users',
-};
 
 interface HubCard {
   title: string;
@@ -23,7 +15,6 @@ interface HubCard {
   trendValue?: string;
   categories?: { value: string; label: string; icon: string }[];
 }
-
 const HUB_CARDS: HubCard[] = [
   {
     title: 'Dashboard',
@@ -57,32 +48,6 @@ const HUB_CARDS: HubCard[] = [
     trendValue: '2 vs last month',
   },
 ];
-
-/** The classic Active Roles Web Interface home screen ships a set of pinned
- *  shortcut tiles (Directory Management, Customization, Settings, Approval).
- *  Sourced from the vertical's own nav config so it never drifts out of sync
- *  with the left rail. */
-function findNavEntry(value: string): VerticalNavEntry | undefined {
-  return (
-    ACTIVE_ROLES_VERTICAL.mainNav.find((i) => i.value === value) ??
-    ACTIVE_ROLES_VERTICAL.otherNav.find((i) => i.value === value)
-  );
-}
-
-const QUICK_LINK_VALUES = ['directory', 'customization', 'settings', 'approval'];
-
-/** Copy lifted verbatim from the classic Active Roles Web Interface home
- *  screen (Home.aspx) tile descriptions. */
-const QUICK_LINK_DESCRIPTIONS: Record<string, string> = {
-  directory:
-    'Manage directory data, such as users and groups. The scope of your authority depends upon permissions you are granted by high-level administrators.',
-  customization:
-    'Add, remove, or modify user interface elements, such as menu items (commands) and pages (forms), intended to manage directory data.',
-  settings:
-    'View or modify your personal settings that control the display of the Web Interface. You can choose the language and change the look of the pages.',
-  approval:
-    'Perform the tasks relating to approval of administrative operations. The scope of your responsibilities depends upon your role in the approval workflow processes.',
-};
 
 function HubCardTile({ card, className }: { card: HubCard; className?: string }) {
   return (
@@ -161,45 +126,6 @@ function HubCardTile({ card, className }: { card: HubCard; className?: string })
   );
 }
 
-function QuickLinkTile({ entry }: { entry: VerticalNavEntry }) {
-  const route = QUICK_LINK_ROUTES[entry.value];
-  const disabled = entry.disabled || !route;
-  return (
-    <Tooltip label={disabled ? `${entry.label} — not available yet` : QUICK_LINK_DESCRIPTIONS[entry.value]}>
-      <div
-        role="button"
-        tabIndex={disabled ? -1 : 0}
-        aria-disabled={disabled || undefined}
-        className={styles.quickLinkTile}
-        onClick={disabled ? undefined : () => navigate(route!)}
-        onKeyDown={
-          disabled
-            ? undefined
-            : (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  navigate(route!);
-                }
-              }
-        }
-      >
-        <span className={styles.quickLinkIconTile}>
-          <Icon name={entry.icon} size="20px" />
-        </span>
-        <span className={styles.quickLinkLabel}>{entry.label}</span>
-        <IconButton
-          icon="CaretRight"
-          ariaLabel=""
-          variant="secondary"
-          size="s"
-          tabIndex={-1}
-          className={styles.quickLinkNavButton}
-        />
-      </div>
-    </Tooltip>
-  );
-}
-
 /**
  * InsightsLandingPage — hub for the "Insights" nav item (#/insights): links
  * out to the KPI Dashboard, Assessments, and Snapshots, plus the pinned
@@ -228,14 +154,6 @@ export function InsightsLandingPage() {
             <HubCardTile card={HUB_CARDS[1]} />
             <HubCardTile card={HUB_CARDS[2]} />
           </div>
-        </div>
-
-        <h2 className={styles.sectionTitle}>Quick links</h2>
-        <div className={styles.quickLinkGrid}>
-          {QUICK_LINK_VALUES.map((value) => {
-            const entry = findNavEntry(value);
-            return entry && <QuickLinkTile key={value} entry={entry} />;
-          })}
         </div>
       </div>
     </AppShell>

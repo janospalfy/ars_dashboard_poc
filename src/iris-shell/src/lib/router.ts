@@ -23,10 +23,14 @@ export type Route =
   | { name: 'applications'; params: Record<string, never> }
   | { name: 'accessTemplates'; params: Record<string, never> }
   | { name: 'managementUnits'; params: Record<string, never> }
+  | { name: 'arHome'; params: Record<string, never> }
   | { name: 'insights'; params: Record<string, never> }
   | { name: 'insightsDashboard'; params: { tab?: string } }
   | { name: 'assessments'; params: Record<string, never> }
   | { name: 'snapshots'; params: Record<string, never> }
+  | { name: 'customization'; params: Record<string, never> }
+  | { name: 'approval'; params: Record<string, never> }
+  | { name: 'settings'; params: Record<string, never> }
   | { name: 'services'; params: Record<string, never> }
   | { name: 'identityHome'; params: Record<string, never> }
   | { name: 'identityInsights'; params: Record<string, never> }
@@ -56,11 +60,15 @@ const ROUTES: RouteDef[] = [
   { name: 'applications', pattern: /^#\/applications$/, keys: [] },
   { name: 'accessTemplates', pattern: /^#\/access-templates$/, keys: [] },
   { name: 'managementUnits', pattern: /^#\/management-units$/, keys: [] },
+  { name: 'arHome', pattern: /^#\/home$/, keys: [] },
   { name: 'insights', pattern: /^#\/insights$/, keys: [] },
   { name: 'insightsDashboard', pattern: /^#\/insights\/dashboard\/([^/]+)$/, keys: ['tab'] },
   { name: 'insightsDashboard', pattern: /^#\/insights\/dashboard$/, keys: [] },
   { name: 'assessments', pattern: /^#\/assessments$/, keys: [] },
   { name: 'snapshots', pattern: /^#\/snapshots$/, keys: [] },
+  { name: 'customization', pattern: /^#\/customization$/, keys: [] },
+  { name: 'approval', pattern: /^#\/approval$/, keys: [] },
+  { name: 'settings', pattern: /^#\/settings$/, keys: [] },
   { name: 'services', pattern: /^#\/services$/, keys: [] },
   { name: 'identityInsights', pattern: /^#\/identity\/insights$/, keys: [] },
   { name: 'identitySettings', pattern: /^#\/identity\/settings$/, keys: [] },
@@ -70,7 +78,7 @@ const ROUTES: RouteDef[] = [
   { name: 'safeguardHome', pattern: /^#\/safeguard$/, keys: [] },
 ];
 
-const DEFAULT = '#/insights';
+const DEFAULT = '#/home';
 
 function parseHash(hash: string | null | undefined): Route {
   const h = hash || DEFAULT;
