@@ -13,6 +13,7 @@ import styles from './DonutChart.module.css';
 export interface DonutSegment {
   label: string;
   value: number;
+  color?: string;
 }
 
 export interface DonutChartProps {
@@ -91,7 +92,7 @@ export function DonutChart({ segments, strokeWidth = 22, className }: DonutChart
         <g ref={ringRef} transform={`translate(${VB / 2} ${VB / 2}) rotate(-90)`}>
           {arcs.map((a) => (
             <Tooltip key={a.data.label} label={`${a.data.label}: ${formatTotal(a.data.value)}`}>
-              <path d={makeArc(a) ?? ''} fill={chartSeriesColor(a.index)} tabIndex={0} />
+              <path d={makeArc(a) ?? ''} fill={a.data.color ?? chartSeriesColor(a.index)} tabIndex={0} />
             </Tooltip>
           ))}
         </g>
@@ -109,7 +110,7 @@ export function DonutChart({ segments, strokeWidth = 22, className }: DonutChart
           <li key={s.label} className={styles.legendItem} title={s.label}>
             <span
               className={styles.dot}
-              style={{ backgroundColor: chartSeriesColor(i) }}
+              style={{ backgroundColor: s.color ?? chartSeriesColor(i) }}
               aria-hidden="true"
             />
             <span className={styles.legendLabel}>{s.label}</span>

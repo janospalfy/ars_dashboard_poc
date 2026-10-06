@@ -12,6 +12,7 @@ import { DonutChart } from '../../components/DonutChart/DonutChart.js';
 import { BarChart } from '../../components/BarChart/BarChart.js';
 import { navigate } from '../../lib/router.js';
 import { showToast } from '../../lib/toastStore.js';
+import { ActiveRolesDetail } from './ActiveRolesDetail.js';
 import { STAT_CARDS, USERS_BY_SOURCE, GROUPS_BY_SOURCE, COMPUTERS_BY_SOURCE } from './mockInsights.js';
 import styles from './InsightsPage.module.css';
 
@@ -24,7 +25,6 @@ const TABS: TabItem[] = [
   { value: 'active-roles', label: 'Active Roles', icon: 'UsersThree' },
   { value: 'active-directory', label: 'Active Directory', icon: 'TreeStructure' },
   { value: 'entra-id', label: 'Entra ID', icon: 'CloudCheck' },
-  { value: 'exchange', label: 'Microsoft Exchange', icon: 'Mailbox' },
   { value: 'licensing', label: 'Licensing', icon: 'ShieldCheck' },
 ];
 
@@ -43,11 +43,6 @@ const CATEGORY_DETAILS: Record<string, { title: string; description: string; ico
     icon: 'TreeStructure',
   },
   'entra-id': { title: 'Entra ID', description: 'Entra ID KPIs', icon: 'CloudCheck' },
-  exchange: {
-    title: 'Microsoft Exchange',
-    description: 'Microsoft Exchange KPIs',
-    icon: 'Mailbox',
-  },
   licensing: {
     title: 'Licensing',
     description: 'Licensing and compliance KPIs',
@@ -163,7 +158,7 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
     initialTab && CATEGORY_DETAILS[initialTab] ? initialTab : OVERVIEW_TAB,
   );
   useEffect(() => {
-    if (initialTab && CATEGORY_DETAILS[initialTab]) setTabState(initialTab);
+    setTabState(initialTab && CATEGORY_DETAILS[initialTab] ? initialTab : OVERVIEW_TAB);
   }, [initialTab]);
   const category = CATEGORY_DETAILS[tab];
   const [chartTypes, setChartTypes] = useState<Record<string, ChartType>>({
@@ -176,12 +171,16 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
 
   const setTab = (value: string) => {
     setTabState(value);
-    navigate(value === OVERVIEW_TAB ? '#/insights/dashboard' : `#/insights/dashboard/${value}`);
+    navigate(value === OVERVIEW_TAB ? '#/insights' : `#/insights/dashboard/${value}`);
   };
 
   return (
     <AppShell
-      breadcrumb={[{ label: 'Insights', onClick: () => navigate('#/insights') }, { label: 'Dashboard' }]}
+      breadcrumb={
+        category
+          ? [{ label: 'Dashboard', onClick: () => navigate('#/insights') }, { label: category.title }]
+          : [{ label: 'Dashboard' }]
+      }
       activeGlobalItem="insights"
       showSecondarySidebar={false}
     >
@@ -189,8 +188,7 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
         variant="detail"
         icon="Gauge"
         title="Dashboard"
-        onBack={() => navigate('#/insights')}
-        backLabel="Back to Insights"
+        subtitle="Monitor identity health, configuration, exposure, and key KPIs across your environment."
       />
       <div className={styles.page}>
         <Tabs items={TABS} value={tab} onChange={setTab} ariaLabel="Insights sections" />
@@ -224,6 +222,7 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
                     label={s.label}
                     value={s.value}
                     trend={s.trend}
+                    animateValue={false}
                     className={styles.noShadowCard}
                   />
                 ))}
@@ -292,9 +291,13 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
               </div>
             </div>
 
-            <Card>
-              <p className={styles.empty}>{category.description} — coming soon.</p>
-            </Card>
+            {tab === 'active-roles' ? (
+              <ActiveRolesDetail />
+            ) : (
+              <Card>
+                <p className={styles.empty}>{category.description} — coming soon.</p>
+              </Card>
+            )}
           </>
         )}
       </div>

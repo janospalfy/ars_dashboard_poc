@@ -14,7 +14,6 @@ import { FavoritesPage } from './views/FavoritesView/FavoritesPage.js';
 import { WipPage } from './views/WipPage/WipPage.js';
 import { HomePage } from './views/HomePage/HomePage.js';
 import { InsightsPage } from './views/InsightsPage/InsightsPage.js';
-import { InsightsLandingPage } from './views/InsightsPage/InsightsLandingPage.js';
 import { ServicesPage } from './views/ServicesPage/ServicesPage.js';
 import { IdentityManagerPage } from './views/IdentityManagerPage/IdentityManagerPage.js';
 import { IdentityInsightsPage } from './views/IdentityManagerPage/IdentityInsightsPage.js';
@@ -51,7 +50,7 @@ export default function App() {
           {route.name === 'managementUnits' && (
             <WipPage title="Management units" icon="FolderSimpleStar" />
           )}
-          {route.name === 'insights' && <InsightsLandingPage />}
+          {route.name === 'insights' && <InsightsPage initialTab="overview" />}
           {route.name === 'insightsDashboard' && <InsightsPage initialTab={route.params.tab} />}
           {route.name === 'assessments' && (
             <WipPage

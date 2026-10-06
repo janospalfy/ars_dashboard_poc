@@ -17,6 +17,7 @@ export interface StatCardProps {
   label: string;
   value: string;
   trend?: StatCardTrend;
+  animateValue?: boolean;
   className?: string;
 }
 
@@ -29,8 +30,8 @@ export interface StatCardProps {
  *     trend={{ direction: 'up', value: '2.4%', tone: 'success' }}
  *   />
  */
-export function StatCard({ label, value, trend, className }: StatCardProps) {
-  const display = useCountUp(value);
+export function StatCard({ label, value, trend, animateValue = true, className }: StatCardProps) {
+  const display = useCountUp(value, animateValue);
   return (
     <section className={cx(styles.card, className)}>
       <header className={styles.header}>
@@ -111,14 +112,14 @@ function prefersReducedMotion(): boolean {
  * source string at the end to avoid float drift. Honours reduced-motion by
  * showing the final value immediately.
  */
-function useCountUp(value: string): string {
+function useCountUp(value: string, enabled: boolean): string {
   const parsed = useMemo(() => parseMetric(value), [value]);
   const [display, setDisplay] = useState(() =>
-    parsed && !prefersReducedMotion() ? formatMetric(0, parsed) : value,
+    enabled && parsed && !prefersReducedMotion() ? formatMetric(0, parsed) : value,
   );
 
   useEffect(() => {
-    if (!parsed || prefersReducedMotion()) {
+    if (!enabled || !parsed || prefersReducedMotion()) {
       setDisplay(value);
       return;
     }
@@ -138,7 +139,7 @@ function useCountUp(value: string): string {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [parsed, value]);
+  }, [enabled, parsed, value]);
 
   return display;
 }
