@@ -178,16 +178,16 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
     <AppShell
       breadcrumb={
         category
-          ? [{ label: 'Dashboard', onClick: () => navigate('#/insights') }, { label: category.title }]
-          : [{ label: 'Dashboard' }]
+          ? [{ label: 'Insights', onClick: () => navigate('#/insights') }, { label: category.title }]
+          : [{ label: 'Insights' }]
       }
       activeGlobalItem="insights"
       showSecondarySidebar={false}
     >
       <ContentHeader
         variant="detail"
-        icon="Gauge"
-        title="Dashboard"
+        icon="PresentationChart"
+        title="Insights"
         subtitle="Monitor identity health, configuration, exposure, and key KPIs across your environment."
       />
       <div className={styles.page}>
