@@ -59,7 +59,8 @@
   gap: var(--oi-spacing-m);
 }
 
-.noShadowCard {
+.overviewCard {
+  padding: var(--oi-spacing-l);
   box-shadow: var(--oi-shadow-low);
 }
 

@@ -234,7 +234,7 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
               <div className={styles.chartGrid}>
                 <Card
                   title="Users by Source"
-                  className={styles.noShadowCard}
+                  className={styles.overviewCard}
                   actions={
                     <ChartCardMenu
                       chartLabel="Users by Source"
@@ -247,7 +247,7 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
                 </Card>
                 <Card
                   title="Groups by Source"
-                  className={styles.noShadowCard}
+                  className={styles.overviewCard}
                   actions={
                     <ChartCardMenu
                       chartLabel="Groups by Source"
@@ -260,7 +260,7 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
                 </Card>
                 <Card
                   title="Computers / Devices by Source"
-                  className={styles.noShadowCard}
+                  className={styles.overviewCard}
                   actions={
                     <ChartCardMenu
                       chartLabel="Computers / Devices by Source"
