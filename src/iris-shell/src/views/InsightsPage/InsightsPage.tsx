@@ -167,7 +167,6 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
             </div>
 
             <div className={styles.cardsGridGroup}>
-              <h2 className={styles.overviewSectionTitle}>Overview</h2>
               <div className={styles.statGrid}>
                 {overview.statCards.map((s) => (
                   <StatCard
