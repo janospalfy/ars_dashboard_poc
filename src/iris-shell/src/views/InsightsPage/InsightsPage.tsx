@@ -187,6 +187,8 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
       <ContentHeader
         variant="detail"
         icon="PresentationChart"
+        iconTileSize="xl"
+        iconGlyphSize="24px"
         title="Insights"
         subtitle="Monitor identity health, configuration, exposure, and key KPIs across your environment."
       />

@@ -10,6 +10,10 @@ export interface ContentHeaderProps {
   variant?: 'list' | 'detail';
   /** Leading ResourceIcon glyph. */
   icon: string;
+  /** ResourceIcon tile size. Defaults to `l`. */
+  iconTileSize?: 'default' | 'l' | 'xl';
+  /** ResourceIcon glyph size. Defaults to `20px` in this header. */
+  iconGlyphSize?: string;
   /** Accessible label for the leading icon. Omit to treat the icon as decorative. */
   iconLabel?: string;
   /** Main heading. Accepts composed nodes (e.g. a title plus a dimmed alias). */
@@ -51,6 +55,8 @@ export interface ContentHeaderProps {
 export function ContentHeader({
   variant = 'list',
   icon,
+  iconTileSize = 'l',
+  iconGlyphSize = '20px',
   iconLabel,
   title,
   subtitle,
@@ -72,7 +78,7 @@ export function ContentHeader({
               <IconButton icon="ArrowLeft" ariaLabel={backLabel} onClick={onBack} />
             </Tooltip>
           )}
-          <ResourceIcon icon={icon} size="l" iconSize="20px" ariaLabel={iconLabel} />
+          <ResourceIcon icon={icon} size={iconTileSize} iconSize={iconGlyphSize} ariaLabel={iconLabel} />
           <div className={styles.identityText}>
             <h1 className={styles.title}>{title}</h1>
             {subtitle != null && <p className={styles.subtitle}>{subtitle}</p>}
@@ -87,7 +93,7 @@ export function ContentHeader({
   return (
     <header className={cx(styles.header, className)}>
       <div className={styles.titleRow}>
-        <ResourceIcon icon={icon} size="l" iconSize="20px" ariaLabel={iconLabel} />
+        <ResourceIcon icon={icon} size={iconTileSize} iconSize={iconGlyphSize} ariaLabel={iconLabel} />
         <h1 className={styles.title}>{title}</h1>
         {actions && <div className={styles.titleActions}>{actions}</div>}
       </div>

@@ -6,7 +6,7 @@ export interface ResourceIconProps {
   /** Icon name to render. */
   icon: string;
   /** Tile size. */
-  size?: 'default' | 'l';
+  size?: 'default' | 'l' | 'xl';
   /** Override the inner glyph size (e.g. '20px'). Defaults to the tile size. */
   iconSize?: string;
   className?: string;
@@ -19,7 +19,7 @@ export interface ResourceIconProps {
  * folders, or applications).
  */
 export function ResourceIcon({ icon, size = 'l', iconSize, className, ariaLabel }: ResourceIconProps) {
-  const glyphSize = iconSize ?? (size === 'l' ? '24px' : '20px');
+  const glyphSize = iconSize ?? (size === 'xl' ? '24px' : size === 'l' ? '24px' : '20px');
   return (
     <span
       className={cx(styles.tile, styles[`size_${size}`], className)}
