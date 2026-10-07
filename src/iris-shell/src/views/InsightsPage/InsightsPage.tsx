@@ -3,25 +3,23 @@ import { AppShell } from '../AppShell/AppShell.js';
 import { Card } from '../../components/Card/Card.js';
 import { ContentHeader } from '../../components/ContentHeader/ContentHeader.js';
 import { Tabs, type TabItem } from '../../components/Tabs/Tabs.js';
-import { Select } from '../../components/Select/Select.js';
+import { MultiSelect } from '../../components/MultiSelect/MultiSelect.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
 import { Menu, type MenuEntry } from '../../components/Menu/Menu.js';
 import { StatCard } from '../../components/StatCard/StatCard.js';
 import { DonutChart } from '../../components/DonutChart/DonutChart.js';
-import { BarChart } from '../../components/BarChart/BarChart.js';
+import { GroupedBarChart } from '../../components/GroupedBarChart/GroupedBarChart.js';
 import { navigate } from '../../lib/router.js';
 import { showToast } from '../../lib/toastStore.js';
 import { ActiveRolesDetail } from './ActiveRolesDetail.js';
-import { STAT_CARDS, USERS_BY_SOURCE, GROUPS_BY_SOURCE, COMPUTERS_BY_SOURCE } from './mockInsights.js';
+import { DOMAIN_OPTIONS, TENANT_OPTIONS, getOverviewData } from './mockInsights.js';
 import styles from './InsightsPage.module.css';
 
 const OVERVIEW_TAB = 'overview';
 
-type ChartType = 'donut' | 'bar';
-
 const TABS: TabItem[] = [
-  { value: OVERVIEW_TAB, label: 'Overview', icon: 'PresentationChart' },
+  { value: OVERVIEW_TAB, label: 'Overview', icon: 'SquaresFour' },
   { value: 'active-roles', label: 'Active Roles', icon: 'UsersThree' },
   { value: 'active-directory', label: 'Active Directory', icon: 'TreeStructure' },
   { value: 'entra-id', label: 'Entra ID', icon: 'CloudCheck' },
@@ -49,63 +47,6 @@ const CATEGORY_DETAILS: Record<string, { title: string; description: string; ico
     icon: 'ShieldCheck',
   },
 };
-
-/** Per-chart-card overflow menu — lets each chart card switch its own
- *  visualization between the two shapes the real dashboard's chart data
- *  supports (a two/one-segment source breakdown reads equally well as
- *  either a donut or a bar chart). */
-function chartMenuItems(chartType: ChartType, onChange: (type: ChartType) => void): MenuEntry[] {
-  return [
-    { kind: 'section', label: 'Chart type' },
-    {
-      kind: 'item',
-      label: 'Donut chart',
-      icon: 'ChartDonut',
-      selected: chartType === 'donut',
-      onSelect: () => onChange('donut'),
-    },
-    {
-      kind: 'item',
-      label: 'Bar chart',
-      icon: 'ChartBar',
-      selected: chartType === 'bar',
-      onSelect: () => onChange('bar'),
-    },
-  ];
-}
-
-function ChartCardMenu({
-  chartLabel,
-  chartType,
-  onChange,
-}: {
-  chartLabel: string;
-  chartType: ChartType;
-  onChange: (type: ChartType) => void;
-}) {
-  return (
-    <Menu
-      ariaLabel={`${chartLabel} chart options`}
-      align="end"
-      items={chartMenuItems(chartType, onChange)}
-      trigger={({ ref, onClick, expanded }) => (
-        <IconButton
-          ref={ref as React.Ref<HTMLButtonElement>}
-          icon="DotsThree"
-          ariaLabel={`${chartLabel} chart options`}
-          size="s"
-          aria-haspopup="menu"
-          aria-expanded={expanded}
-          onClick={onClick}
-        />
-      )}
-    />
-  );
-}
-
-function SourceChart({ type, data }: { type: ChartType; data: { label: string; value: number }[] }) {
-  return type === 'donut' ? <DonutChart segments={data} /> : <BarChart data={data} />;
-}
 
 const EXPORT_MENU_ITEMS: MenuEntry[] = [
   {
@@ -157,18 +98,13 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
   const [tab, setTabState] = useState(
     initialTab && CATEGORY_DETAILS[initialTab] ? initialTab : OVERVIEW_TAB,
   );
+  const [selectedDomains, setSelectedDomains] = useState(() => new Set(DOMAIN_OPTIONS.map((option) => option.value)));
+  const [selectedTenants, setSelectedTenants] = useState(() => new Set(TENANT_OPTIONS.map((option) => option.value)));
+  const overview = getOverviewData(selectedDomains, selectedTenants);
   useEffect(() => {
     setTabState(initialTab && CATEGORY_DETAILS[initialTab] ? initialTab : OVERVIEW_TAB);
   }, [initialTab]);
   const category = CATEGORY_DETAILS[tab];
-  const [chartTypes, setChartTypes] = useState<Record<string, ChartType>>({
-    users: 'donut',
-    groups: 'donut',
-    computers: 'donut',
-  });
-  const setChartType = (id: string, type: ChartType) =>
-    setChartTypes((prev) => ({ ...prev, [id]: type }));
-
   const setTab = (value: string) => {
     setTabState(value);
     navigate(value === OVERVIEW_TAB ? '#/insights' : `#/insights/dashboard/${value}`);
@@ -199,8 +135,22 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
           <>
             <div className={styles.filters}>
               <div className={styles.filtersLeft}>
-                <Select label="Domains: All Domains" />
-                <Select label="Tenants: All Tenants" />
+                <MultiSelect
+                  label={selectedDomains.size ? 'Domains' : 'Domains: None'}
+                  ariaLabel="Filter domains"
+                  searchPlaceholder="Search domains"
+                  options={DOMAIN_OPTIONS}
+                  selected={selectedDomains}
+                  onSelectionChange={setSelectedDomains}
+                />
+                <MultiSelect
+                  label={selectedTenants.size ? 'Tenants' : 'Tenants: None'}
+                  ariaLabel="Filter tenants"
+                  searchPlaceholder="Search tenants"
+                  options={TENANT_OPTIONS}
+                  selected={selectedTenants}
+                  onSelectionChange={setSelectedTenants}
+                />
               </div>
               <div className={styles.filtersRight}>
                 <Tooltip label="Refresh">
@@ -217,59 +167,40 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
             </div>
 
             <div className={styles.cardsGridGroup}>
+              <h2 className={styles.overviewSectionTitle}>Overview</h2>
               <div className={styles.statGrid}>
-                {STAT_CARDS.map((s) => (
+                {overview.statCards.map((s) => (
                   <StatCard
                     key={s.id}
+                    className={styles.overviewStatCard}
                     label={s.label}
                     value={s.value}
+                    icon={s.icon}
                     trend={s.trend}
-                    animateValue={false}
-                    valueFirst
+                    animateValue
+                    variant="dashboard"
                     showOptions={false}
+                    actions={
+                      <IconButton
+                        icon="CaretRight"
+                        ariaLabel={`View ${s.label}`}
+                        variant="secondary"
+                        size="s"
+                      />
+                    }
                   />
                 ))}
               </div>
 
               <div className={styles.chartGrid}>
-                <Card
-                  title="Users by Source"
-                  className={styles.overviewCard}
-                  actions={
-                    <ChartCardMenu
-                      chartLabel="Users by Source"
-                      chartType={chartTypes.users}
-                      onChange={(type) => setChartType('users', type)}
-                    />
-                  }
-                >
-                  <SourceChart type={chartTypes.users} data={USERS_BY_SOURCE} />
+                <Card title="Managed Object Distribution" className={styles.overviewCard}>
+                  <DonutChart segments={overview.objectDistribution} totalFormat="abbreviated" segmentGap={2} cornerRadius={2} />
                 </Card>
-                <Card
-                  title="Groups by Source"
-                  className={styles.overviewCard}
-                  actions={
-                    <ChartCardMenu
-                      chartLabel="Groups by Source"
-                      chartType={chartTypes.groups}
-                      onChange={(type) => setChartType('groups', type)}
-                    />
-                  }
-                >
-                  <SourceChart type={chartTypes.groups} data={GROUPS_BY_SOURCE} />
+                <Card title="User Account Status" className={styles.overviewCard}>
+                  <DonutChart segments={overview.accountStatus} totalFormat="abbreviated" segmentGap={2} cornerRadius={2} />
                 </Card>
-                <Card
-                  title="Computers / Devices by Source"
-                  className={styles.overviewCard}
-                  actions={
-                    <ChartCardMenu
-                      chartLabel="Computers / Devices by Source"
-                      chartType={chartTypes.computers}
-                      onChange={(type) => setChartType('computers', type)}
-                    />
-                  }
-                >
-                  <SourceChart type={chartTypes.computers} data={COMPUTERS_BY_SOURCE} />
+                <Card title="Managed Objects by Source" className={styles.overviewCard}>
+                  <GroupedBarChart data={overview.managedObjects} />
                 </Card>
               </div>
             </div>

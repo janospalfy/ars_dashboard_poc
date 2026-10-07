@@ -59,9 +59,19 @@
   gap: var(--oi-spacing-m);
 }
 
+.overviewSectionTitle {
+  margin: 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
 .overviewCard {
   padding: var(--oi-spacing-l);
-  box-shadow: var(--oi-shadow-low);
+  border-color: var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-l);
+  box-shadow: none;
 }
 
 /* Object Distribution card only: clip the legend so a very narrow card
@@ -74,8 +84,18 @@
 
 .statGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--oi-spacing-m);
+}
+
+.statGrid .overviewStatCard {
+  box-shadow: none;
+  cursor: pointer;
+  transition: background-color var(--oi-motion-duration-short) var(--oi-motion-ease-enter);
+}
+
+.statGrid .overviewStatCard:hover {
+  background-color: var(--oi-background-color-secondary);
 }
 
 .chartGrid {
@@ -165,7 +185,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .categoryCard {
+  .categoryCard,
+  .statGrid .overviewStatCard {
     transition: none;
   }
 
@@ -181,7 +202,10 @@
 }
 
 @media (max-width: 1100px) {
-  .statGrid,
+  .statGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .chartGrid,
   .categoryGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -189,7 +213,10 @@
 }
 
 @media (max-width: 720px) {
-  .statGrid,
+  .statGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .chartGrid,
   .categoryGrid {
     grid-template-columns: minmax(0, 1fr);

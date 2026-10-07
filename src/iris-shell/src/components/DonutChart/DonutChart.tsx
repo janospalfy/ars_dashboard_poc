@@ -21,22 +21,33 @@ export interface DonutChartProps {
   /** Ring thickness in viewBox units. */
   strokeWidth?: number;
   className?: string;
+  variant?: 'full' | 'semicircle';
+  size?: 'default' | 'compact';
+  legendPosition?: 'side' | 'below';
+  totalFormat?: 'compact' | 'full' | 'abbreviated';
+  segmentGap?: number;
+  cornerRadius?: number;
 }
 
 /**
  * DonutChart — minimal SVG donut + legend.
  */
-export function DonutChart({ segments, strokeWidth = 22, className }: DonutChartProps) {
+export function DonutChart({ segments, strokeWidth = 22, className, variant = 'full', size = 'default', legendPosition = 'side', totalFormat = 'compact', segmentGap = 0, cornerRadius = segmentGap / 2 }: DonutChartProps) {
   const VB = 160; // viewBox is square
   const R = 60;
   const STROKE = strokeWidth;
+  const isSemicircle = variant === 'semicircle';
+  const isStacked = isSemicircle || legendPosition === 'below';
+  const useFullTotal = isStacked || totalFormat !== 'compact';
 
   const makeArc = useMemo(
     () =>
       arc<PieArcDatum<DonutSegment>>()
         .innerRadius(R - STROKE / 2)
-        .outerRadius(R + STROKE / 2),
-    [STROKE],
+        .outerRadius(R + STROKE / 2)
+        .padAngle(segmentGap / R)
+        .cornerRadius(cornerRadius),
+      [STROKE, segmentGap, cornerRadius],
   );
 
   const { arcs, total } = useMemo<{ arcs: PieArcDatum<DonutSegment>[]; total: number }>(() => {
@@ -44,10 +55,10 @@ export function DonutChart({ segments, strokeWidth = 22, className }: DonutChart
     const layout = pie<DonutSegment>()
       .value((s) => s.value)
       .sort(null)
-      .startAngle(0)
-      .endAngle(2 * Math.PI);
+      .startAngle(isSemicircle ? -Math.PI / 2 : 0)
+      .endAngle(isSemicircle ? Math.PI / 2 : 2 * Math.PI);
     return { arcs: layout(segments), total: t };
-  }, [segments]);
+  }, [segments, isSemicircle]);
 
   // Sweep each arc open from its start angle to its end angle by
   // interpolating `endAngle`. React renders the final paths; d3 only drives
@@ -76,35 +87,59 @@ export function DonutChart({ segments, strokeWidth = 22, className }: DonutChart
     };
   }, [arcs, makeArc]);
 
-  return (
-    <div className={cx(styles.wrap, className)}>
-      <svg viewBox={`0 0 ${VB} ${VB}`} className={styles.svg} role="img" aria-label="Distribution">
+  const chart = (
+      <svg viewBox={`0 0 ${VB} ${isSemicircle ? 100 : VB}`} className={styles.svg} role="img" aria-label="Distribution">
         {/* Track */}
-        <circle
+        {isSemicircle ? (
+          <path
+            d="M 20 80 A 60 60 0 0 1 140 80"
+            fill="none"
+            stroke={segmentGap > 0 && total > 0 ? 'none' : 'var(--oi-border-color-muted)'}
+            strokeWidth={STROKE}
+          />
+        ) : (
+          <circle
           cx={VB / 2}
           cy={VB / 2}
           r={R}
           fill="none"
-          stroke="var(--oi-border-color-muted)"
+          stroke={segmentGap > 0 && total > 0 ? 'none' : 'var(--oi-border-color-muted)'}
           strokeWidth={STROKE}
-        />
+          />
+        )}
         {/* Segments — rotated -90deg so 0 starts at top */}
-        <g ref={ringRef} transform={`translate(${VB / 2} ${VB / 2}) rotate(-90)`}>
+        <g ref={ringRef} transform={`translate(${VB / 2} ${VB / 2}) rotate(${isSemicircle ? 0 : -90})`}>
           {arcs.map((a) => (
-            <Tooltip key={a.data.label} label={`${a.data.label}: ${formatTotal(a.data.value)}`}>
+            <Tooltip key={a.data.label} label={`${a.data.label}: ${a.data.value.toLocaleString('en-US')}`}>
               <path d={makeArc(a) ?? ''} fill={a.data.color ?? chartSeriesColor(a.index)} tabIndex={0} />
             </Tooltip>
           ))}
         </g>
         {/* Center label */}
-        <text x={VB / 2} y={VB / 2 - 2} textAnchor="middle" className={styles.centerNum}>
+        {!useFullTotal && <text x={VB / 2} y={VB / 2 - 2} textAnchor="middle" className={styles.centerNum}>
           {formatTotal(total)}
-        </text>
-        <text x={VB / 2} y={VB / 2 + 14} textAnchor="middle" className={styles.centerLbl}>
+        </text>}
+        {!useFullTotal && <text x={VB / 2} y={VB / 2 + 14} textAnchor="middle" className={styles.centerLbl}>
           Total
-        </text>
+        </text>}
       </svg>
+  );
 
+  return (
+    <div className={cx(styles.wrap, isStacked && styles.stacked, useFullTotal && styles.fullTotal, isSemicircle && styles.semicircle, size === 'compact' && styles.compact, className)}>
+      {useFullTotal ? (
+        <div className={isSemicircle ? styles.semicircleGraphic : styles.fullGraphic}>
+          {chart}
+          <div className={styles.total}>
+            <Tooltip label={`Total: ${total.toLocaleString('en-US')}`}>
+              <p className={styles.totalValue} tabIndex={0}>
+                {totalFormat === 'abbreviated' ? formatTotal(total) : total.toLocaleString('en-US')}
+              </p>
+            </Tooltip>
+            <p className={styles.totalLabel}>Total</p>
+          </div>
+        </div>
+      ) : chart}
       <ul className={styles.legend}>
         {segments.map((s, i) => (
           <li key={s.label} className={styles.legendItem} title={s.label}>

@@ -1,0 +1,67 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
+  width: 100%;
+  min-width: 0;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: calc(200px - var(--oi-spacing-m) - var(--oi-text-caption-line-height));
+  overflow: visible;
+}
+
+.gridline {
+  stroke: var(--oi-border-color-muted);
+  stroke-width: 1;
+  stroke-dasharray: 2 4;
+  opacity: 0.6;
+}
+
+.tick,
+.axisLabel {
+  font-family: var(--oi-font-family-default);
+  font-size: 11px;
+  fill: var(--oi-content-color-tertiary);
+}
+
+.bar {
+  transition: opacity var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+}
+
+.bar:hover {
+  opacity: 0.85;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--oi-spacing-l);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+  color: var(--oi-content-color-secondary);
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 auto;
+  border-radius: var(--oi-border-radius-max);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    transition: none;
+  }
+}

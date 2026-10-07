@@ -38,6 +38,120 @@
   fill: var(--oi-content-color-primary);
 }
 
+.compact {
+  column-gap: var(--oi-spacing-m);
+}
+
+.compact .svg {
+  width: 120px;
+  height: 120px;
+}
+
+.compact .legend {
+  flex: 1 1 0;
+  gap: var(--oi-spacing-s);
+}
+
+.compact .dot {
+  border-radius: var(--oi-border-radius-s);
+}
+
+@container (max-width: 260px) {
+  .compact .legend {
+    flex-basis: 100%;
+  }
+}
+
+.stacked {
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+.semicircleGraphic {
+  position: relative;
+  width: min(100%, 320px);
+}
+
+.fullGraphic {
+  position: relative;
+  width: min(100%, 200px);
+  flex-shrink: 0;
+}
+
+.fullTotal {
+  column-gap: var(--oi-spacing-m);
+}
+
+.fullTotal:not(.stacked) .legend {
+  flex: 1 1 0;
+}
+
+@container (max-width: 300px) {
+  .fullTotal:not(.stacked) .legend {
+    flex-basis: 100%;
+  }
+
+  .fullTotal:not(.stacked) .fullGraphic {
+    margin-inline: auto;
+  }
+}
+
+.fullGraphic .svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.fullGraphic .total {
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+}
+
+.semicircle .svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 160 / 100;
+}
+
+.total {
+  position: absolute;
+  inset-inline: 0;
+  bottom: var(--oi-spacing-l);
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-xs);
+  text-align: center;
+  pointer-events: none;
+}
+
+.totalValue {
+  margin: 0;
+  pointer-events: auto;
+  font-family: var(--oi-font-family-code);
+  font-size: var(--oi-font-size-xxl);
+  line-height: var(--oi-line-height-xxl);
+  font-weight: var(--oi-font-weight-400);
+  color: var(--oi-content-color-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.totalLabel {
+  margin: 0;
+  font-family: var(--oi-font-family-default);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-caption-font-weight);
+  color: var(--oi-content-color-tertiary);
+}
+
+.stacked .legend {
+  flex: 0 0 auto;
+  width: min(100%, 320px);
+}
+
 .centerLbl {
   font-family: var(--oi-font-family-default);
   font-size: 10px;
