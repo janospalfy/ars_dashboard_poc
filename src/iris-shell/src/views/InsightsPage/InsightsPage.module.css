@@ -60,7 +60,7 @@
 }
 
 .noShadowCard {
-  box-shadow: none;
+  box-shadow: var(--oi-shadow-low);
 }
 
 /* Object Distribution card only: clip the legend so a very narrow card

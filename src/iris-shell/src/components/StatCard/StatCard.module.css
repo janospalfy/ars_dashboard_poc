@@ -9,11 +9,19 @@
   box-shadow: var(--oi-shadow-low);
 }
 
+.valueFirstCard {
+  padding: var(--oi-spacing-l);
+}
+
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--oi-spacing-s);
+}
+
+.headerValueFirst {
+  justify-content: flex-end;
 }
 
 .label {
@@ -22,6 +30,12 @@
   line-height: var(--oi-text-caption-line-height);
   font-weight: var(--oi-text-caption-font-weight);
   color: var(--oi-content-color-secondary);
+}
+
+.valueFirstLabel {
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-tertiary);
 }
 
 .metric {
@@ -38,6 +52,14 @@
   font-weight: 500;
   color: var(--oi-content-color-primary);
   font-variant-numeric: tabular-nums;
+}
+
+.valueFirstValue {
+  font-family: var(--oi-font-family-code);
+  font-size: var(--oi-font-size-xxl);
+  line-height: var(--oi-line-height-xxl);
+  font-weight: var(--oi-font-weight-400);
+  color: var(--oi-content-color-primary);
 }
 
 .trend {

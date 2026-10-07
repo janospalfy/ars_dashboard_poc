@@ -223,7 +223,8 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
                     value={s.value}
                     trend={s.trend}
                     animateValue={false}
-                    className={styles.noShadowCard}
+                    valueFirst
+                    showOptions={false}
                   />
                 ))}
               </div>

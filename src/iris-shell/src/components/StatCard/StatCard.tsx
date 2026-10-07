@@ -18,6 +18,8 @@ export interface StatCardProps {
   value: string;
   trend?: StatCardTrend;
   animateValue?: boolean;
+  valueFirst?: boolean;
+  showOptions?: boolean;
   className?: string;
 }
 
@@ -30,16 +32,27 @@ export interface StatCardProps {
  *     trend={{ direction: 'up', value: '2.4%', tone: 'success' }}
  *   />
  */
-export function StatCard({ label, value, trend, animateValue = true, className }: StatCardProps) {
+export function StatCard({
+  label,
+  value,
+  trend,
+  animateValue = true,
+  valueFirst = false,
+  showOptions = true,
+  className,
+}: StatCardProps) {
   const display = useCountUp(value, animateValue);
   return (
-    <section className={cx(styles.card, className)}>
-      <header className={styles.header}>
-        <p className={styles.label}>{label}</p>
-        <IconButton icon="DotsThree" ariaLabel={`${label} options`} size="s" />
-      </header>
+    <section className={cx(styles.card, valueFirst && styles.valueFirstCard, className)}>
+      {(!valueFirst || showOptions) && (
+        <header className={cx(styles.header, valueFirst && styles.headerValueFirst)}>
+          {!valueFirst && <p className={styles.label}>{label}</p>}
+          {showOptions && <IconButton icon="DotsThree" ariaLabel={`${label} options`} size="s" />}
+        </header>
+      )}
       <div className={styles.metric}>
-        <p className={styles.value}>{display}</p>
+        <p className={cx(styles.value, valueFirst && styles.valueFirstValue)}>{display}</p>
+        {valueFirst && <p className={cx(styles.label, styles.valueFirstLabel)}>{label}</p>}
         {trend && (
           <p className={cx(styles.trend, styles[`tone_${trend.tone}`])}>
             <Icon name={TREND_ICONS[trend.direction]} size="16px" />
