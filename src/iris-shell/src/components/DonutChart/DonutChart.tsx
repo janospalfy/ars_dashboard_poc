@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { pie, arc, type PieArcDatum } from 'd3-shape';
 import { select } from 'd3-selection';
 import { interpolate } from 'd3-interpolate';
@@ -39,6 +39,15 @@ export function DonutChart({ segments, strokeWidth = 22, className, variant = 'f
   const isSemicircle = variant === 'semicircle';
   const isStacked = isSemicircle || legendPosition === 'below';
   const useFullTotal = isStacked || totalFormat !== 'compact';
+  const [hiddenSegments, setHiddenSegments] = useState<Set<string>>(() => new Set());
+  const toggleSegment = (label: string) => {
+    setHiddenSegments((previous) => {
+      const next = new Set(previous);
+      if (next.has(label)) next.delete(label);
+      else next.add(label);
+      return next;
+    });
+  };
 
   const makeArc = useMemo(
     () =>
@@ -51,14 +60,17 @@ export function DonutChart({ segments, strokeWidth = 22, className, variant = 'f
   );
 
   const { arcs, total } = useMemo<{ arcs: PieArcDatum<DonutSegment>[]; total: number }>(() => {
-    const t = segments.reduce((s, x) => s + x.value, 0);
+    const visibleSegments = segments
+      .map((segment, index) => ({ ...segment, color: segment.color ?? chartSeriesColor(index) }))
+      .filter((segment) => !hiddenSegments.has(segment.label));
+    const t = visibleSegments.reduce((s, x) => s + x.value, 0);
     const layout = pie<DonutSegment>()
       .value((s) => s.value)
       .sort(null)
       .startAngle(isSemicircle ? -Math.PI / 2 : 0)
       .endAngle(isSemicircle ? Math.PI / 2 : 2 * Math.PI);
-    return { arcs: layout(segments), total: t };
-  }, [segments, isSemicircle]);
+    return { arcs: layout(visibleSegments), total: t };
+  }, [segments, isSemicircle, hiddenSegments]);
 
   // Sweep each arc open from its start angle to its end angle by
   // interpolating `endAngle`. React renders the final paths; d3 only drives
@@ -143,13 +155,22 @@ export function DonutChart({ segments, strokeWidth = 22, className, variant = 'f
       <ul className={styles.legend}>
         {segments.map((s, i) => (
           <li key={s.label} className={styles.legendItem} title={s.label}>
-            <span
-              className={styles.dot}
-              style={{ backgroundColor: s.color ?? chartSeriesColor(i) }}
-              aria-hidden="true"
-            />
-            <span className={styles.legendLabel}>{s.label}</span>
-            <span className={styles.legendValue}>{formatTotal(s.value)}</span>
+            <button
+              type="button"
+              className={styles.legendButton}
+              aria-label={s.label}
+              aria-pressed={!hiddenSegments.has(s.label)}
+              title={`${hiddenSegments.has(s.label) ? 'Show' : 'Hide'} ${s.label}`}
+              onClick={() => toggleSegment(s.label)}
+            >
+              <span
+                className={styles.dot}
+                style={{ backgroundColor: s.color ?? chartSeriesColor(i) }}
+                aria-hidden="true"
+              />
+              <span className={styles.legendLabel}>{s.label}</span>
+              <span className={styles.legendValue}>{formatTotal(s.value)}</span>
+            </button>
           </li>
         ))}
       </ul>

@@ -236,3 +236,34 @@
   font-variant-numeric: tabular-nums;
   font-family: var(--oi-font-family-code);
 }
+
+.legendButton {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.legendButton[aria-pressed='false'] {
+  opacity: 0.45;
+}
+
+.legendButton:hover .legendLabel {
+  text-decoration: underline;
+}
+
+.legendButton:focus-visible {
+  outline: 2px solid var(--oi-border-color-focus);
+  outline-offset: var(--oi-spacing-2);
+  border-radius: var(--oi-border-radius-s);
+}

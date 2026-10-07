@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { scaleBand, scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { easeCubicOut } from 'd3-ease';
@@ -41,21 +41,31 @@ const PADDING = { top: 12, right: 12, bottom: 34, left: 46 };
 
 export function GroupedBarChart({ data }: { data: GroupedBarDatum[] }) {
   const viewboxHeight = 264;
+  const [hiddenSeries, setHiddenSeries] = useState<Set<Series['key']>>(() => new Set());
+  const toggleSeries = (key: Series['key']) => {
+    setHiddenSeries((previous) => {
+      const next = new Set(previous);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
   const { bars, ticks, xCenters, baseline } = useMemo(() => {
+    const visibleSeries = SERIES.filter((series) => !hiddenSeries.has(series.key));
     const groupScale = scaleBand<string>()
       .domain(data.map((item) => item.label))
       .range([PADDING.left, VIEWBOX_WIDTH - PADDING.right])
       .padding(0.24);
     const seriesScale = scaleBand<string>()
-      .domain(SERIES.map((series) => series.key))
+      .domain(visibleSeries.map((series) => series.key))
       .range([0, groupScale.bandwidth()])
       .padding(0.1);
-    const maxValue = Math.max(0, ...data.flatMap((item) => SERIES.map((series) => item[series.key])));
+    const maxValue = Math.max(0, ...data.flatMap((item) => visibleSeries.map((series) => item[series.key])));
     const yScale = scaleLinear()
       .domain([0, maxValue || 1])
       .nice(4)
       .range([viewboxHeight - PADDING.bottom, PADDING.top]);
-    const bars = data.flatMap((item) => SERIES.map((series): BarGeometry => {
+    const bars = data.flatMap((item) => visibleSeries.map((series): BarGeometry => {
       const value = item[series.key];
       return {
         id: `${item.label}-${series.key}`,
@@ -78,7 +88,7 @@ export function GroupedBarChart({ data }: { data: GroupedBarDatum[] }) {
       })),
       baseline: yScale(0),
     };
-  }, [data, viewboxHeight]);
+  }, [data, viewboxHeight, hiddenSeries]);
 
   const barsRef = useRef<SVGGElement | null>(null);
   useLayoutEffect(() => {
@@ -148,8 +158,16 @@ export function GroupedBarChart({ data }: { data: GroupedBarDatum[] }) {
       <ul className={styles.legend}>
         {SERIES.map((series) => (
           <li key={series.key} className={styles.legendItem}>
-            <span className={styles.legendDot} style={{ backgroundColor: series.color }} aria-hidden="true" />
-            <span>{series.label}</span>
+            <button
+              type="button"
+              className={styles.legendButton}
+              aria-pressed={!hiddenSeries.has(series.key)}
+              title={`${hiddenSeries.has(series.key) ? 'Show' : 'Hide'} ${series.label}`}
+              onClick={() => toggleSeries(series.key)}
+            >
+              <span className={styles.legendDot} style={{ backgroundColor: series.color }} aria-hidden="true" />
+              <span>{series.label}</span>
+            </button>
           </li>
         ))}
       </ul>
