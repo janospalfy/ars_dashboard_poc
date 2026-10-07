@@ -137,7 +137,6 @@
   background-color: var(--oi-background-color-primary);
   border: 1px solid var(--oi-border-color-muted);
   border-radius: var(--oi-border-radius-l);
-  box-shadow: var(--oi-shadow-low);
   transition: background-color var(--oi-motion-duration-short) var(--oi-motion-ease-enter);
 }
 

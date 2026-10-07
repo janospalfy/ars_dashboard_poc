@@ -70,7 +70,7 @@
   padding: var(--oi-spacing-l);
   border-color: var(--oi-border-color-muted);
   border-radius: var(--oi-border-radius-l);
-  box-shadow: var(--oi-shadow-low);
+  box-shadow: none;
 }
 
 /* Object Distribution card only: clip the legend so a very narrow card
