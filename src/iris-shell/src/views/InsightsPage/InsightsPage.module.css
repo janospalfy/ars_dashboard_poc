@@ -73,6 +73,12 @@
   box-shadow: none;
 }
 
+.overviewCard h3,
+.overviewStatCard header p {
+  font-size: var(--oi-font-size-s);
+  line-height: var(--oi-line-height-s);
+}
+
 /* Object Distribution card only: clip the legend so a very narrow card
    (e.g. side sheet open) never bleeds chips past the card edge. The
    DonutChart's own container-query reflow handles most cases; this is
