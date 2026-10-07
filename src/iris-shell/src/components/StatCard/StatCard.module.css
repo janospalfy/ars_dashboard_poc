@@ -132,7 +132,7 @@
 }
 
 .dashboardCard .metric {
-  padding: var(--oi-spacing-20);
+  padding: var(--oi-spacing-l);
   gap: var(--oi-spacing-8);
   background-color: var(--oi-background-color-primary);
   border: 1px solid var(--oi-border-color-muted);
