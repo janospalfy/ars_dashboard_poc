@@ -88,7 +88,8 @@
 }
 
 .statGrid .overviewStatCard {
-  box-shadow: var(--oi-shadow-low);
+  box-shadow: none;
+  overflow: visible;
   cursor: pointer;
   transition: background-color var(--oi-motion-duration-short) var(--oi-motion-ease-enter);
 }
