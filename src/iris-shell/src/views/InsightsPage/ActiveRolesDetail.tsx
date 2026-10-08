@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { CollapsibleSection } from '../../components/CollapsibleSection/CollapsibleSection.js';
-import { Card } from '../../components/Card/Card.js';
 import { StatCard, type StatCardTrend } from '../../components/StatCard/StatCard.js';
-import { BarChart } from '../../components/BarChart/BarChart.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
 import { prefersReducedMotion } from '../../lib/motion.js';
@@ -16,6 +14,7 @@ import {
   type KpiDefinition,
   type KpiRow,
 } from './activeRolesKpis.js';
+import { RiskCheckGrid } from './RiskCheckGrid.js';
 import styles from './ActiveRolesDetail.module.css';
 
 const DB_TOPOLOGY_COLUMNS: DataTableColumn<(typeof DATABASE_TOPOLOGY_ROWS)[number]>[] = [
@@ -93,17 +92,7 @@ export function ActiveRolesDetail({ webInterfaceUrl }: { webInterfaceUrl?: strin
         ))}
       </div>
 
-      <Card title="Governance and Risk">
-        <BarChart
-          orientation="horizontal"
-          data={AR_GOVERNANCE_KPIS.map((kpi) => ({ label: kpi.label, value: kpi.value })).sort((first, second) => second.value - first.value)}
-          selectedLabel={selected?.label}
-          onSelect={(datum) => {
-            const kpi = AR_GOVERNANCE_KPIS.find((item) => item.label === datum.label);
-            if (kpi) toggle(kpi);
-          }}
-        />
-      </Card>
+      <RiskCheckGrid checks={AR_GOVERNANCE_KPIS} selectedId={selected?.id} onSelect={toggle} />
 
       <CollapsibleSection
         title="Active Roles Configuration"

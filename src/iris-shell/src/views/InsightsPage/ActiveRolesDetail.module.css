@@ -1,7 +1,7 @@
 .groups {
   display: flex;
   flex-direction: column;
-  gap: var(--oi-spacing-m);
+  gap: var(--oi-spacing-xl);
 }
 
 .summaryGrid {
@@ -28,9 +28,129 @@
   flex-shrink: 0;
 }
 
+.riskSection {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-l);
+}
+
+.riskHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--oi-spacing-m);
+}
+
+.riskTitle {
+  min-width: 0;
+  margin: 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.riskBadges {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--oi-spacing-xs);
+  flex-wrap: wrap;
+}
+
+.riskHeaderBadge {
+  max-width: 100%;
+}
+
+.riskHeaderBadge > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.riskTileGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--oi-spacing-m);
+}
+
+.riskTile {
+  min-width: 0;
+  min-height: 128px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--oi-spacing-s);
+  padding: var(--oi-spacing-l);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-l);
+  background-color: var(--oi-background-color-primary);
+  color: var(--oi-content-color-primary);
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.riskTile:hover,
+.riskTile[aria-pressed='true'] {
+  background-color: var(--oi-background-color-secondary);
+}
+
+.riskTile:focus-visible {
+  outline: var(--oi-border-width-l) var(--oi-border-style-solid) var(--oi-border-color-focus);
+  outline-offset: calc(-1 * var(--oi-border-width-l));
+}
+
+.riskTileCount {
+  font-family: var(--oi-font-family-code);
+  font-size: var(--oi-font-size-xl);
+  line-height: var(--oi-line-height-xl);
+  font-variant-numeric: tabular-nums;
+}
+
+.riskTileLabel {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow-wrap: anywhere;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-font-weight-400);
+  color: var(--oi-content-color-tertiary);
+}
+
+.riskTileStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+  align-self: flex-start;
+  font-family: var(--oi-font-family-code);
+  font-size: var(--oi-font-size-s);
+  line-height: 18px;
+  font-weight: var(--oi-font-weight-400);
+}
+
+.riskTileStatusWarning {
+  color: var(--oi-content-color-warning);
+}
+
+.riskTileStatusClear {
+  color: var(--oi-content-color-success);
+}
+
+.riskTileStatus > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
 @media (max-width: 1100px) {
   .summaryGrid,
   .directorySummaryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .riskTileGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -39,6 +159,25 @@
   .summaryGrid,
   .directorySummaryGrid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .riskTileGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .riskHeader {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .riskBadges {
+    justify-content: flex-start;
+  }
+
+  .riskHeaderBadge {
+    height: auto;
+    min-height: 1.375rem;
+    white-space: normal;
   }
 }
 

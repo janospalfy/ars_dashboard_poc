@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Card } from '../../components/Card/Card.js';
 import { StatCard, type StatCardTrend } from '../../components/StatCard/StatCard.js';
-import { BarChart } from '../../components/BarChart/BarChart.js';
 import { CollapsibleSection } from '../../components/CollapsibleSection/CollapsibleSection.js';
 import { DataTable, type DataTableColumn } from '../../components/DataTable/DataTable.js';
 import { Pagination } from '../../components/Pagination/Pagination.js';
@@ -11,6 +9,7 @@ import { objectUrl } from '../../lib/webInterface.js';
 import { prefersReducedMotion } from '../../lib/motion.js';
 import { AD_CATEGORIES, AD_KPIS, AD_PAGE_SIZE, AD_RISK_KPIS, AD_TOTALS, buildDirectoryRows, type DirectoryKpi } from './activeDirectoryKpis.js';
 import type { KpiRow } from './activeRolesKpis.js';
+import { RiskCheckGrid } from './RiskCheckGrid.js';
 import styles from './ActiveRolesDetail.module.css';
 
 const SUMMARY_TRENDS: StatCardTrend[] = [
@@ -61,17 +60,7 @@ export function ActiveDirectoryDetail({ webInterfaceUrl }: { webInterfaceUrl?: s
         ))}
       </div>
 
-      <Card title="Governance and Risk">
-        <BarChart
-          orientation="horizontal"
-          data={AD_RISK_KPIS.map((kpi) => ({ label: kpi.label, value: kpi.value })).sort((first, second) => second.value - first.value)}
-          selectedLabel={selected?.label}
-          onSelect={(datum) => {
-            const kpi = AD_RISK_KPIS.find((item) => item.label === datum.label);
-            if (kpi) toggle(kpi);
-          }}
-        />
-      </Card>
+      <RiskCheckGrid checks={AD_RISK_KPIS} selectedId={selected?.id} onSelect={toggle} />
 
       {AD_CATEGORIES.map((category) => (
         <CollapsibleSection
