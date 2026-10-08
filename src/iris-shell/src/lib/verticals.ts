@@ -82,10 +82,9 @@ export const ACTIVE_ROLES_VERTICAL: Vertical = {
   id: 'active-roles',
   label: 'Active Roles',
   productIcon: 'active-roles',
-  defaultRoute: '#/home',
+  defaultRoute: '#/insights',
   aiTitle: 'Active Roles AI',
   mainNav: [
-    { value: 'arHome', label: 'Home', icon: 'House' },
     { value: 'insights', label: 'Insights', icon: 'PresentationChart' },
     { value: 'directory', label: 'Directory management', icon: 'TreeView' },
     { value: 'approval', label: 'Approval', icon: 'SealCheck', disabled: true },

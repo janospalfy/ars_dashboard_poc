@@ -78,7 +78,7 @@ const ROUTES: RouteDef[] = [
   { name: 'safeguardHome', pattern: /^#\/safeguard$/, keys: [] },
 ];
 
-const DEFAULT = '#/home';
+const DEFAULT = '#/insights';
 
 function parseHash(hash: string | null | undefined): Route {
   const h = hash || DEFAULT;
