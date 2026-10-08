@@ -53,3 +53,55 @@
   color: var(--oi-content-color-primary);
   font-variant-numeric: tabular-nums;
 }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--oi-spacing-l);
+}
+
+.grid .column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--oi-spacing-xs);
+  padding: var(--oi-spacing-s);
+  border: 0;
+}
+
+.grid .value {
+  font-weight: var(--oi-font-weight-400);
+}
+
+.grid .label {
+  overflow-wrap: anywhere;
+}
+
+.dashboardCard {
+  padding: 0;
+  gap: 0;
+  border: 0;
+  background-color: var(--oi-background-color-secondary);
+  box-shadow: none;
+}
+
+.dashboardCard > header {
+  padding: var(--oi-spacing-12) var(--oi-spacing-12) var(--oi-spacing-8);
+}
+
+.dashboardCard > header h3 {
+  color: var(--oi-content-color-secondary);
+}
+
+.dashboardCard > div {
+  padding: var(--oi-spacing-l);
+  background-color: var(--oi-background-color-primary);
+  border: 1px solid var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-l);
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

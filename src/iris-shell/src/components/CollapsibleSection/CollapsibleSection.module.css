@@ -24,3 +24,81 @@
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: var(--oi-spacing-m);
 }
+
+.collapsibleTitle {
+  width: 100%;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--oi-spacing-m);
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--oi-border-color-focus);
+  outline-offset: var(--oi-spacing-4);
+  border-radius: var(--oi-border-radius-default);
+}
+
+.toggleLabel {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.count {
+  flex: 0 0 auto;
+  color: var(--oi-content-color-secondary);
+  font-family: var(--oi-font-family-code);
+  font-variant-numeric: tabular-nums;
+}
+
+.accordion {
+  gap: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--oi-border-color-muted);
+}
+
+.accordion:last-child {
+  border-bottom: 0;
+}
+
+.accordion .title {
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-font-weight);
+}
+
+.accordion .toggle {
+  justify-content: flex-start;
+  gap: var(--oi-spacing-m);
+  min-height: 38px;
+  padding: var(--oi-spacing-s) var(--oi-spacing-m);
+  border-radius: 0;
+}
+
+.accordion .toggle:hover {
+  background-color: var(--oi-background-color-secondary);
+}
+
+.accordion .body {
+  display: block;
+  min-width: 0;
+  padding: 0;
+}
+
+@media (max-width: 480px) {
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -20,6 +20,9 @@ export interface BarChartProps {
   tickCount?: number;
   height?: number;
   className?: string;
+  orientation?: 'vertical' | 'horizontal';
+  onSelect?: (datum: BarDatum) => void;
+  selectedLabel?: string;
 }
 
 /**
@@ -31,6 +34,9 @@ export function BarChart({
   tickCount = 4,
   height = 200,
   className,
+  orientation = 'vertical',
+  onSelect,
+  selectedLabel,
 }: BarChartProps) {
   // Pre-compute layout. The SVG draws into a fixed viewBox; widths flow via CSS.
   const VB_WIDTH = 400;
@@ -96,7 +102,42 @@ export function BarChart({
     return () => {
       rects.interrupt();
     };
-  }, [bars, baseline]);
+  }, [bars, baseline, orientation]);
+
+  if (orientation === 'horizontal') {
+    const widthScale = scaleLinear()
+      .domain([0, Math.max(0, ...data.map((datum) => datum.value)) || 1])
+      .range([0, 100]);
+    return (
+      <div className={cx(styles.horizontal, styles[`color_${color}`], className)}>
+        {data.map((datum) => {
+          const content = (
+            <>
+              <span className={styles.horizontalLabel}>{datum.label}</span>
+              <span className={styles.horizontalTrack} aria-hidden="true">
+                <span className={styles.horizontalFill} style={{ width: `${widthScale(datum.value)}%` }} />
+              </span>
+              <span className={styles.horizontalValue}>{datum.value.toLocaleString('en-US')}</span>
+            </>
+          );
+          return onSelect ? (
+            <button
+              key={datum.label}
+              type="button"
+              className={cx(styles.horizontalRow, styles.horizontalButton)}
+              aria-label={`${datum.label}: ${datum.value.toLocaleString('en-US')}`}
+              aria-pressed={selectedLabel === datum.label}
+              onClick={() => onSelect(datum)}
+            >
+              {content}
+            </button>
+          ) : (
+            <div key={datum.label} className={styles.horizontalRow}>{content}</div>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <svg

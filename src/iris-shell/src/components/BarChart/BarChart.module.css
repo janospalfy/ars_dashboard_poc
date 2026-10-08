@@ -33,3 +33,86 @@
 .color_purple .bar {
   fill: var(--oi-chart-color-2);
 }
+
+.horizontal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-xs);
+}
+
+.horizontalRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 2fr) 3ch;
+  align-items: center;
+  gap: var(--oi-spacing-l);
+  width: 100%;
+  padding: var(--oi-spacing-s);
+  color: var(--oi-content-color-primary);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
+.horizontalButton {
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--oi-border-radius-default);
+}
+
+.horizontalButton:hover,
+.horizontalButton[aria-pressed='true'] {
+  background-color: var(--oi-background-color-secondary);
+}
+
+.horizontalButton:focus-visible {
+  outline: 2px solid var(--oi-border-color-focus);
+  outline-offset: var(--oi-spacing-2);
+}
+
+.horizontalLabel {
+  overflow-wrap: anywhere;
+}
+
+.horizontalTrack {
+  display: block;
+  height: var(--oi-spacing-m);
+  background-color: var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-s);
+  overflow: hidden;
+}
+
+.horizontalFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.color_blue .horizontalFill {
+  background-color: var(--oi-color-blue-400);
+}
+
+.color_purple .horizontalFill {
+  background-color: var(--oi-color-purple-400);
+}
+
+.horizontalValue {
+  font-family: var(--oi-font-family-code);
+  font-size: var(--oi-font-size-l);
+  line-height: var(--oi-line-height-l);
+  font-weight: var(--oi-font-weight-400);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+@media (max-width: 720px) {
+  .horizontalRow {
+    grid-template-columns: minmax(0, 1fr) 3ch;
+    gap: var(--oi-spacing-xs) var(--oi-spacing-s);
+  }
+
+  .horizontalLabel {
+    grid-column: 1 / -1;
+  }
+}

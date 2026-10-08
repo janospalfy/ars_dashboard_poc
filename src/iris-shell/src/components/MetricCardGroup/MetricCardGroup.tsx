@@ -13,6 +13,8 @@ export interface MetricCardGroupProps {
   title?: string;
   items: MetricCardGroupItem[];
   className?: string;
+  layout?: 'row' | 'grid';
+  variant?: 'default' | 'dashboard';
 }
 
 /**
@@ -21,10 +23,10 @@ export interface MetricCardGroupProps {
  * one tile per metric. Reads as one grouped stat rather than N separate
  * boxes for a small set of closely related headline numbers.
  */
-export function MetricCardGroup({ title, items, className }: MetricCardGroupProps) {
+export function MetricCardGroup({ title, items, className, layout = 'row', variant = 'default' }: MetricCardGroupProps) {
   return (
-    <Card title={title} className={className}>
-      <div className={styles.row}>
+    <Card title={title} className={cx(variant === 'dashboard' && styles.dashboardCard, className)}>
+      <div className={cx(styles.row, layout === 'grid' && styles.grid)}>
         {items.map((item) => {
           const content = (
             <>

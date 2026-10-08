@@ -38,7 +38,7 @@ export interface KpiDefinition {
 export const AR_CONFIGURATION_KPIS: KpiDefinition[] = [
   {
     id: 'ar-admins',
-    label: 'Active Roles Admins',
+    label: 'AR Admins',
     value: 1,
     pinned: true,
     namePrefix: 'AR-Admin',
@@ -388,14 +388,14 @@ function generateCell(column: KpiColumn, index: number): string | number {
     case 'text':
     default:
       if (column.values?.length) return column.values[index % column.values.length];
-      return '';
+      return `${column.key}${String(index + 1).padStart(2, '0')}`;
   }
 }
 
 /** Synthetic drill-down rows for a clicked KPI tile, shaped by its own
- *  column set. Capped at 8 rows for display. */
+ *  column set. */
 export function buildKpiRows(kpi: KpiDefinition): KpiRow[] {
-  const count = Math.min(kpi.value, 8);
+  const count = kpi.value;
   return Array.from({ length: count }, (_, i) => {
     const row: KpiRow = { id: `${kpi.id}-${i}` };
     for (const column of kpi.columns) {

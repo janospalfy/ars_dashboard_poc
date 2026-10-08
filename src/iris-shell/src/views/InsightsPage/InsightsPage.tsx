@@ -4,6 +4,7 @@ import { Card } from '../../components/Card/Card.js';
 import { ContentHeader } from '../../components/ContentHeader/ContentHeader.js';
 import { Tabs, type TabItem } from '../../components/Tabs/Tabs.js';
 import { MultiSelect } from '../../components/MultiSelect/MultiSelect.js';
+import { Select } from '../../components/Select/Select.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
 import { Menu, type MenuEntry } from '../../components/Menu/Menu.js';
@@ -208,8 +209,14 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
 
         {category && (
           <>
-            <div className={styles.titleRow}>
-              <h2 className={styles.pageTitle}>{category.title}</h2>
+            <div className={tab === 'active-roles' ? styles.filters : styles.titleRow}>
+              {tab === 'active-roles' ? (
+                <div className={styles.filtersLeft}>
+                  <Select label="Domains: All Domains" />
+                </div>
+              ) : (
+                <h2 className={styles.pageTitle}>{category.title}</h2>
+              )}
               <div className={styles.filtersRight}>
                 <Tooltip label="Refresh">
                   <IconButton

@@ -1,7 +1,90 @@
 .groups {
   display: flex;
   flex-direction: column;
+  gap: var(--oi-spacing-m);
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--oi-spacing-l);
+}
+
+.summaryGrid .summaryCard {
+  box-shadow: none;
+}
+
+.summaryCard header > button {
+  flex-shrink: 0;
+}
+
+@media (max-width: 1100px) {
+  .summaryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .summaryGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.groups > section.sectionAccordion {
+  border: 1px solid var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-default);
+  background-color: var(--oi-background-color-primary);
+  overflow: hidden;
+}
+
+.groups > .sectionAccordion > header h3 {
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-font-weight-600);
+}
+
+.sectionAccordion > div > section {
+  margin-inline-start: var(--oi-spacing-l);
+}
+
+.sectionAccordion .metricAccordion > header h3 {
+  font-weight: var(--oi-font-weight-600);
+}
+
+.sectionAccordion .metricAccordion > header button {
+  min-height: 56px;
+  padding: var(--oi-spacing-m) var(--oi-spacing-l);
+}
+
+.sectionAccordion .metricAccordion > header button > span:last-child {
+  font-size: var(--oi-font-size-l);
+  line-height: var(--oi-line-height-l);
+  font-weight: var(--oi-font-weight-400);
+  color: var(--oi-content-color-primary);
+}
+
+.topologyTable {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.rowAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.groups [role='columnheader'] {
+  height: auto;
+  min-height: 44px;
+  padding-block: var(--oi-spacing-m);
+}
+
+.groups [role='columnheader'] > span:last-child {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
 }
 
 .search {
@@ -24,9 +107,24 @@
   text-decoration: underline;
 }
 
+.kpiLink[aria-pressed='true'] {
+  font-weight: var(--oi-font-weight-600);
+}
+
+.kpiLink:focus-visible {
+  outline: 2px solid var(--oi-border-color-focus);
+  outline-offset: var(--oi-spacing-2);
+  border-radius: var(--oi-border-radius-s);
+}
+
 .breakdown {
   margin: 0 0 var(--oi-spacing-m);
   color: var(--oi-content-color-secondary);
   font-size: var(--oi-text-body-s-font-size);
   line-height: var(--oi-text-body-s-line-height);
+}
+
+.sectionAccordion .breakdown {
+  margin: 0;
+  padding: var(--oi-spacing-s) var(--oi-spacing-m);
 }
