@@ -28,7 +28,7 @@
   min-height: 124px;
   padding: var(--oi-spacing-m) var(--oi-spacing-l);
   background-color: var(--oi-background-color-primary);
-  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
   border-radius: var(--oi-border-radius-l);
   text-align: left;
   text-decoration: none;

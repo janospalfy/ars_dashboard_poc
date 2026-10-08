@@ -14,25 +14,37 @@
   box-shadow: none;
 }
 
+.directorySummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--oi-spacing-l);
+}
+
+.directorySummaryGrid .summaryCard {
+  box-shadow: none;
+}
+
 .summaryCard header > button {
   flex-shrink: 0;
 }
 
 @media (max-width: 1100px) {
-  .summaryGrid {
+  .summaryGrid,
+  .directorySummaryGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 720px) {
-  .summaryGrid {
+  .summaryGrid,
+  .directorySummaryGrid {
     grid-template-columns: minmax(0, 1fr);
   }
 }
 
 .groups > section.sectionAccordion {
   border: 1px solid var(--oi-border-color-muted);
-  border-radius: var(--oi-border-radius-default);
+  border-radius: var(--oi-border-radius-l);
   background-color: var(--oi-background-color-primary);
   overflow: hidden;
 }

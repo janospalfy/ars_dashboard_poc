@@ -42,7 +42,7 @@
 
 .horizontalRow {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 2fr) 3ch;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 2fr) auto;
   align-items: center;
   gap: var(--oi-spacing-l);
   width: 100%;
@@ -98,6 +98,7 @@
 }
 
 .horizontalValue {
+  min-width: 3ch;
   font-family: var(--oi-font-family-code);
   font-size: var(--oi-font-size-l);
   line-height: var(--oi-line-height-l);
@@ -108,7 +109,7 @@
 
 @media (max-width: 720px) {
   .horizontalRow {
-    grid-template-columns: minmax(0, 1fr) 3ch;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: var(--oi-spacing-xs) var(--oi-spacing-s);
   }
 

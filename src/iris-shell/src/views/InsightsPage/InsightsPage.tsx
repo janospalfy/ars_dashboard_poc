@@ -14,6 +14,7 @@ import { GroupedBarChart } from '../../components/GroupedBarChart/GroupedBarChar
 import { navigate } from '../../lib/router.js';
 import { showToast } from '../../lib/toastStore.js';
 import { ActiveRolesDetail } from './ActiveRolesDetail.js';
+import { ActiveDirectoryDetail } from './ActiveDirectoryDetail.js';
 import { DOMAIN_OPTIONS, TENANT_OPTIONS, getOverviewData } from './mockInsights.js';
 import styles from './InsightsPage.module.css';
 
@@ -209,8 +210,8 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
 
         {category && (
           <>
-            <div className={tab === 'active-roles' ? styles.filters : styles.titleRow}>
-              {tab === 'active-roles' ? (
+            <div className={tab === 'active-roles' || tab === 'active-directory' ? styles.filters : styles.titleRow}>
+              {tab === 'active-roles' || tab === 'active-directory' ? (
                 <div className={styles.filtersLeft}>
                   <Select label="Domains: All Domains" />
                 </div>
@@ -233,6 +234,8 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
 
             {tab === 'active-roles' ? (
               <ActiveRolesDetail />
+            ) : tab === 'active-directory' ? (
+              <ActiveDirectoryDetail />
             ) : (
               <Card>
                 <p className={styles.empty}>{category.description} — coming soon.</p>

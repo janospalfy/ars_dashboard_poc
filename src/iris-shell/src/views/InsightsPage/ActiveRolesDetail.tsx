@@ -6,6 +6,7 @@ import { BarChart } from '../../components/BarChart/BarChart.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
 import { prefersReducedMotion } from '../../lib/motion.js';
+import { objectUrl } from '../../lib/webInterface.js';
 import { DataTable, type DataTableColumn } from '../../components/DataTable/DataTable.js';
 import {
   AR_CONFIGURATION_KPIS,
@@ -36,21 +37,6 @@ const SUMMARY_TRENDS: Record<string, StatCardTrend> = {
   'managed-units': { direction: 'down', value: '0.8% vs last week', tone: 'danger' },
   workflows: { direction: 'up', value: '3.6% vs last week', tone: 'success' },
 };
-
-function objectUrl(baseUrl: string | undefined, distinguishedName: string): string | undefined {
-  if (!baseUrl) return undefined;
-  try {
-    const url = new URL(baseUrl);
-    if (url.protocol !== 'http:' && url.protocol !== 'https:') return undefined;
-    url.pathname = `${url.pathname.replace(/\/+$/, '')}/redirect.ashx`;
-    url.search = '';
-    url.hash = '';
-    url.searchParams.set('dn', distinguishedName);
-    return url.toString();
-  } catch {
-    return undefined;
-  }
-}
 
 /**
  * ActiveRolesDetail — full port of the real dashboard's Active Roles KPI
