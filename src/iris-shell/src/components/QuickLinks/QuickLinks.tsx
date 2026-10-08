@@ -25,7 +25,7 @@ function findNavEntry(value: string): VerticalNavEntry | undefined {
   );
 }
 
-const QUICK_LINK_VALUES = ['directory', 'customization', 'settings', 'approval'];
+const QUICK_LINK_VALUES = ['directory', 'customization', 'approval', 'settings'];
 
 const QUICK_LINK_LABELS: Record<string, string> = {
   directory: 'Open directory view',

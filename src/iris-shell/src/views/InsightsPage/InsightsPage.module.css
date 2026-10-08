@@ -75,8 +75,8 @@
 
 .overviewCard h3,
 .overviewStatCard header p {
-  font-size: var(--oi-font-size-s);
-  line-height: var(--oi-line-height-s);
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
 }
 
 /* Object Distribution card only: clip the legend so a very narrow card

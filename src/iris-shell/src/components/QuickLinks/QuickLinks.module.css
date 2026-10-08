@@ -54,7 +54,7 @@
 .cardTitleRow {
   display: flex;
   align-items: center;
-  gap: var(--oi-spacing-xs);
+  gap: var(--oi-spacing-s);
 }
 
 .cardTitleIcon {
