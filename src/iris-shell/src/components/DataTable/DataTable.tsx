@@ -83,6 +83,7 @@ export function DataTable<TRow extends DataTableRow>({
   className,
 }: DataTableProps<TRow>) {
   const selectable = !!selected && !!onSelectionChange;
+  const hasRowActions = !!rowActions || !!onRowAction;
   const allChecked =
     selectable && rows.length > 0 && rows.every((r) => selected!.has(rowKey(r)));
   const someChecked =
@@ -170,7 +171,7 @@ export function DataTable<TRow extends DataTableRow>({
             <span className={styles.headLabel}>{col.header}</span>
           </HeadCell>
         ))}
-        <HeadCell width="44px" className={styles.actionCell} pin="end" aria-label="Row actions" />
+        {hasRowActions && <HeadCell width="44px" className={styles.actionCell} pin="end" aria-label="Row actions" />}
       </div>
 
       <div className={styles.body} role="rowgroup">
@@ -223,7 +224,7 @@ export function DataTable<TRow extends DataTableRow>({
                   {col.cell(row, i)}
                 </BodyCell>
               ))}
-              <BodyCell width="44px" className={styles.actionCell} pin="end">
+              {hasRowActions && <BodyCell width="44px" className={styles.actionCell} pin="end">
                 {rowActions ? (
                   rowActions(row, i)
                 ) : (
@@ -234,7 +235,7 @@ export function DataTable<TRow extends DataTableRow>({
                     onClick={() => onRowAction?.(row)}
                   />
                 )}
-              </BodyCell>
+              </BodyCell>}
             </div>
           );
         })}
@@ -329,9 +330,9 @@ function cellStyle(
     style['--cell-min-width'] = floor;
   } else {
     // Fixed column.
-    const w = normalizeWidth(width);
+    const w = normalizeWidth(width ?? minWidth ?? 'auto');
     style['--cell-flex'] = `0 0 ${w}`;
-    style['--cell-min-width'] = w;
+    style['--cell-min-width'] = normalizeWidth(minWidth ?? width ?? 0);
   }
   if (maxWidth != null) style['--cell-max-width'] = normalizeWidth(maxWidth);
   if (pinOffset) style['--pin-start'] = pinOffset;

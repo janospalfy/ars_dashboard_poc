@@ -89,6 +89,10 @@
   background-color: var(--oi-background-color-secondary);
 }
 
+.row:not(.rowSelected):hover .cell {
+  background-color: var(--oi-background-color-secondary);
+}
+
 .rowSelected,
 .rowSelected:hover {
   background-color: var(--oi-background-color-brand);
