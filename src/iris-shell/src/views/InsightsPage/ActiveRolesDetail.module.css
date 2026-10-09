@@ -87,8 +87,9 @@
 }
 
 .riskMatrix {
+  --risk-matrix-columns: 4;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--risk-matrix-columns), minmax(0, 1fr));
   gap: 0;
   overflow: hidden;
   border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
@@ -96,16 +97,20 @@
   background-color: var(--oi-background-color-primary);
 }
 
+.riskMatrix[data-columns='3'] {
+  --risk-matrix-columns: 3;
+}
+
 .riskTile {
   position: relative;
   min-width: 0;
-  min-height: 132px;
+  min-height: 112px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: space-between;
   gap: var(--oi-spacing-s);
-  padding: var(--oi-spacing-l);
+  padding: var(--oi-spacing-m);
   border: 0;
   border-radius: var(--oi-border-radius-l);
   background-color: var(--oi-background-color-primary);
@@ -123,11 +128,15 @@
   pointer-events: none;
 }
 
-.riskTile:not(:nth-child(3n))::after {
-  top: var(--oi-spacing-l);
+.riskTile:not(:nth-child(4n))::after {
+  top: var(--oi-spacing-m);
   right: 0;
-  bottom: var(--oi-spacing-l);
+  bottom: var(--oi-spacing-m);
   width: var(--oi-border-width-default);
+}
+
+.riskMatrix[data-columns='3'] .riskTile:nth-child(3n)::after {
+  content: none;
 }
 
 .riskTile:hover,
@@ -190,19 +199,23 @@
   }
 
   .riskMatrix {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    --risk-matrix-columns: 3;
   }
 
   .riskTile::after {
     content: none;
   }
 
-  .riskTile:nth-child(odd):not(:last-child)::after {
-    top: var(--oi-spacing-l);
+  .riskTile:not(:nth-child(3n))::after {
+    top: var(--oi-spacing-m);
     right: 0;
-    bottom: var(--oi-spacing-l);
+    bottom: var(--oi-spacing-m);
     display: block;
     content: '';
+  }
+
+  .riskMatrix .riskTile:nth-child(3n)::after {
+    content: none;
   }
 }
 
@@ -213,7 +226,7 @@
   }
 
   .riskMatrix {
-    grid-template-columns: minmax(0, 1fr);
+    --risk-matrix-columns: 1;
   }
 
   .riskTile::after {
@@ -223,6 +236,11 @@
   .riskHeader {
     align-items: flex-start;
     flex-wrap: wrap;
+  }
+
+  .configurationSearch {
+    flex-basis: 100%;
+    width: 100%;
   }
 
   .riskBadges {
@@ -253,20 +271,117 @@
   margin-inline-start: var(--oi-spacing-l);
 }
 
-.sectionAccordion .metricAccordion > header h3 {
+.directoryCategoryAccordion > header button {
+  min-height: 44px;
+  padding: var(--oi-spacing-xs) var(--oi-spacing-l);
+}
+
+.directoryCategoryAccordion > div > section {
+  margin-inline-start: var(--oi-spacing-xl);
+}
+
+.distributionSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
+}
+
+.distributionTitle {
+  margin: 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.categoryCharts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--oi-spacing-l);
+}
+
+.categoryChart {
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  .categoryCharts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.configurationSearch {
+  flex: 0 1 320px;
+  min-width: 0;
+}
+
+.configurationSection {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+  border-radius: var(--oi-border-radius-l);
+  background-color: var(--oi-background-color-secondary);
+}
+
+.configurationKpiList {
+  min-width: 0;
+  overflow: hidden;
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-l);
+  background-color: var(--oi-background-color-primary);
+}
+
+.configurationKpiList .directoryCategoryAccordion > header h3 {
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-font-weight-600);
+  color: var(--oi-content-color-primary);
+}
+
+.configurationKpiList .directoryCategoryAccordion > header button {
+  min-height: 44px;
+  padding: var(--oi-spacing-xs) var(--oi-spacing-l);
+}
+
+.search {
+  width: 100%;
+}
+
+.noConfigurationKpis {
+  margin: 0 var(--oi-spacing-l) var(--oi-spacing-m);
+  color: var(--oi-content-color-tertiary);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
+.sectionAccordion .metricAccordion > header h3,
+.configurationKpiList .metricAccordion > header h3 {
   font-weight: var(--oi-font-weight-600);
 }
 
-.sectionAccordion .metricAccordion > header button {
-  min-height: 56px;
-  padding: var(--oi-spacing-m) var(--oi-spacing-l);
+.sectionAccordion .metricAccordion > header button,
+.configurationKpiList .metricAccordion > header button {
+  min-height: 44px;
+  padding: var(--oi-spacing-xs) var(--oi-spacing-m);
 }
 
-.sectionAccordion .metricAccordion > header button > span:last-child {
+.sectionAccordion .metricAccordion > header button > span:last-child,
+.configurationKpiList .metricAccordion > header button > span:last-child {
   font-size: var(--oi-font-size-l);
   line-height: var(--oi-line-height-l);
   font-weight: var(--oi-font-weight-400);
   color: var(--oi-content-color-primary);
+}
+
+.configurationKpiList .directoryCategoryAccordion .metricAccordion > header h3 {
+  font-weight: var(--oi-font-weight-400);
+}
+
+.configurationKpiList .directoryCategoryAccordion .metricAccordion > header button {
+  min-height: 40px;
+  padding: var(--oi-spacing-xs) var(--oi-spacing-m);
 }
 
 .topologyTable {
@@ -291,10 +406,6 @@
   overflow: visible;
   text-overflow: clip;
   overflow-wrap: anywhere;
-}
-
-.search {
-  width: 220px;
 }
 
 .kpiLink {

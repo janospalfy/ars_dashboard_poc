@@ -35,7 +35,7 @@ export function RiskCheckGrid<TCheck extends RiskCheck>({ checks, selectedId, on
           <Badge className={styles.riskHeaderBadge} tone="success">{displayedClearCount} clear</Badge>
         </div>
       </header>
-      <div className={styles.riskMatrix}>
+      <div className={styles.riskMatrix} data-columns={orderedChecks.length > 9 ? 4 : 3}>
         {orderedChecks.map((check) => (
           <RiskCheckTile
             key={check.id}

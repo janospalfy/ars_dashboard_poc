@@ -22,6 +22,8 @@ export interface BarChartProps {
   height?: number;
   className?: string;
   orientation?: 'vertical' | 'horizontal';
+  /** Shared maximum for horizontal bar widths, such as a population total. */
+  horizontalMaxValue?: number;
   onSelect?: (datum: BarDatum) => void;
   selectedLabel?: string;
 }
@@ -36,6 +38,7 @@ export function BarChart({
   height = 200,
   className,
   orientation = 'vertical',
+  horizontalMaxValue,
   onSelect,
   selectedLabel,
 }: BarChartProps) {
@@ -106,9 +109,14 @@ export function BarChart({
   }, [bars, baseline, orientation]);
 
   if (orientation === 'horizontal') {
+    const rawMax = Math.max(0, ...data.map((datum) => datum.value));
+    const maxValue = horizontalMaxValue && Number.isFinite(horizontalMaxValue) && horizontalMaxValue > 0
+      ? horizontalMaxValue
+      : rawMax || 1;
     const widthScale = scaleLinear()
-      .domain([0, Math.max(0, ...data.map((datum) => datum.value)) || 1])
-      .range([0, 100]);
+      .domain([0, maxValue])
+      .range([0, 100])
+      .clamp(true);
     return (
       <div className={cx(styles.horizontal, styles[`color_${color}`], className)}>
         {data.map((datum) => {

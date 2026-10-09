@@ -42,11 +42,11 @@
 
 .horizontalRow {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 2fr) auto;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 2fr) 8ch;
   align-items: center;
   gap: var(--oi-spacing-l);
   width: 100%;
-  padding: var(--oi-spacing-s);
+  padding: var(--oi-spacing-xs) var(--oi-spacing-s);
   color: var(--oi-content-color-primary);
   font-size: var(--oi-text-body-s-font-size);
   line-height: var(--oi-text-body-s-line-height);
