@@ -15,6 +15,7 @@ import { navigate } from '../../lib/router.js';
 import { showToast } from '../../lib/toastStore.js';
 import { ActiveRolesDetail } from './ActiveRolesDetail.js';
 import { ActiveDirectoryDetail } from './ActiveDirectoryDetail.js';
+import { LicensingDetail } from './LicensingDetail.js';
 import { DOMAIN_OPTIONS, TENANT_OPTIONS, getOverviewData } from './mockInsights.js';
 import styles from './InsightsPage.module.css';
 
@@ -129,10 +130,9 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
         iconGlyphSize="24px"
         title="Insights"
         subtitle="Monitor identity health, configuration, exposure, and key KPIs across your environment."
+        tabs={<Tabs items={TABS} value={tab} onChange={setTab} ariaLabel="Insights sections" />}
       />
       <div className={styles.page}>
-        <Tabs items={TABS} value={tab} onChange={setTab} ariaLabel="Insights sections" />
-
         {tab === OVERVIEW_TAB && (
           <>
             <div className={styles.filters}>
@@ -210,14 +210,20 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
 
         {category && (
           <>
-            <div className={tab === 'active-roles' || tab === 'active-directory' ? styles.filters : styles.titleRow}>
+            <div className={
+              tab === 'active-roles' || tab === 'active-directory'
+                ? styles.filters
+                : tab === 'licensing'
+                  ? `${styles.titleRow} ${styles.licensingTitleRow}`
+                  : styles.titleRow
+            }>
               {tab === 'active-roles' || tab === 'active-directory' ? (
                 <div className={styles.filtersLeft}>
                   <Select label="Domains: All Domains" />
                 </div>
-              ) : (
+              ) : tab !== 'licensing' ? (
                 <h2 className={styles.pageTitle}>{category.title}</h2>
-              )}
+              ) : null}
               <div className={styles.filtersRight}>
                 <Tooltip label="Refresh">
                   <IconButton
@@ -236,6 +242,8 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
               <ActiveRolesDetail />
             ) : tab === 'active-directory' ? (
               <ActiveDirectoryDetail />
+            ) : tab === 'licensing' ? (
+              <LicensingDetail />
             ) : (
               <Card>
                 <p className={styles.empty}>{category.description} — coming soon.</p>

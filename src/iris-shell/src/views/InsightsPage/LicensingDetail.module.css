@@ -1,0 +1,375 @@
+.pageContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-l);
+  min-width: 0;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--oi-spacing-l);
+}
+
+.summaryGrid > * {
+  box-shadow: none;
+}
+
+.managedObjectsCard > div {
+  height: 106px;
+  box-sizing: border-box;
+}
+
+.usageCard {
+  min-width: 0;
+  gap: 0;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: var(--oi-border-radius-l);
+  background-color: var(--oi-background-color-secondary);
+  box-shadow: none;
+}
+
+.usageCard > header {
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+  padding: var(--oi-spacing-12) var(--oi-spacing-12) var(--oi-spacing-8);
+}
+
+.usageCard > header > div:first-child {
+  flex: 0 1 auto;
+}
+
+.usageCard > header h3 {
+  color: var(--oi-content-color-secondary);
+}
+
+.usageInfoTrigger {
+  display: inline-flex;
+  flex: 0 0 auto;
+  color: var(--oi-content-color-tertiary);
+  cursor: help;
+}
+
+.usageInfoTrigger:focus-visible {
+  outline: 2px solid var(--oi-border-color-focus);
+  outline-offset: var(--oi-spacing-2);
+  border-radius: var(--oi-border-radius-s);
+}
+
+.usageCard > div {
+  margin: 0;
+  padding: var(--oi-spacing-l);
+  border: 1px solid var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-l);
+  background-color: var(--oi-background-color-primary);
+}
+
+.usageContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-s);
+}
+
+.usageValues {
+  display: flex;
+  align-items: baseline;
+  gap: var(--oi-spacing-xs);
+  margin: 0;
+  color: var(--oi-content-color-secondary);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
+.usageValues strong {
+  color: var(--oi-content-color-primary);
+  font-family: var(--oi-font-family-code);
+  font-size: var(--oi-text-heading-04-font-size);
+  font-weight: var(--oi-font-weight-500);
+  line-height: var(--oi-text-heading-04-line-height);
+  font-variant-numeric: tabular-nums;
+}
+
+.usageTrack {
+  height: 12px;
+  overflow: hidden;
+  border-radius: var(--oi-border-radius-max);
+  background-color: var(--oi-border-color-muted);
+}
+
+.usageFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: fillBar var(--oi-motion-duration-default) var(--oi-motion-ease-default) forwards;
+  transition: width var(--oi-motion-duration-moderate) var(--oi-motion-ease-default);
+}
+
+.usageMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--oi-spacing-s);
+  color: var(--oi-content-color-secondary);
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+}
+
+.usageUnconfigured {
+  margin: 0;
+  color: var(--oi-content-color-tertiary);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
+.chartGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: var(--oi-spacing-l);
+}
+
+.chartCard {
+  min-width: 0;
+  padding: var(--oi-spacing-l);
+  border-color: var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-l);
+  box-shadow: none;
+}
+
+.historyChart {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 640 / 280;
+  overflow: visible;
+}
+
+.gridline {
+  stroke: var(--oi-border-color-muted);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+
+.axisLabel {
+  font-family: var(--oi-font-family-default);
+  font-size: 10px;
+  fill: var(--oi-content-color-tertiary);
+}
+
+.seriesLine {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: drawSeries var(--oi-motion-duration-default) var(--oi-motion-ease-default) forwards;
+}
+
+.seriesPoint {
+  stroke: var(--oi-background-color-primary);
+  stroke-width: 2;
+  opacity: 0;
+  animation: revealPoint var(--oi-motion-duration-default) var(--oi-motion-ease-default) forwards;
+}
+
+.historyLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--oi-spacing-s) var(--oi-spacing-l);
+  margin: var(--oi-spacing-s) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.historyLegendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+  color: var(--oi-content-color-secondary);
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+}
+
+.legendMark {
+  width: 16px;
+  height: 3px;
+  flex: 0 0 auto;
+  border-radius: var(--oi-border-radius-max);
+}
+
+.thresholdList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-s);
+}
+
+.thresholdLegend {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--oi-spacing-m);
+  margin: 0 0 var(--oi-spacing-xs);
+  color: var(--oi-content-color-tertiary);
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+}
+
+.thresholdLegendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+}
+
+.actualMark {
+  width: 12px;
+  height: 8px;
+  border-radius: var(--oi-border-radius-s);
+  background-color: var(--oi-chart-color-1);
+}
+
+.limitMark {
+  width: 2px;
+  height: 12px;
+  background-color: var(--oi-content-color-primary);
+}
+
+.thresholdRow {
+  display: grid;
+  grid-template-columns: minmax(72px, 0.8fr) minmax(80px, 1fr) minmax(112px, auto) auto;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+  min-height: 38px;
+}
+
+.thresholdLabel {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--oi-content-color-secondary);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
+.thresholdTrack {
+  position: relative;
+  display: block;
+  height: var(--oi-spacing-m);
+  overflow: visible;
+  border-radius: var(--oi-border-radius-s);
+  background-color: var(--oi-border-color-muted);
+}
+
+.thresholdFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: fillBar var(--oi-motion-duration-default) var(--oi-motion-ease-default) forwards;
+}
+
+.thresholdLimit {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background-color: var(--oi-content-color-primary);
+}
+
+.thresholdValues {
+  white-space: nowrap;
+  text-align: right;
+  font-family: var(--oi-font-family-code);
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+  font-variant-numeric: tabular-nums;
+  color: var(--oi-content-color-primary);
+}
+
+.thresholdValues span {
+  color: var(--oi-content-color-tertiary);
+}
+
+.thresholdStatus {
+  min-width: 70px;
+  text-align: right;
+}
+
+@keyframes drawSeries {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes revealPoint {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fillBar {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.detailsSection > div {
+  display: block;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .chartGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .summaryGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .thresholdRow {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--oi-spacing-xs) var(--oi-spacing-s);
+    padding-block: var(--oi-spacing-xs);
+  }
+
+  .thresholdTrack {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .thresholdValues {
+    grid-column: 1;
+    grid-row: 3;
+    text-align: left;
+  }
+
+  .thresholdStatus {
+    grid-column: 2;
+    grid-row: 3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seriesLine {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+
+  .seriesPoint {
+    opacity: 1;
+    animation: none;
+  }
+
+  .usageFill,
+  .thresholdFill {
+    transform: none;
+    animation: none;
+  }
+}
