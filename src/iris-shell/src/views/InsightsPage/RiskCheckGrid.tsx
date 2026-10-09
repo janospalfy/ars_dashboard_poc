@@ -14,20 +14,21 @@ interface RiskCheckGridProps<TCheck extends RiskCheck> {
 
 export function RiskCheckGrid<TCheck extends RiskCheck>({ checks, selectedId, onSelect }: RiskCheckGridProps<TCheck>) {
   const titleId = useId();
-  const orderedChecks = [...checks].sort((first, second) => second.value - first.value);
+  const orderedChecks = [...checks].sort((first, second) =>
+    second.value - first.value || first.label.localeCompare(second.label),
+  );
   const findingsCount = orderedChecks.filter((check) => check.value > 0).length;
-  const maxCount = Math.max(...orderedChecks.map((check) => check.value), 1);
 
   return (
     <section className={styles.riskSection} aria-labelledby={titleId}>
       <header className={styles.riskHeader}>
         <h3 className={styles.riskTitle} id={titleId}>Governance and Risk</h3>
         <div className={styles.riskBadges}>
-          <Badge className={styles.riskHeaderBadge} tone="neutral">{findingsCount} checks with findings</Badge>
+          <Badge className={styles.riskHeaderBadge} tone="warning">{findingsCount} checks with findings</Badge>
           <Badge className={styles.riskHeaderBadge} tone="success">{orderedChecks.length - findingsCount} clear</Badge>
         </div>
       </header>
-      <div className={styles.riskTileGrid}>
+      <div className={styles.riskMatrix}>
         {orderedChecks.map((check) => (
           <button
             key={check.id}

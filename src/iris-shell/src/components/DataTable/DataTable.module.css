@@ -2,7 +2,8 @@
   /* Owns both scroll axes so the sticky header (top) and the pinned columns
      (inline-start/end) work; also the container for the responsive layout. */
   overflow: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: auto;
   height: 100%;
   container-type: inline-size;
   container-name: datatable;
