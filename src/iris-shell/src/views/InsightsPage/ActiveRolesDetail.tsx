@@ -26,6 +26,12 @@ const DB_TOPOLOGY_COLUMNS: DataTableColumn<(typeof DATABASE_TOPOLOGY_ROWS)[numbe
 ];
 
 const WEB_INTERFACE_KPIS = new Set(['ar-admins', 'managed-domains', 'dynamic-groups', 'managed-units']);
+const SUMMARY_ICONS: Record<string, string> = {
+  'ar-servers': 'Devices',
+  'managed-domains': 'Globe',
+  'managed-units': 'FolderSimple',
+  workflows: 'FlowArrow',
+};
 const SUMMARY_KPIS = ['ar-servers', 'managed-domains', 'managed-units', 'workflows']
   .map((id) => AR_CONFIGURATION_KPIS.find((kpi) => kpi.id === id))
   .filter((kpi): kpi is KpiDefinition => kpi !== undefined);
@@ -75,6 +81,7 @@ export function ActiveRolesDetail({ webInterfaceUrl }: { webInterfaceUrl?: strin
             key={kpi.id}
             label={kpi.label}
             value={kpi.value.toLocaleString('en-US')}
+            icon={SUMMARY_ICONS[kpi.id]}
             trend={SUMMARY_TRENDS[kpi.id]}
             variant="dashboard"
             showOptions={false}

@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { cx } from '../../lib/cx.js';
-import { motionDurationMs } from '../../lib/motion.js';
+import { useCountUp } from '../../lib/useCountUp.js';
+import { CardTitleIcon } from '../Card/Card.js';
 import { Icon } from '../Icon/Icon.js';
 import { IconButton } from '../IconButton/IconButton.js';
 import { Tooltip } from '../Tooltip/Tooltip.js';
@@ -52,12 +53,14 @@ export function StatCard({
   actions,
 }: StatCardProps) {
   const display = useCountUp(value, animateValue);
+  const displayTrend = useCountUp(trend?.value ?? '', !!trend);
   const isDashboard = variant === 'dashboard';
   return (
     <section className={cx(styles.card, valueFirst && styles.valueFirstCard, isDashboard && styles.dashboardCard, className)}>
       {isDashboard ? (
         <header className={cx(styles.header, styles.dashboardHeader)}>
           <div className={styles.dashboardTitleGroup}>
+            {icon && <CardTitleIcon icon={icon} />}
             <p className={styles.dashboardTitle}>{label}</p>
             {description && (
               <Tooltip label={description}>
@@ -86,7 +89,7 @@ export function StatCard({
         {trend && (
           <p className={cx(styles.trend, styles[`tone_${trend.tone}`])}>
             <Icon name={TREND_ICONS[trend.direction]} size={isDashboard ? '24px' : '16px'} />
-            <span>{trend.value}</span>
+            <span>{displayTrend}</span>
           </p>
         )}
       </div>
@@ -99,93 +102,3 @@ const TREND_ICONS: Record<StatCardTrendDirection, string> = {
   down: 'TrendDown',
   warning: 'Warning',
 };
-
-interface ParsedMetric {
-  prefix: string;
-  suffix: string;
-  target: number;
-  decimals: number;
-  grouped: boolean;
-}
-
-/** Split a metric string like "$1,035.00" into its animatable number plus the
- *  non-numeric framing (prefix "$", grouping, decimals) so a count-up can
- *  reformat each frame identically. Returns null when there's no number to
- *  roll (the value is then shown verbatim). */
-function parseMetric(value: string): ParsedMetric | null {
-  const match = value.match(/[\d,]+(?:\.\d+)?/);
-  if (!match || match.index === undefined) return null;
-  const numStr = match[0];
-  const target = Number(numStr.replace(/,/g, ''));
-  if (!Number.isFinite(target)) return null;
-  const decimals = numStr.includes('.') ? numStr.split('.')[1].length : 0;
-  return {
-    prefix: value.slice(0, match.index),
-    suffix: value.slice(match.index + numStr.length),
-    target,
-    decimals,
-    grouped: numStr.includes(','),
-  };
-}
-
-function formatMetric(n: number, p: ParsedMetric): string {
-  const body = n.toLocaleString('en-US', {
-    minimumFractionDigits: p.decimals,
-    maximumFractionDigits: p.decimals,
-    useGrouping: p.grouped,
-  });
-  return `${p.prefix}${body}${p.suffix}`;
-}
-
-function prefersReducedMotion(): boolean {
-  return (
-    typeof window !== 'undefined' &&
-    !!window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  );
-}
-
-/**
- * Rolls a metric value up from zero to its target on mount (transitions.dev
- * spinning-counter / number-pop-in, applied as a load-in count). Preserves the
- * original prefix, thousands grouping, and decimals, and snaps to the exact
- * source string at the end to avoid float drift. Honours reduced-motion by
- * showing the final value immediately.
- */
-function useCountUp(value: string, enabled: boolean): string {
-  const parsed = useMemo(() => parseMetric(value), [value]);
-  const [display, setDisplay] = useState(() =>
-    enabled && parsed && !prefersReducedMotion() ? formatMetric(0, parsed) : value,
-  );
-
-  useEffect(() => {
-    if (!enabled || !parsed || prefersReducedMotion()) {
-      setDisplay(value);
-      return;
-    }
-    const duration = motionDurationMs('--oi-motion-duration-long');
-    if (duration <= 0) {
-      setDisplay(value);
-      return;
-    }
-    setDisplay(formatMetric(0, parsed));
-    let raf = 0;
-    let start = 0;
-    const tick = (t: number) => {
-      if (!start) start = t;
-      const progress = Math.min((t - start) / duration, 1);
-      // Ease-out cubic so the roll decelerates into the final value.
-      const eased = 1 - Math.pow(1 - progress, 3);
-      if (progress < 1) {
-        setDisplay(formatMetric(parsed.target * eased, parsed));
-        raf = requestAnimationFrame(tick);
-      } else {
-        setDisplay(value);
-      }
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [enabled, parsed, value]);
-
-  return display;
-}

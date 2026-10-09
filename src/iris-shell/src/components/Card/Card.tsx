@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { cx } from '../../lib/cx.js';
+import { Icon } from '../Icon/Icon.js';
 import styles from './Card.module.css';
 
 export interface CardProps {
@@ -31,5 +32,13 @@ export function Card({ title, helper, actions, children, className }: CardProps)
       )}
       <div className={styles.body}>{children}</div>
     </section>
+  );
+}
+
+export function CardTitleIcon({ icon }: { icon: string }) {
+  return (
+    <span className={styles.titleIcon} aria-hidden="true">
+      <Icon name={icon} size="20px" />
+    </span>
   );
 }

@@ -4,6 +4,7 @@ import { select } from 'd3-selection';
 import { easeCubicOut } from 'd3-ease';
 import 'd3-transition';
 import { cx } from '../../lib/cx.js';
+import { useCountUp } from '../../lib/useCountUp.js';
 import { motionDurationMs, prefersReducedMotion } from '../../lib/motion.js';
 import { Tooltip } from '../Tooltip/Tooltip.js';
 import styles from './BarChart.module.css';
@@ -117,7 +118,7 @@ export function BarChart({
               <span className={styles.horizontalTrack} aria-hidden="true">
                 <span className={styles.horizontalFill} style={{ width: `${widthScale(datum.value)}%` }} />
               </span>
-              <span className={styles.horizontalValue}>{datum.value.toLocaleString('en-US')}</span>
+              <AnimatedInlineValue value={datum.value.toLocaleString('en-US')} className={styles.horizontalValue} />
             </>
           );
           return onSelect ? (
@@ -159,9 +160,7 @@ export function BarChart({
               y2={y}
               className={styles.gridline}
             />
-            <text x={PAD.left - 6} y={y + 3} className={styles.tick} textAnchor="end">
-              {formatTick(t)}
-            </text>
+            <AnimatedTickLabel x={PAD.left - 6} y={y + 3} value={formatTick(t)} className={styles.tick} />
           </g>
         );
       })}
@@ -204,4 +203,19 @@ export function BarChart({
 function formatTick(n: number): string {
   if (n >= 1000) return `${Math.round(n / 1000)}k`;
   return String(n);
+}
+
+function AnimatedInlineValue({ value, className }: { value: string; className: string }) {
+  const displayedValue = useCountUp(value);
+  return <span className={className}>{displayedValue}</span>;
+}
+
+function AnimatedTickLabel({
+  x,
+  y,
+  value,
+  className,
+}: { x: number; y: number; value: string; className: string }) {
+  const displayedValue = useCountUp(value);
+  return <text x={x} y={y} className={className} textAnchor="end">{displayedValue}</text>;
 }

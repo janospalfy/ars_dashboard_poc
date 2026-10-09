@@ -120,9 +120,9 @@ export const AD_KPIS: DirectoryKpi[] = [
 
 export const AD_RISK_KPIS = AD_KPIS.filter((kpi) => kpi.risk);
 export const AD_TOTALS = [
-  { label: 'Total Users', value: 8200 },
-  { label: 'Total Groups', value: 2100 },
-  { label: 'Total Computers', value: 4680 },
+  { label: 'Total Users', value: 8200, icon: 'Users' },
+  { label: 'Total Groups', value: 2100, icon: 'UsersThree' },
+  { label: 'Total Computers', value: 4680, icon: 'Devices' },
 ];
 export const AD_PAGE_SIZE = 25;
 

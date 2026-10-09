@@ -24,7 +24,21 @@
   word-break: break-word;
 }
 
+.titleIcon {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+  border-radius: var(--oi-border-radius-max);
+  background-color: var(--oi-background-color-primary);
+  color: var(--oi-content-color-secondary);
+}
+
 .title {
+  min-width: 0;
   margin: 0;
   font-size: var(--oi-text-heading-05-font-size);
   line-height: var(--oi-text-heading-05-line-height);

@@ -7,6 +7,7 @@ import 'd3-transition';
 import { cx } from '../../lib/cx.js';
 import { chartSeriesColor } from '../../lib/chartColors.js';
 import { motionDurationMs, prefersReducedMotion } from '../../lib/motion.js';
+import { useCountUp } from '../../lib/useCountUp.js';
 import { Tooltip } from '../Tooltip/Tooltip.js';
 import styles from './DonutChart.module.css';
 
@@ -71,6 +72,10 @@ export function DonutChart({ segments, strokeWidth = 22, className, variant = 'f
       .endAngle(isSemicircle ? Math.PI / 2 : 2 * Math.PI);
     return { arcs: layout(visibleSegments), total: t };
   }, [segments, isSemicircle, hiddenSegments]);
+  const totalText = useFullTotal && totalFormat !== 'abbreviated'
+    ? total.toLocaleString('en-US')
+    : formatTotal(total);
+  const displayedTotal = useCountUp(totalText);
 
   // Sweep each arc open from its start angle to its end angle by
   // interpolating `endAngle`. React renders the final paths; d3 only drives
@@ -129,7 +134,7 @@ export function DonutChart({ segments, strokeWidth = 22, className, variant = 'f
         </g>
         {/* Center label */}
         {!useFullTotal && <text x={VB / 2} y={VB / 2 - 2} textAnchor="middle" className={styles.centerNum}>
-          {formatTotal(total)}
+          {displayedTotal}
         </text>}
         {!useFullTotal && <text x={VB / 2} y={VB / 2 + 14} textAnchor="middle" className={styles.centerLbl}>
           Total
@@ -145,7 +150,7 @@ export function DonutChart({ segments, strokeWidth = 22, className, variant = 'f
           <div className={styles.total}>
             <Tooltip label={`Total: ${total.toLocaleString('en-US')}`}>
               <p className={styles.totalValue} tabIndex={0}>
-                {totalFormat === 'abbreviated' ? formatTotal(total) : total.toLocaleString('en-US')}
+                {displayedTotal}
               </p>
             </Tooltip>
             <p className={styles.totalLabel}>Total</p>
@@ -154,27 +159,51 @@ export function DonutChart({ segments, strokeWidth = 22, className, variant = 'f
       ) : chart}
       <ul className={styles.legend}>
         {segments.map((s, i) => (
-          <li key={s.label} className={styles.legendItem} title={s.label}>
-            <button
-              type="button"
-              className={styles.legendButton}
-              aria-label={s.label}
-              aria-pressed={!hiddenSegments.has(s.label)}
-              title={`${hiddenSegments.has(s.label) ? 'Show' : 'Hide'} ${s.label}`}
-              onClick={() => toggleSegment(s.label)}
-            >
-              <span
-                className={styles.dot}
-                style={{ backgroundColor: s.color ?? chartSeriesColor(i) }}
-                aria-hidden="true"
-              />
-              <span className={styles.legendLabel}>{s.label}</span>
-              <span className={styles.legendValue}>{formatTotal(s.value)}</span>
-            </button>
-          </li>
+          <DonutLegendItem
+            key={s.label}
+            segment={s}
+            index={i}
+            hidden={hiddenSegments.has(s.label)}
+            onToggle={toggleSegment}
+          />
         ))}
       </ul>
     </div>
+  );
+}
+
+function DonutLegendItem({
+  segment,
+  index,
+  hidden,
+  onToggle,
+}: {
+  segment: DonutSegment;
+  index: number;
+  hidden: boolean;
+  onToggle: (label: string) => void;
+}) {
+  const displayedValue = useCountUp(formatTotal(segment.value));
+
+  return (
+    <li className={styles.legendItem} title={segment.label}>
+      <button
+        type="button"
+        className={styles.legendButton}
+        aria-label={segment.label}
+        aria-pressed={!hidden}
+        title={`${hidden ? 'Show' : 'Hide'} ${segment.label}`}
+        onClick={() => onToggle(segment.label)}
+      >
+        <span
+          className={styles.dot}
+          style={{ backgroundColor: segment.color ?? chartSeriesColor(index) }}
+          aria-hidden="true"
+        />
+        <span className={styles.legendLabel}>{segment.label}</span>
+        <span className={styles.legendValue}>{displayedValue}</span>
+      </button>
+    </li>
   );
 }
 

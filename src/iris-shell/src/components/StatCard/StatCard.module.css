@@ -106,7 +106,7 @@
 .dashboardTitleGroup {
   display: flex;
   align-items: center;
-  gap: var(--oi-spacing-4);
+  gap: var(--oi-spacing-s);
   min-width: 0;
 }
 

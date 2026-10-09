@@ -4,6 +4,7 @@ import { select } from 'd3-selection';
 import { easeCubicOut } from 'd3-ease';
 import 'd3-transition';
 import { motionDurationMs, prefersReducedMotion } from '../../lib/motion.js';
+import { useCountUp } from '../../lib/useCountUp.js';
 import { Tooltip } from '../Tooltip/Tooltip.js';
 import styles from './GroupedBarChart.module.css';
 
@@ -128,9 +129,12 @@ export function GroupedBarChart({ data }: { data: GroupedBarDatum[] }) {
               y2={tick.y}
               className={styles.gridline}
             />
-            <text x={PADDING.left - 8} y={tick.y + 4} className={styles.tick} textAnchor="end">
-              {formatTick(tick.value)}
-            </text>
+            <GroupedChartTick
+              x={PADDING.left - 8}
+              y={tick.y + 4}
+              value={formatTick(tick.value)}
+              className={styles.tick}
+            />
           </g>
         ))}
         <g ref={barsRef}>
@@ -177,4 +181,14 @@ export function GroupedBarChart({ data }: { data: GroupedBarDatum[] }) {
 
 function formatTick(value: number): string {
   return value >= 1000 ? `${Math.round(value / 1000)}k` : String(value);
+}
+
+function GroupedChartTick({
+  x,
+  y,
+  value,
+  className,
+}: { x: number; y: number; value: string; className: string }) {
+  const displayedValue = useCountUp(value);
+  return <text x={x} y={y} className={className} textAnchor="end">{displayedValue}</text>;
 }

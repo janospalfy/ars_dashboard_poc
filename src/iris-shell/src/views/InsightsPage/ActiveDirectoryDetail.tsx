@@ -52,6 +52,7 @@ export function ActiveDirectoryDetail({ webInterfaceUrl }: { webInterfaceUrl?: s
             key={metric.label}
             label={metric.label}
             value={metric.value.toLocaleString('en-US')}
+            icon={metric.icon}
             trend={SUMMARY_TRENDS[index]}
             variant="dashboard"
             showOptions={false}

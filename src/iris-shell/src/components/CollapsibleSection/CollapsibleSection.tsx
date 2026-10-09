@@ -1,5 +1,6 @@
 import { useId, useState, type ReactNode } from 'react';
 import { cx } from '../../lib/cx.js';
+import { useCountUp } from '../../lib/useCountUp.js';
 import { Icon } from '../Icon/Icon.js';
 import styles from './CollapsibleSection.module.css';
 
@@ -25,6 +26,7 @@ export function CollapsibleSection({ title, children, className, collapsible = f
   const bodyId = useId();
   const triggerId = `${bodyId}-trigger`;
   const Heading = variant === 'accordion' ? 'h3' : 'h2';
+  const displayedCount = useCountUp(count === undefined ? '' : String(count), count !== undefined);
   return (
     <section className={cx(styles.section, variant === 'accordion' && styles.accordion, className)}>
       <header className={styles.header}>
@@ -43,7 +45,7 @@ export function CollapsibleSection({ title, children, className, collapsible = f
             >
               {variant === 'accordion' && <Icon name={isExpanded ? 'CaretUp' : 'CaretDown'} size="16px" />}
               <span className={styles.toggleLabel}>{title}</span>
-              {count !== undefined && <span className={styles.count}>{count}</span>}
+              {count !== undefined && <span className={styles.count}>{displayedCount}</span>}
               {variant !== 'accordion' && <Icon name={isExpanded ? 'CaretDown' : 'CaretRight'} size="16px" />}
             </button>
           ) : title}
