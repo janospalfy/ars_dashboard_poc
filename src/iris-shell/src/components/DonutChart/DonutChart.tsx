@@ -128,7 +128,12 @@ export function DonutChart({ segments, strokeWidth = 22, className, variant = 'f
         <g ref={ringRef} transform={`translate(${VB / 2} ${VB / 2}) rotate(${isSemicircle ? 0 : -90})`}>
           {arcs.map((a) => (
             <Tooltip key={a.data.label} label={`${a.data.label}: ${a.data.value.toLocaleString('en-US')}`}>
-              <path d={makeArc(a) ?? ''} fill={a.data.color ?? chartSeriesColor(a.index)} tabIndex={0} />
+              <path
+                d={makeArc(a) ?? ''}
+                fill={a.data.color ?? chartSeriesColor(a.index)}
+                tabIndex={0}
+                className={styles.segment}
+              />
             </Tooltip>
           ))}
         </g>

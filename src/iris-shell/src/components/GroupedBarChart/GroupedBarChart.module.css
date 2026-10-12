@@ -28,6 +28,7 @@
 }
 
 .bar {
+  cursor: pointer;
   transition: opacity var(--oi-motion-duration-short) var(--oi-motion-ease-default);
 }
 

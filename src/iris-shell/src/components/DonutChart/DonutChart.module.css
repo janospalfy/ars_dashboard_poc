@@ -31,6 +31,15 @@
   flex-shrink: 0;
 }
 
+.segment {
+  cursor: pointer;
+  transition: opacity var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+}
+
+.segment:hover {
+  opacity: 0.85;
+}
+
 .centerNum {
   font-family: var(--oi-font-family-code);
   font-size: 18px;
@@ -210,8 +219,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .legendItem {
+  .legendItem,
+  .segment {
     animation: none;
+    transition: none;
   }
 }
 
