@@ -6,7 +6,7 @@ import { StatCard, type StatCardTrend } from '../../components/StatCard/StatCard
 import { TextInput } from '../../components/TextInput/TextInput.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
-import { prefersReducedMotion } from '../../lib/motion.js';
+import { motionDurationMs, prefersReducedMotion } from '../../lib/motion.js';
 import { objectUrl } from '../../lib/webInterface.js';
 import { DataTable, type DataTableColumn } from '../../components/DataTable/DataTable.js';
 import {
@@ -63,9 +63,16 @@ export function ActiveRolesDetail({ webInterfaceUrl }: { webInterfaceUrl?: strin
     setSelected((previous) => previous?.id === kpi.id ? null : kpi);
   };
 
-  const drillDownRef = useRef<HTMLDivElement | null>(null);
+  const drillDownRef = useRef<HTMLElement | null>(null);
   useEffect(() => {
-    if (selected) drillDownRef.current?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'nearest' });
+    if (!selected) return;
+    const reduceMotion = prefersReducedMotion();
+    const timer = window.setTimeout(() => {
+      window.requestAnimationFrame(() => {
+        drillDownRef.current?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      });
+    }, reduceMotion ? 0 : motionDurationMs('--oi-motion-duration-default'));
+    return () => window.clearTimeout(timer);
   }, [selected]);
 
   const rows: KpiRow[] = selected ? buildKpiRows(selected) : [];
@@ -143,8 +150,9 @@ export function ActiveRolesDetail({ webInterfaceUrl }: { webInterfaceUrl?: strin
               className={styles.metricAccordion}
               expanded={selected?.id === kpi.id}
               onExpandedChange={(expanded) => setSelected(expanded ? kpi : null)}
+              sectionRef={selected?.id === kpi.id ? drillDownRef : undefined}
             >
-              <div ref={selected?.id === kpi.id ? drillDownRef : undefined}>
+              <div>
                 {kpi.breakdown && (
                   <p className={styles.breakdown}>
                     {kpi.breakdown.label}:{' '}

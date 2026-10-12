@@ -179,8 +179,14 @@ export function GlobalSidebar({
                         className={cx(styles.groupCaret, expanded && styles.groupCaretOpen)}
                       />
                     </button>
-                    {expanded && (
-                      <ul id={listId} className={styles.treeList} role="list">
+                    <div
+                      id={listId}
+                      className={cx(styles.treeReveal, expanded && styles.treeRevealOpen)}
+                      aria-hidden={!expanded}
+                      inert={!expanded}
+                    >
+                      <div className={styles.treeRevealInner}>
+                        <ul className={styles.treeList} role="list">
                         {group.items.map((item, i) => {
                           const active = isEntryActive(item, activeItem);
                           return (
@@ -200,8 +206,9 @@ export function GlobalSidebar({
                             </li>
                           );
                         })}
-                      </ul>
-                    )}
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 );
               })}

@@ -11,7 +11,7 @@ import { IconButton } from '../../components/IconButton/IconButton.js';
 import { TextInput } from '../../components/TextInput/TextInput.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
 import { objectUrl } from '../../lib/webInterface.js';
-import { prefersReducedMotion } from '../../lib/motion.js';
+import { motionDurationMs, prefersReducedMotion } from '../../lib/motion.js';
 import { AD_CATEGORIES, AD_KPIS, AD_PAGE_SIZE, AD_RISK_KPIS, AD_TOTALS, buildDirectoryRows, type DirectoryKpi } from './activeDirectoryKpis.js';
 import type { KpiRow } from './activeRolesKpis.js';
 import { RiskCheckGrid } from './RiskCheckGrid.js';
@@ -95,7 +95,7 @@ export function ActiveDirectoryDetail({ webInterfaceUrl }: { webInterfaceUrl?: s
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(() => new Set());
   const [directorySearch, setDirectorySearch] = useState('');
   const [page, setPage] = useState(1);
-  const detailsRef = useRef<HTMLDivElement | null>(null);
+  const detailsRef = useRef<HTMLElement | null>(null);
   const normalizedSearch = directorySearch.trim().toLowerCase();
   const filteredCategories = AD_CATEGORIES.map((category) => ({
     ...category,
@@ -113,7 +113,14 @@ export function ActiveDirectoryDetail({ webInterfaceUrl }: { webInterfaceUrl?: s
   };
 
   useEffect(() => {
-    if (selected) detailsRef.current?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'nearest' });
+    if (!selected) return;
+    const reduceMotion = prefersReducedMotion();
+    const timer = window.setTimeout(() => {
+      window.requestAnimationFrame(() => {
+        detailsRef.current?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      });
+    }, reduceMotion ? 0 : motionDurationMs('--oi-motion-duration-default'));
+    return () => window.clearTimeout(timer);
   }, [selected, expandedCategories]);
 
   const rows = selected ? buildDirectoryRows(selected, page) : [];
@@ -227,8 +234,9 @@ export function ActiveDirectoryDetail({ webInterfaceUrl }: { webInterfaceUrl?: s
                     setSelected(expanded ? kpi : null);
                     setPage(1);
                   }}
+                  sectionRef={selected?.id === kpi.id ? detailsRef : undefined}
                 >
-                  <div ref={selected?.id === kpi.id ? detailsRef : undefined}>
+                  <div>
                     <DataTable
                       rows={rows}
                       columns={columns}

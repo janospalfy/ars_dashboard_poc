@@ -4,6 +4,10 @@
   gap: var(--oi-spacing-m);
 }
 
+.collapsibleSection {
+  gap: 0;
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -23,6 +27,28 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: var(--oi-spacing-m);
+}
+
+.collapseTrack {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-top: 0;
+  opacity: 0;
+  transition:
+    grid-template-rows var(--oi-motion-duration-default) var(--oi-motion-ease-default),
+    margin-top var(--oi-motion-duration-default) var(--oi-motion-ease-default),
+    opacity var(--oi-motion-duration-default) var(--oi-motion-ease-default);
+}
+
+.collapseTrackOpen {
+  grid-template-rows: 1fr;
+  margin-top: var(--oi-spacing-m);
+  opacity: 1;
+}
+
+.collapseInner {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .collapsibleTitle {
@@ -48,6 +74,17 @@
   outline: 2px solid var(--oi-border-color-focus);
   outline-offset: var(--oi-spacing-4);
   border-radius: var(--oi-border-radius-default);
+}
+
+.chevron {
+  display: inline-flex;
+  flex: 0 0 auto;
+  transform: rotate(0deg);
+  transition: transform var(--oi-motion-duration-default) var(--oi-motion-ease-default);
+}
+
+.chevronExpanded {
+  transform: rotate(90deg);
 }
 
 .toggleLabel {
@@ -97,8 +134,23 @@
   padding: 0;
 }
 
+.accordion .collapseTrackOpen {
+  margin-top: 0;
+}
+
+.accordion .chevronExpanded {
+  transform: rotate(180deg);
+}
+
 @media (max-width: 480px) {
   .body {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron,
+  .collapseTrack {
+    transition: none;
   }
 }

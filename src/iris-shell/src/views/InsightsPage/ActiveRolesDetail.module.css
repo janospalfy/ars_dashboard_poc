@@ -267,7 +267,7 @@
   font-weight: var(--oi-font-weight-600);
 }
 
-.sectionAccordion > div > section {
+.sectionAccordion [data-collapsible-content] > section {
   margin-inline-start: var(--oi-spacing-l);
 }
 
@@ -276,7 +276,7 @@
   padding: var(--oi-spacing-xs) var(--oi-spacing-l);
 }
 
-.directoryCategoryAccordion > div > section {
+.directoryCategoryAccordion [data-collapsible-content] > section {
   margin-inline-start: var(--oi-spacing-xl);
 }
 

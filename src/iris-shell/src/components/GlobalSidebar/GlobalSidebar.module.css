@@ -256,8 +256,31 @@
   transform: rotate(180deg);
 }
 
+.treeReveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows var(--oi-motion-duration-default) var(--oi-motion-ease-default),
+    opacity var(--oi-motion-duration-default) var(--oi-motion-ease-default);
+}
+
+.treeRevealOpen {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.treeRevealInner {
+  min-height: 0;
+  overflow: hidden;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .groupCaret {
+    transition: none;
+  }
+
+  .treeReveal {
     transition: none;
   }
 }
