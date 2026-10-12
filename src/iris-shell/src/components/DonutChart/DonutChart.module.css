@@ -139,6 +139,7 @@
 .totalValue {
   margin: 0;
   pointer-events: auto;
+  cursor: pointer;
   font-family: var(--oi-font-family-code);
   font-size: var(--oi-font-size-xxl);
   line-height: var(--oi-line-height-xxl);
