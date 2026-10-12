@@ -97,7 +97,7 @@ function ExportMenu() {
 /**
  * InsightsPage — read-only analytics dashboard. Hosted at #/insights.
  */
-export function InsightsPage({ initialTab }: { initialTab?: string }) {
+export function InsightsPage({ initialTab, initialKpiId }: { initialTab?: string; initialKpiId?: string }) {
   const [tab, setTabState] = useState(
     initialTab && CATEGORY_DETAILS[initialTab] ? initialTab : OVERVIEW_TAB,
   );
@@ -239,7 +239,7 @@ export function InsightsPage({ initialTab }: { initialTab?: string }) {
             </div>
 
             {tab === 'active-roles' ? (
-              <ActiveRolesDetail />
+              <ActiveRolesDetail initialKpiId={initialKpiId} />
             ) : tab === 'active-directory' ? (
               <ActiveDirectoryDetail />
             ) : tab === 'licensing' ? (

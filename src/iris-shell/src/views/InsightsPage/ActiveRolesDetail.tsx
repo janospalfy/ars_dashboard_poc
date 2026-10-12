@@ -52,8 +52,10 @@ const SUMMARY_TRENDS: Record<string, StatCardTrend> = {
  * drill-down (columns vary by KPI — see activeRolesKpis.ts), and the
  * Database & Replication Topology table.
  */
-export function ActiveRolesDetail({ webInterfaceUrl }: { webInterfaceUrl?: string } = {}) {
-  const [selected, setSelected] = useState<KpiDefinition | null>(null);
+export function ActiveRolesDetail({ webInterfaceUrl, initialKpiId }: { webInterfaceUrl?: string; initialKpiId?: string } = {}) {
+  const [selected, setSelected] = useState<KpiDefinition | null>(
+    () => AR_CONFIGURATION_KPIS.find((kpi) => kpi.id === initialKpiId) ?? null,
+  );
   const [configurationSearch, setConfigurationSearch] = useState('');
   const normalizedSearch = configurationSearch.trim().toLowerCase();
   const filteredConfigurationKpis = AR_CONFIGURATION_KPIS.filter((kpi) =>

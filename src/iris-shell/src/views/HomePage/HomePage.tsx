@@ -1,5 +1,7 @@
 import type { MouseEvent } from 'react';
 import { AppShell } from '../AppShell/AppShell.js';
+import { Badge } from '../../components/Badge/Badge.js';
+import { CardTitleIcon } from '../../components/Card/Card.js';
 import { HomeLauncher } from '../../components/HomeLauncher/HomeLauncher.js';
 import { Icon } from '../../components/Icon/Icon.js';
 import { Link } from '../../components/Link/Link.js';
@@ -7,6 +9,7 @@ import { PAGE_ITEMS } from '../../lib/commands.js';
 import { CURRENT_USER } from '../../lib/currentUser.js';
 import { navigate } from '../../lib/router.js';
 import { useFavorites, type FavoriteEntry } from '../../lib/useFavorites.js';
+import { AR_GOVERNANCE_KPIS } from '../InsightsPage/activeRolesKpis.js';
 import styles from './HomePage.module.css';
 
 const EXAMPLE_FAVORITES: FavoriteEntry[] = [
@@ -46,6 +49,35 @@ const EXAMPLE_CUSTOM_LINKS = [
   },
 ];
 
+const NEEDS_ATTENTION_KPIS = AR_GOVERNANCE_KPIS
+  .filter((kpi) => kpi.value > 0)
+  .sort((first, second) => second.value - first.value || first.label.localeCompare(second.label))
+  .slice(0, 3);
+
+const SAMPLE_ENVIRONMENT = [
+  {
+    id: 'servers',
+    label: 'Active Roles servers',
+    detail: '6 of 7 responding',
+    status: '1 unavailable',
+    tone: 'warning' as const,
+  },
+  {
+    id: 'configuration',
+    label: 'Configuration database',
+    detail: 'ARConfigDb01 · Primary',
+    status: 'Connected',
+    tone: 'success' as const,
+  },
+  {
+    id: 'history',
+    label: 'Management History database',
+    detail: 'ARHistoryDb01 · Primary',
+    status: 'Connected',
+    tone: 'success' as const,
+  },
+];
+
 /**
  * HomePage — Home surface for the Active Roles vertical (`#/home`). Mirrors
  * the Identity Manager Home layout: a greeting and search launcher followed
@@ -77,6 +109,24 @@ export function HomePage() {
 
         <hr className={styles.divider} />
 
+        <section className={styles.environmentStatus} aria-labelledby="environment-status-title">
+          <div className={styles.environmentHeader}>
+            <CardTitleIcon icon="Devices" />
+            <h2 className={styles.environmentTitle} id="environment-status-title">Environment status</h2>
+          </div>
+          <div className={styles.environmentPanel}>
+            <div className={styles.environmentGrid}>
+              {SAMPLE_ENVIRONMENT.map((component) => (
+                <div className={styles.environmentItem} key={component.id}>
+                  <span className={styles.environmentLabel}>{component.label}</span>
+                  <span className={styles.environmentDetail}>{component.detail}</span>
+                  <Badge tone={component.tone}>{component.status}</Badge>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <div className={styles.activityGrid}>
           <div className={styles.primaryWorkArea}>
             <section className={styles.activitySection} aria-labelledby="my-work-title">
@@ -105,6 +155,34 @@ export function HomePage() {
                     <Icon name="ArrowRight" size="16px" className={styles.itemArrow} />
                   </a>
                 ))}
+              </div>
+            </section>
+
+            <section className={styles.needsAttention} aria-labelledby="needs-attention-title">
+              <div className={styles.sectionHeader}>
+                <div className={styles.headingContext}>
+                  <h2 className={styles.sectionTitle} id="needs-attention-title">Needs attention</h2>
+                  <span className={styles.sampleLabel}>Sample Governance and Risk data</span>
+                </div>
+                <Link href="#/insights/dashboard/active-roles" onClick={(event) => open(event, '#/insights/dashboard/active-roles')}>
+                  View all
+                </Link>
+              </div>
+              <div className={styles.attentionList}>
+                {NEEDS_ATTENTION_KPIS.map((kpi) => {
+                  const href = `#/insights/dashboard/active-roles/${encodeURIComponent(kpi.id)}`;
+                  return (
+                    <a key={kpi.id} className={styles.itemLink} href={href} onClick={(event) => open(event, href)}>
+                      <Icon name="Warning" size="20px" className={styles.attentionIcon} />
+                      <span className={styles.itemText}>
+                        <span className={styles.itemName}>{kpi.label}</span>
+                        <span className={styles.itemMeta}>{kpi.value.toLocaleString('en-US')} objects · Governance and Risk</span>
+                      </span>
+                      <Badge tone="warning">Review</Badge>
+                      <Icon name="ArrowRight" size="16px" className={styles.itemArrow} />
+                    </a>
+                  );
+                })}
               </div>
             </section>
 

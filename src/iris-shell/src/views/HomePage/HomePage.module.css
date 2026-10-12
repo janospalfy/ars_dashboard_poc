@@ -41,6 +41,68 @@
   border-top: 0.5px var(--oi-border-style-solid) var(--oi-border-color-default);
 }
 
+.environmentStatus {
+  width: 100%;
+  max-width: 936px;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+  border-radius: var(--oi-border-radius-l);
+  background-color: var(--oi-background-color-secondary);
+}
+
+.environmentHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+  padding: var(--oi-spacing-12) var(--oi-spacing-12) var(--oi-spacing-8);
+}
+
+.environmentTitle {
+  min-width: 0;
+  margin: 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
+  color: var(--oi-content-color-secondary);
+}
+
+.environmentPanel {
+  margin: 0;
+  padding: var(--oi-spacing-l);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-l);
+  background-color: var(--oi-background-color-primary);
+}
+
+.environmentGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--oi-spacing-m);
+}
+
+.environmentItem {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: var(--oi-spacing-xs);
+  color: var(--oi-content-color-secondary);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
+.environmentLabel {
+  color: var(--oi-content-color-primary);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+}
+
+.environmentDetail {
+  color: var(--oi-content-color-secondary);
+}
+
 .activityGrid {
   width: 100%;
   max-width: 936px;
@@ -59,6 +121,20 @@
 
 .activitySection {
   min-width: 0;
+}
+
+.needsAttention {
+  min-width: 0;
+}
+
+.attentionList {
+  display: flex;
+  flex-direction: column;
+}
+
+.attentionIcon {
+  flex: 0 0 auto;
+  color: var(--oi-content-color-warning);
 }
 
 .favoritesSection {
@@ -231,6 +307,10 @@
 
   .favoritesSection {
     min-height: 0;
+  }
+
+  .environmentGrid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

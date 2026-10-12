@@ -25,7 +25,7 @@ export type Route =
   | { name: 'managementUnits'; params: Record<string, never> }
   | { name: 'arHome'; params: Record<string, never> }
   | { name: 'insights'; params: Record<string, never> }
-  | { name: 'insightsDashboard'; params: { tab?: string } }
+  | { name: 'insightsDashboard'; params: { tab?: string; kpi?: string } }
   | { name: 'assessments'; params: Record<string, never> }
   | { name: 'snapshots'; params: Record<string, never> }
   | { name: 'customization'; params: Record<string, never> }
@@ -62,7 +62,7 @@ const ROUTES: RouteDef[] = [
   { name: 'managementUnits', pattern: /^#\/management-units$/, keys: [] },
   { name: 'arHome', pattern: /^#\/home$/, keys: [] },
   { name: 'insights', pattern: /^#\/insights$/, keys: [] },
-  { name: 'insightsDashboard', pattern: /^#\/insights\/dashboard\/([^/]+)$/, keys: ['tab'] },
+  { name: 'insightsDashboard', pattern: /^#\/insights\/dashboard\/([^/]+)(?:\/([^/]+))?$/, keys: ['tab', 'kpi'] },
   { name: 'insightsDashboard', pattern: /^#\/insights\/dashboard$/, keys: [] },
   { name: 'assessments', pattern: /^#\/assessments$/, keys: [] },
   { name: 'snapshots', pattern: /^#\/snapshots$/, keys: [] },
@@ -87,7 +87,8 @@ function parseHash(hash: string | null | undefined): Route {
     if (m) {
       const params: Record<string, string> = {};
       r.keys.forEach((k, i) => {
-        params[k] = decodeURIComponent(m[i + 1]);
+        const value = m[i + 1];
+        if (value !== undefined) params[k] = decodeURIComponent(value);
       });
       return { name: r.name, params } as Route;
     }
