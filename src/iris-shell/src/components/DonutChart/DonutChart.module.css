@@ -88,7 +88,7 @@
 }
 
 .fullTotal {
-  column-gap: var(--oi-spacing-m);
+  column-gap: var(--oi-spacing-xxl);
 }
 
 .fullTotal:not(.stacked) .legend {
@@ -179,15 +179,10 @@
 }
 
 .legendItem {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: var(--oi-spacing-s);
+  display: block;
   font-size: var(--oi-text-caption-font-size);
   line-height: var(--oi-text-caption-line-height);
   color: var(--oi-content-color-primary);
-  /* Let the label column shrink below its intrinsic size so the ellipsis
-     rule on .legendLabel can engage. */
   min-width: 0;
   /* Staggered rise-in on mount, complementing the d3 arc animation. */
   animation: donut-legend-in var(--oi-motion-duration-default)
@@ -229,13 +224,13 @@
 .dot {
   width: 10px;
   height: 10px;
+  justify-self: center;
+  align-self: center;
   border-radius: 50%;
 }
 
 .legendLabel {
   color: var(--oi-content-color-secondary);
-  /* Safety net: truncate rather than overflow the card if the legend ever
-     gets narrower than the longest label (e.g. very narrow side sheet). */
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -243,6 +238,9 @@
 }
 
 .legendValue {
+  width: 8ch;
+  text-align: right;
+  white-space: nowrap;
   font-weight: var(--oi-text-caption-strong-font-weight);
   font-variant-numeric: tabular-nums;
   font-family: var(--oi-font-family-code);
@@ -250,8 +248,7 @@
 
 .legendButton {
   display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: 12px minmax(0, 1fr) 8ch;
   align-items: center;
   gap: var(--oi-spacing-s);
   width: 100%;
