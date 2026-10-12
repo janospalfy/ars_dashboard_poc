@@ -8,7 +8,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--oi-spacing-xl);
-  padding: var(--oi-spacing-xxl) var(--oi-spacing-l);
+  padding: var(--oi-spacing-xxl);
   min-width: 0;
 }
 
@@ -45,7 +45,15 @@
   width: 100%;
   max-width: 936px;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr) 336px;
+  align-items: stretch;
+  gap: 40px;
+}
+
+.primaryWorkArea {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
   gap: var(--oi-spacing-xxl);
 }
 
@@ -53,19 +61,37 @@
   min-width: 0;
 }
 
+.favoritesSection {
+  min-height: 644px;
+  padding: var(--oi-spacing-xl);
+  border-radius: var(--oi-border-radius-l);
+  background-color: var(--oi-background-color-secondary);
+}
+
 .sectionHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--oi-spacing-m);
-  margin-bottom: var(--oi-spacing-s);
+  margin-bottom: var(--oi-spacing-m);
+}
+
+.headingContext {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.workHeader {
+  overflow: hidden;
 }
 
 .sectionTitle {
   margin: 0;
-  font-size: var(--oi-text-heading-05-font-size);
-  line-height: var(--oi-text-heading-05-line-height);
-  font-weight: var(--oi-text-heading-05-font-weight);
+  font-size: var(--oi-text-heading-04-font-size);
+  line-height: var(--oi-text-heading-04-line-height);
+  font-weight: var(--oi-text-heading-04-font-weight);
   color: var(--oi-content-color-primary);
 }
 
@@ -83,11 +109,11 @@
 
 .itemLink {
   min-width: 0;
-  min-height: 52px;
+  min-height: 88px;
   display: flex;
   align-items: center;
   gap: var(--oi-spacing-m);
-  padding: var(--oi-spacing-s) var(--oi-spacing-xs);
+  padding: 22px var(--oi-spacing-xs);
   border-bottom: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
   color: var(--oi-content-color-primary);
   text-decoration: none;
@@ -137,13 +163,13 @@
 
 .customLinks {
   width: 100%;
-  max-width: 936px;
+  min-width: 0;
 }
 
 .customLinkGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--oi-spacing-m);
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-s);
 }
 
 .customLinkCard {
@@ -151,8 +177,8 @@
   min-height: 88px;
   display: flex;
   align-items: flex-start;
-  gap: var(--oi-spacing-m);
-  padding: var(--oi-spacing-m);
+  gap: var(--oi-spacing-s);
+  padding: 20px;
   border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
   border-radius: var(--oi-border-radius-l);
   background-color: var(--oi-background-color-primary);
@@ -179,7 +205,7 @@
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  gap: var(--oi-spacing-xs);
+  gap: var(--oi-spacing-s);
 }
 
 .customLinkTitle {
@@ -198,18 +224,28 @@
 }
 
 @media (max-width: 1100px) {
-  .customLinkGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .activityGrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--oi-spacing-l);
+  }
+
+  .favoritesSection {
+    min-height: 0;
   }
 }
 
 @media (max-width: 720px) {
-  .activityGrid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--oi-spacing-xl);
+  .page {
+    padding: var(--oi-spacing-l);
   }
 
-  .customLinkGrid {
-    grid-template-columns: minmax(0, 1fr);
+  .headingContext {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--oi-spacing-xs);
+  }
+
+  .workHeader {
+    align-items: flex-start;
   }
 }

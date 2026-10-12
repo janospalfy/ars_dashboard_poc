@@ -13,6 +13,7 @@ const EXAMPLE_FAVORITES: FavoriteEntry[] = [
   { id: 'example-domain-admins', name: 'Domain Admins', type: 'Security group', href: '#/groups' },
   { id: 'example-service-accounts', name: 'Service Accounts', type: 'Organizational unit', href: '#/tree' },
   { id: 'example-enterprise-admins', name: 'Enterprise Admins', type: 'Security group', href: '#/groups' },
+  { id: 'example-schema-admins', name: 'Schema Admins', type: 'Security group', href: '#/groups' },
 ];
 
 const EXAMPLE_APPROVALS = [
@@ -77,37 +78,64 @@ export function HomePage() {
         <hr className={styles.divider} />
 
         <div className={styles.activityGrid}>
-          <section className={styles.activitySection} aria-labelledby="my-work-title">
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle} id="my-work-title">My work</h2>
-              <span className={styles.sampleLabel}>Sample data · Pending approvals</span>
-              <Link href="#/approval" onClick={(event) => open(event, '#/approval')}>
-                View approvals
-              </Link>
-            </div>
-            <div className={styles.itemList}>
-              {EXAMPLE_APPROVALS.map((item) => (
-                <a
-                  key={item.id}
-                  className={styles.itemLink}
-                  href="#/approval"
-                  onClick={(event) => open(event, '#/approval')}
-                >
-                  <Icon name="ClipboardText" size="20px" className={styles.itemIcon} />
-                  <span className={styles.itemText}>
-                    <span className={styles.itemName}>{item.action}</span>
-                    <span className={styles.itemMeta}>{item.requester} · {item.age}</span>
-                  </span>
-                  <Icon name="ArrowRight" size="16px" className={styles.itemArrow} />
-                </a>
-              ))}
-            </div>
-          </section>
+          <div className={styles.primaryWorkArea}>
+            <section className={styles.activitySection} aria-labelledby="my-work-title">
+              <div className={`${styles.sectionHeader} ${styles.workHeader}`}>
+                <div className={styles.headingContext}>
+                  <h2 className={styles.sectionTitle} id="my-work-title">My work</h2>
+                  <span className={styles.sampleLabel}>Sample data · Pending approvals</span>
+                </div>
+                <Link href="#/approval" onClick={(event) => open(event, '#/approval')}>
+                  View approvals
+                </Link>
+              </div>
+              <div className={styles.itemList}>
+                {EXAMPLE_APPROVALS.map((item) => (
+                  <a
+                    key={item.id}
+                    className={styles.itemLink}
+                    href="#/approval"
+                    onClick={(event) => open(event, '#/approval')}
+                  >
+                    <Icon name="ClipboardText" size="20px" className={styles.itemIcon} />
+                    <span className={styles.itemText}>
+                      <span className={styles.itemName}>{item.action}</span>
+                      <span className={styles.itemMeta}>{item.requester} · {item.age}</span>
+                    </span>
+                    <Icon name="ArrowRight" size="16px" className={styles.itemArrow} />
+                  </a>
+                ))}
+              </div>
+            </section>
 
-          <section className={styles.activitySection} aria-labelledby="favorites-title">
+            <section className={styles.customLinks} aria-labelledby="quick-links-title">
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle} id="quick-links-title">Quick links</h2>
+              </div>
+              <div className={styles.customLinkGrid}>
+                {EXAMPLE_CUSTOM_LINKS.map((item) => (
+                  <a
+                    key={item.id}
+                    className={styles.customLinkCard}
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Icon name={item.icon} size="20px" className={styles.itemIcon} />
+                    <span className={styles.customLinkText}>
+                      <span className={styles.customLinkTitle}>{item.title}</span>
+                      <span className={styles.itemMeta}>{item.description}</span>
+                    </span>
+                    <Icon name="ArrowSquareOut" size="16px" className={styles.itemArrow} />
+                  </a>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          <section className={`${styles.activitySection} ${styles.favoritesSection}`} aria-labelledby="favorites-title">
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle} id="favorites-title">Favorites</h2>
-              {!storedFavoriteEntries.length && <span className={styles.sampleLabel}>Examples</span>}
               {storedFavoriteEntries.length > 0 && (
                 <Link href="#/favorites" onClick={(event) => open(event, '#/favorites')}>
                   View all
@@ -137,31 +165,6 @@ export function HomePage() {
             )}
           </section>
         </div>
-
-        <section className={styles.customLinks} aria-labelledby="quick-links-title">
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle} id="quick-links-title">Quick links</h2>
-            <span className={styles.sampleLabel}>Examples</span>
-          </div>
-          <div className={styles.customLinkGrid}>
-            {EXAMPLE_CUSTOM_LINKS.map((item) => (
-              <a
-                key={item.id}
-                className={styles.customLinkCard}
-                href={item.href}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Icon name={item.icon} size="20px" className={styles.itemIcon} />
-                <span className={styles.customLinkText}>
-                  <span className={styles.customLinkTitle}>{item.title}</span>
-                  <span className={styles.itemMeta}>{item.description}</span>
-                </span>
-                <Icon name="ArrowSquareOut" size="16px" className={styles.itemArrow} />
-              </a>
-            ))}
-          </div>
-        </section>
       </div>
     </AppShell>
   );
