@@ -102,6 +102,16 @@ const OVERVIEW_SOURCES: OverviewSource[] = [
   { id: 'partner', kind: 'tenant', enabled: 680, disabled: 80, locked: 20, groups: 250, contacts: 80, computers: 120, managedUnits: 4, workflows: 2, resources: 100 },
 ];
 
+export function getEntraSourceData() {
+  return OVERVIEW_SOURCES
+    .filter((source) => source.kind === 'tenant')
+    .map((source) => ({
+      label: TENANT_OPTIONS.find((tenant) => tenant.value === source.id)?.title ?? source.id,
+      users: source.enabled + source.disabled + source.locked,
+      groups: source.groups,
+    }));
+}
+
 export function getOverviewData(domains: ReadonlySet<string>, tenants: ReadonlySet<string>) {
   const selected = OVERVIEW_SOURCES.filter((source) =>
     (source.kind === 'domain' ? domains : tenants).has(source.id),

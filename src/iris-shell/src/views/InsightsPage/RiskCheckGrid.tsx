@@ -12,9 +12,10 @@ interface RiskCheckGridProps<TCheck extends RiskCheck> {
   checks: TCheck[];
   selectedId?: string;
   onSelect: (check: TCheck) => void;
+  columns?: 3 | 4;
 }
 
-export function RiskCheckGrid<TCheck extends RiskCheck>({ checks, selectedId, onSelect }: RiskCheckGridProps<TCheck>) {
+export function RiskCheckGrid<TCheck extends RiskCheck>({ checks, selectedId, onSelect, columns }: RiskCheckGridProps<TCheck>) {
   const titleId = useId();
   const orderedChecks = [...checks].sort((first, second) =>
     second.value - first.value || first.label.localeCompare(second.label),
@@ -35,7 +36,7 @@ export function RiskCheckGrid<TCheck extends RiskCheck>({ checks, selectedId, on
           <Badge className={styles.riskHeaderBadge} tone="success">{displayedClearCount} clear</Badge>
         </div>
       </header>
-      <div className={styles.riskMatrix} data-columns={orderedChecks.length > 9 ? 4 : 3}>
+      <div className={styles.riskMatrix} data-columns={columns ?? (orderedChecks.length > 9 ? 4 : 3)}>
         {orderedChecks.map((check) => (
           <RiskCheckTile
             key={check.id}

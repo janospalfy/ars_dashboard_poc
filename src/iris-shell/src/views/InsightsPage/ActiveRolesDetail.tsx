@@ -8,7 +8,7 @@ import { TextInput } from '../../components/TextInput/TextInput.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
 import { motionDurationMs, prefersReducedMotion } from '../../lib/motion.js';
-import { objectUrl } from '../../lib/webInterface.js';
+import { showToast } from '../../lib/toastStore.js';
 import { DataTable, type DataTableColumn } from '../../components/DataTable/DataTable.js';
 import {
   AR_CONFIGURATION_KPIS,
@@ -55,7 +55,7 @@ const CONFIGURATION_DONUTS = buildConfigurationDonuts();
  * drill-down (columns vary by KPI — see activeRolesKpis.ts), and the
  * Database & Replication Topology table.
  */
-export function ActiveRolesDetail({ webInterfaceUrl, initialKpiId }: { webInterfaceUrl?: string; initialKpiId?: string } = {}) {
+export function ActiveRolesDetail({ initialKpiId }: { initialKpiId?: string } = {}) {
   const [selected, setSelected] = useState<KpiDefinition | null>(
     () => AR_CONFIGURATION_KPIS.find((kpi) => kpi.id === initialKpiId) ?? null,
   );
@@ -185,20 +185,17 @@ export function ActiveRolesDetail({ webInterfaceUrl, initialKpiId }: { webInterf
                   rowActions={WEB_INTERFACE_KPIS.has(kpi.id) ? (row) => {
                     const dn = row.distinguishedName;
                     if (typeof dn !== 'string' || !dn.trim()) return null;
-                    const url = objectUrl(webInterfaceUrl, dn);
+                    const message = 'Navigation is not connected yet.';
                     const label = `Open ${row.name || dn} in Web Interface`;
                     return (
-                      <Tooltip label={url ? 'Open in Web Interface' : 'Web Interface URL is not configured'}>
-                        <span className={styles.rowAction} tabIndex={url ? undefined : 0} aria-label={label}>
+                      <Tooltip label={message}>
+                        <span className={styles.rowAction} aria-label={label}>
                           <IconButton
                             icon="ArrowSquareOut"
                             ariaLabel={label}
                             variant="ghost"
                             size="s"
-                            disabled={!url}
-                            onClick={() => {
-                              if (url) window.open(url, 'arWebInterface', 'noopener,noreferrer');
-                            }}
+                            onClick={() => showToast(message)}
                           />
                         </span>
                       </Tooltip>

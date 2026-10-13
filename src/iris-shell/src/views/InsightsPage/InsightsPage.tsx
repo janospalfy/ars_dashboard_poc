@@ -13,6 +13,7 @@ import { GroupedBarChart } from '../../components/GroupedBarChart/GroupedBarChar
 import { navigate } from '../../lib/router.js';
 import { ActiveRolesDetail } from './ActiveRolesDetail.js';
 import { ActiveDirectoryDetail } from './ActiveDirectoryDetail.js';
+import { EntraIdDetail } from './EntraIdDetail.js';
 import { LicensingDetail } from './LicensingDetail.js';
 import { InsightsExportDialog } from './InsightsExportDialog.js';
 import { DOMAIN_OPTIONS, TENANT_OPTIONS, getOverviewData } from './mockInsights.js';
@@ -188,7 +189,7 @@ export function InsightsPage({ initialTab, initialKpiId }: { initialTab?: string
             <div className={
               tab === 'active-roles' || tab === 'active-directory'
                 ? styles.filters
-                : tab === 'licensing'
+                : tab === 'licensing' || tab === 'entra-id'
                   ? `${styles.titleRow} ${styles.licensingTitleRow}`
                   : styles.titleRow
             }>
@@ -196,7 +197,7 @@ export function InsightsPage({ initialTab, initialKpiId }: { initialTab?: string
                 <div className={styles.filtersLeft}>
                   <Select label="Domains: All Domains" />
                 </div>
-              ) : tab !== 'licensing' ? (
+              ) : tab !== 'licensing' && tab !== 'entra-id' ? (
                 <h2 className={styles.pageTitle}>{category.title}</h2>
               ) : null}
               <div className={styles.filtersRight}>
@@ -217,6 +218,8 @@ export function InsightsPage({ initialTab, initialKpiId }: { initialTab?: string
               <ActiveRolesDetail initialKpiId={initialKpiId} />
             ) : tab === 'active-directory' ? (
               <ActiveDirectoryDetail />
+            ) : tab === 'entra-id' ? (
+              <EntraIdDetail />
             ) : tab === 'licensing' ? (
               <LicensingDetail />
             ) : (

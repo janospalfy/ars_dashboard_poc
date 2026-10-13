@@ -10,7 +10,7 @@ import { Pagination } from '../../components/Pagination/Pagination.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
 import { TextInput } from '../../components/TextInput/TextInput.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
-import { objectUrl } from '../../lib/webInterface.js';
+import { showToast } from '../../lib/toastStore.js';
 import { motionDurationMs, prefersReducedMotion } from '../../lib/motion.js';
 import { AD_CATEGORIES, AD_KPIS, AD_PAGE_SIZE, AD_RISK_KPIS, AD_TOTALS, buildDirectoryRows, type DirectoryKpi } from './activeDirectoryKpis.js';
 import type { KpiRow } from './activeRolesKpis.js';
@@ -90,7 +90,7 @@ const DIRECTORY_CHARTS = DIRECTORY_CHART_CONFIGS.map(({ segmentColors, ...chart 
   return { ...chart, data, total: data.reduce((sum, item) => sum + item.value, 0) };
 });
 
-export function ActiveDirectoryDetail({ webInterfaceUrl }: { webInterfaceUrl?: string } = {}) {
+export function ActiveDirectoryDetail() {
   const [selected, setSelected] = useState<DirectoryKpi | null>(null);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(() => new Set());
   const [directorySearch, setDirectorySearch] = useState('');
@@ -245,18 +245,17 @@ export function ActiveDirectoryDetail({ webInterfaceUrl }: { webInterfaceUrl?: s
                       rowActions={kpi.webLink ? (row) => {
                         const dn = String(row.distinguishedName || '');
                         if (!dn) return null;
-                        const url = objectUrl(webInterfaceUrl, dn);
+                        const message = 'Navigation is not connected yet.';
                         const label = `Open ${row.name} in Web Interface`;
                         return (
-                          <Tooltip label={url ? 'Open in Web Interface' : 'Web Interface URL is not configured'}>
-                            <span className={styles.rowAction} tabIndex={url ? undefined : 0} aria-label={label}>
+                          <Tooltip label={message}>
+                            <span className={styles.rowAction} aria-label={label}>
                               <IconButton
                                 icon="ArrowSquareOut"
                                 ariaLabel={label}
                                 variant="ghost"
                                 size="s"
-                                disabled={!url}
-                                onClick={() => { if (url) window.open(url, 'arWebInterface', 'noopener,noreferrer'); }}
+                                onClick={() => showToast(message)}
                               />
                             </span>
                           </Tooltip>
