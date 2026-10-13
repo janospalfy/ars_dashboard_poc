@@ -19,6 +19,8 @@ export interface DonutSegment {
 
 export interface DonutChartProps {
   segments: DonutSegment[];
+  /** Optional displayed total when segments represent overlapping categories. */
+  centerTotal?: number;
   /** Ring thickness in viewBox units. */
   strokeWidth?: number;
   className?: string;
@@ -33,7 +35,7 @@ export interface DonutChartProps {
 /**
  * DonutChart — minimal SVG donut + legend.
  */
-export function DonutChart({ segments, strokeWidth = 22, className, variant = 'full', size = 'default', legendPosition = 'side', totalFormat = 'compact', segmentGap = 0, cornerRadius = segmentGap / 2 }: DonutChartProps) {
+export function DonutChart({ segments, centerTotal, strokeWidth = 22, className, variant = 'full', size = 'default', legendPosition = 'side', totalFormat = 'compact', segmentGap = 0, cornerRadius = segmentGap / 2 }: DonutChartProps) {
   const VB = 160; // viewBox is square
   const R = 60;
   const STROKE = strokeWidth;
@@ -72,9 +74,10 @@ export function DonutChart({ segments, strokeWidth = 22, className, variant = 'f
       .endAngle(isSemicircle ? Math.PI / 2 : 2 * Math.PI);
     return { arcs: layout(visibleSegments), total: t };
   }, [segments, isSemicircle, hiddenSegments]);
+  const displayedCenterTotal = centerTotal ?? total;
   const totalText = useFullTotal && totalFormat !== 'abbreviated'
-    ? total.toLocaleString('en-US')
-    : formatTotal(total);
+    ? displayedCenterTotal.toLocaleString('en-US')
+    : formatTotal(displayedCenterTotal);
   const displayedTotal = useCountUp(totalText);
 
   // Sweep each arc open from its start angle to its end angle by
@@ -153,7 +156,7 @@ export function DonutChart({ segments, strokeWidth = 22, className, variant = 'f
         <div className={isSemicircle ? styles.semicircleGraphic : styles.fullGraphic}>
           {chart}
           <div className={styles.total}>
-            <Tooltip label={`Total: ${total.toLocaleString('en-US')}`}>
+            <Tooltip label={`Total: ${displayedCenterTotal.toLocaleString('en-US')}`}>
               <p className={styles.totalValue} tabIndex={0}>
                 {displayedTotal}
               </p>

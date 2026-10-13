@@ -243,7 +243,7 @@ export const AR_CONFIGURATION_KPIS: KpiDefinition[] = [
   {
     id: 'policy-objects',
     label: 'Policy Objects',
-    value: 13,
+    value: 30,
     namePrefix: 'PO',
     columns: [
       { key: 'name', header: 'Name', type: 'text' },
@@ -251,6 +251,14 @@ export const AR_CONFIGURATION_KPIS: KpiDefinition[] = [
       { key: 'rules', header: 'Rules', type: 'count' },
       { key: 'type', header: 'Type', type: 'text', values: ['Built-in', 'User'] },
     ],
+    breakdown: {
+      label: 'Policy object status',
+      items: [
+        { label: 'Enabled', value: 29 },
+        { label: 'Disabled', value: 1 },
+        { label: 'Orphan Links', value: 2 },
+      ],
+    },
   },
   {
     id: 'policy-objects-no-rules',

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Badge } from '../../components/Badge/Badge.js';
 import { CollapsibleSection } from '../../components/CollapsibleSection/CollapsibleSection.js';
-import { CardTitleIcon } from '../../components/Card/Card.js';
+import { Card, CardTitleIcon } from '../../components/Card/Card.js';
+import { DonutChart, type DonutSegment } from '../../components/DonutChart/DonutChart.js';
 import { StatCard, type StatCardTrend } from '../../components/StatCard/StatCard.js';
 import { TextInput } from '../../components/TextInput/TextInput.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
@@ -45,6 +46,8 @@ const SUMMARY_TRENDS: Record<string, StatCardTrend> = {
   'managed-units': { direction: 'down', value: '0.8% vs last week', tone: 'danger' },
   workflows: { direction: 'up', value: '3.6% vs last week', tone: 'success' },
 };
+
+const CONFIGURATION_DONUTS = buildConfigurationDonuts();
 
 /**
  * ActiveRolesDetail — full port of the real dashboard's Active Roles KPI
@@ -115,6 +118,20 @@ export function ActiveRolesDetail({ webInterfaceUrl, initialKpiId }: { webInterf
       </div>
 
       <RiskCheckGrid checks={AR_GOVERNANCE_KPIS} selectedId={selected?.id} onSelect={toggle} />
+
+      <div className={styles.configurationDonutGrid} aria-label="Active Roles configuration summaries">
+        {CONFIGURATION_DONUTS.map((chart) => (
+          <Card className={styles.configurationDonutCard} key={chart.id} title={chart.title}>
+            <DonutChart
+              segments={chart.segments}
+              centerTotal={chart.centerTotal}
+              totalFormat="full"
+              segmentGap={2}
+              cornerRadius={2}
+            />
+          </Card>
+        ))}
+      </div>
 
       <section className={styles.configurationSection} aria-labelledby="active-roles-configuration-title">
         <header className={styles.riskHeader}>
@@ -208,5 +225,59 @@ export function ActiveRolesDetail({ webInterfaceUrl, initialKpiId }: { webInterf
 
     </div>
   );
+}
+
+function buildConfigurationDonuts(): { id: string; title: string; segments: DonutSegment[]; centerTotal?: number }[] {
+  const kpi = (id: string) => AR_CONFIGURATION_KPIS.find((item) => item.id === id);
+  const dynamicGroups = kpi('dynamic-groups');
+  const brokenDynamicGroups = kpi('dynamic-groups-broken-rules')?.value ?? 0;
+  const managedUnits = kpi('managed-units');
+  const brokenUnits = kpi('managed-units-broken-rules')?.value ?? 0;
+  const workflows = kpi('workflows');
+  const policyObjects = kpi('policy-objects');
+  const workflowRows = workflows ? buildKpiRows(workflows) : [];
+  const enabledWorkflows = workflowRows.filter((row) => row.enabled === 'Yes').length;
+  const clampedBrokenUnits = Math.min(brokenUnits, managedUnits?.value ?? 0);
+  const clampedBrokenDynamicGroups = Math.min(brokenDynamicGroups, dynamicGroups?.value ?? 0);
+
+  return [
+    {
+      id: 'dynamic-groups',
+      title: 'Dynamic Groups by Rule Health',
+      segments: [
+        { label: 'Healthy', value: Math.max((dynamicGroups?.value ?? 0) - clampedBrokenDynamicGroups, 0), color: 'var(--oi-color-teal-400)' },
+        { label: 'Broken Rules', value: clampedBrokenDynamicGroups, color: 'var(--oi-color-red-400)' },
+      ],
+    },
+    {
+      id: 'managed-units',
+      title: 'Managed Units by Rule Health',
+      segments: [
+        { label: 'Healthy', value: Math.max((managedUnits?.value ?? 0) - clampedBrokenUnits, 0), color: 'var(--oi-color-teal-400)' },
+        { label: 'Broken Rules', value: clampedBrokenUnits, color: 'var(--oi-color-red-400)' },
+      ],
+    },
+    {
+      id: 'workflows',
+      title: 'Workflows by Status',
+      segments: [
+        { label: 'Enabled', value: enabledWorkflows, color: 'var(--oi-color-teal-400)' },
+        { label: 'Disabled', value: workflowRows.length - enabledWorkflows, color: 'var(--oi-color-grey-400)' },
+      ],
+    },
+    {
+      id: 'policy-objects',
+      title: 'Policy Objects by Status',
+      centerTotal: policyObjects?.value ?? 0,
+      segments: (policyObjects?.breakdown?.items ?? []).map((item) => ({
+        ...item,
+        color: item.label === 'Enabled'
+          ? 'var(--oi-color-teal-400)'
+          : item.label === 'Disabled'
+            ? 'var(--oi-color-grey-400)'
+            : 'var(--oi-color-orange-400)',
+      })),
+    },
+  ];
 }
 
