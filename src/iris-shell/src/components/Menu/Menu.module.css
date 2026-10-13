@@ -3,6 +3,9 @@
   z-index: 1000;
   min-width: 180px;
   max-width: 240px;
+  max-height: min(400px, calc(100vh - 16px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background-color: var(--oi-background-color-primary);
   border-radius: var(--oi-border-radius-l);
   box-shadow: var(--oi-shadow-mid);

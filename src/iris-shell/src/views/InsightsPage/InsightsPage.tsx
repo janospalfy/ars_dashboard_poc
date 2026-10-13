@@ -1,21 +1,20 @@
 import { useEffect, useState } from 'react';
 import { AppShell } from '../AppShell/AppShell.js';
 import { Card } from '../../components/Card/Card.js';
+import { IconButton } from '../../components/IconButton/IconButton.js';
 import { ContentHeader } from '../../components/ContentHeader/ContentHeader.js';
 import { Tabs, type TabItem } from '../../components/Tabs/Tabs.js';
 import { MultiSelect } from '../../components/MultiSelect/MultiSelect.js';
 import { Select } from '../../components/Select/Select.js';
-import { IconButton } from '../../components/IconButton/IconButton.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
-import { Menu, type MenuEntry } from '../../components/Menu/Menu.js';
 import { StatCard } from '../../components/StatCard/StatCard.js';
 import { DonutChart } from '../../components/DonutChart/DonutChart.js';
 import { GroupedBarChart } from '../../components/GroupedBarChart/GroupedBarChart.js';
 import { navigate } from '../../lib/router.js';
-import { showToast } from '../../lib/toastStore.js';
 import { ActiveRolesDetail } from './ActiveRolesDetail.js';
 import { ActiveDirectoryDetail } from './ActiveDirectoryDetail.js';
 import { LicensingDetail } from './LicensingDetail.js';
+import { InsightsExportDialog } from './InsightsExportDialog.js';
 import { DOMAIN_OPTIONS, TENANT_OPTIONS, getOverviewData } from './mockInsights.js';
 import styles from './InsightsPage.module.css';
 
@@ -51,46 +50,22 @@ const CATEGORY_DETAILS: Record<string, { title: string; description: string; ico
   },
 };
 
-const EXPORT_MENU_ITEMS: MenuEntry[] = [
-  {
-    kind: 'item',
-    label: 'Export as PDF',
-    icon: 'FilePdf',
-    onSelect: () => showToast('Export as PDF — coming soon'),
-  },
-  {
-    kind: 'item',
-    label: 'Export as Excel',
-    icon: 'FileXls',
-    onSelect: () => showToast('Export as Excel — coming soon'),
-  },
-  {
-    kind: 'item',
-    label: 'Export as Word',
-    icon: 'FileDoc',
-    onSelect: () => showToast('Export as Word — coming soon'),
-  },
-];
+function ExportDialogTrigger({ currentTab }: { currentTab: string }) {
+  const [open, setOpen] = useState(false);
 
-function ExportMenu() {
   return (
-    <Menu
-      ariaLabel="Export options"
-      align="end"
-      items={EXPORT_MENU_ITEMS}
-      trigger={({ ref, onClick, expanded }) => (
+    <>
+      <Tooltip label="Export">
         <IconButton
-          ref={ref as React.Ref<HTMLButtonElement>}
           icon="Export"
-          ariaLabel="Export options"
+          ariaLabel="Export"
           variant="secondary"
           className={styles.filtersGhostAction}
-          aria-haspopup="menu"
-          aria-expanded={expanded}
-          onClick={onClick}
+          onClick={() => setOpen(true)}
         />
-      )}
-    />
+      </Tooltip>
+      <InsightsExportDialog open={open} onClose={() => setOpen(false)} currentTab={currentTab} />
+    </>
   );
 }
 
@@ -164,7 +139,7 @@ export function InsightsPage({ initialTab, initialKpiId }: { initialTab?: string
                     onClick={() => window.location.reload()}
                   />
                 </Tooltip>
-                <ExportMenu />
+                <ExportDialogTrigger currentTab={tab} />
               </div>
             </div>
 
@@ -234,7 +209,7 @@ export function InsightsPage({ initialTab, initialKpiId }: { initialTab?: string
                     onClick={() => window.location.reload()}
                   />
                 </Tooltip>
-                <ExportMenu />
+                <ExportDialogTrigger currentTab={tab} />
               </div>
             </div>
 

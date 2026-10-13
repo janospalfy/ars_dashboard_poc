@@ -94,6 +94,8 @@ export interface MenuProps {
   items: MenuEntry[];
   align?: 'start' | 'end';
   ariaLabel?: string;
+  /** Match the trigger width instead of using the default menu width. */
+  matchTriggerWidth?: boolean;
   /**
    * Controlled open state. When provided, the menu ignores its internal
    * toggle and reports changes via `onOpenChange` (used for context menus).
@@ -126,6 +128,8 @@ interface MenuPos {
   left: number;
   right?: number;
   align: 'start' | 'end';
+  maxHeight?: number;
+  triggerWidth?: number;
 }
 
 /**
@@ -133,12 +137,17 @@ interface MenuPos {
  * above it when there isn't room below yet there is above. Needs the menu's
  * measured height, so the menu must already be mounted when this is used.
  */
-function resolveTriggerTop(rect: DOMRect, menuHeight: number): number {
-  const margin = 4;
-  const below = rect.bottom + 4;
-  const overflowsBelow = below + menuHeight > window.innerHeight - margin;
-  const fitsAbove = rect.top - 4 - menuHeight >= margin;
-  return overflowsBelow && fitsAbove ? rect.top - menuHeight - 4 : below;
+function resolveTriggerPosition(rect: DOMRect, menuHeight: number): { top: number; maxHeight: number } {
+  const margin = 8;
+  const gap = 4;
+  const availableBelow = Math.max(0, window.innerHeight - rect.bottom - gap - margin);
+  const availableAbove = Math.max(0, rect.top - gap - margin);
+  const opensAbove = menuHeight > availableBelow && availableAbove > availableBelow;
+  const maxHeight = Math.min(menuHeight, opensAbove ? availableAbove : availableBelow);
+  return {
+    top: opensAbove ? rect.top - gap - maxHeight : rect.bottom + gap,
+    maxHeight,
+  };
 }
 
 /**
@@ -159,6 +168,7 @@ export function Menu({
   position,
   topAnchor,
   rightAnchor,
+  matchTriggerWidth = false,
 }: MenuProps) {
   const isControlled = openProp !== undefined;
   const [internalOpen, setInternalOpen] = useState(false);
@@ -187,7 +197,7 @@ export function Menu({
     if (!position && !triggerRef.current) return;
     const compute = () => {
       if (position) {
-        setPos({ top: position.y, left: position.x, align: 'start' });
+        setPos({ top: position.y, left: position.x, align: 'start', maxHeight: Math.max(0, window.innerHeight - 16) });
         return;
       }
       const t = triggerRef.current;
@@ -197,17 +207,19 @@ export function Menu({
       // resize computes the final top in one pass — avoiding a below→above
       // correction (and extra render) from the auto-flip layout effect below.
       const measured = menuRef.current;
-      const top =
-        topAnchor != null
-          ? topAnchor
-          : measured
-            ? resolveTriggerTop(rect, measured.offsetHeight)
-            : rect.bottom + 4;
+      const placement = measured
+        ? resolveTriggerPosition(rect, measured.offsetHeight)
+        : { top: topAnchor ?? rect.bottom + 4, maxHeight: Math.max(0, window.innerHeight - 16) };
+      const top = topAnchor != null
+        ? Math.min(topAnchor, window.innerHeight - placement.maxHeight - 8)
+        : placement.top;
       setPos({
-        top,
+        top: Math.max(8, top),
         left: align === 'end' ? rect.right : rect.left,
         right: align === 'end' && rightAnchor != null ? rightAnchor : undefined,
         align,
+        maxHeight: placement.maxHeight,
+        triggerWidth: matchTriggerWidth ? rect.width : undefined,
       });
     };
     compute();
@@ -220,7 +232,7 @@ export function Menu({
       window.removeEventListener('scroll', compute, scrollOpts);
       window.removeEventListener('resize', compute);
     };
-  }, [open, align, topAnchor, rightAnchor, position]);
+  }, [open, align, topAnchor, rightAnchor, position, matchTriggerWidth]);
 
   // In pointer-anchored mode, clamp to the viewport once the menu has
   // measured, so a right-click near an edge doesn't overflow off-screen.
@@ -250,8 +262,12 @@ export function Menu({
     const el = menuRef.current;
     const t = triggerRef.current;
     if (!el || !t) return;
-    const top = resolveTriggerTop(t.getBoundingClientRect(), el.offsetHeight);
-    setPos((p) => (p && p.top !== top ? { ...p, top } : p));
+    const placement = resolveTriggerPosition(t.getBoundingClientRect(), el.offsetHeight);
+    setPos((p) => (
+      p && (p.top !== placement.top || p.maxHeight !== placement.maxHeight)
+        ? { ...p, ...placement }
+        : p
+    ));
   }, [open, position, topAnchor, pos]);
 
   // Click outside + Escape to dismiss. `[data-oi-menu]` covers the menu and
@@ -316,6 +332,10 @@ export function Menu({
             className={styles.menu}
             style={{
               top: pos.top,
+              maxHeight: pos.maxHeight,
+              ...(pos.triggerWidth != null
+                ? { width: pos.triggerWidth, minWidth: pos.triggerWidth, maxWidth: pos.triggerWidth }
+                : {}),
               ...(pos.align === 'end'
                 ? { right: pos.right != null ? pos.right : window.innerWidth - pos.left }
                 : { left: pos.left }),
