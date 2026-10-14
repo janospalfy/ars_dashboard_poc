@@ -1,15 +1,13 @@
-import type { MouseEvent } from 'react';
+import { useState, type MouseEvent } from 'react';
 import { AppShell } from '../AppShell/AppShell.js';
-import { Badge } from '../../components/Badge/Badge.js';
-import { CardTitleIcon } from '../../components/Card/Card.js';
 import { HomeLauncher } from '../../components/HomeLauncher/HomeLauncher.js';
 import { Icon } from '../../components/Icon/Icon.js';
 import { Link } from '../../components/Link/Link.js';
 import { PAGE_ITEMS } from '../../lib/commands.js';
 import { CURRENT_USER } from '../../lib/currentUser.js';
 import { navigate } from '../../lib/router.js';
+import { getRecentItems, type RecentItem } from '../../lib/searchHistoryStore.js';
 import { useFavorites, type FavoriteEntry } from '../../lib/useFavorites.js';
-import { AR_GOVERNANCE_KPIS } from '../InsightsPage/activeRolesKpis.js';
 import styles from './HomePage.module.css';
 
 const EXAMPLE_FAVORITES: FavoriteEntry[] = [
@@ -17,6 +15,54 @@ const EXAMPLE_FAVORITES: FavoriteEntry[] = [
   { id: 'example-service-accounts', name: 'Service Accounts', type: 'Organizational unit', href: '#/tree' },
   { id: 'example-enterprise-admins', name: 'Enterprise Admins', type: 'Security group', href: '#/groups' },
   { id: 'example-schema-admins', name: 'Schema Admins', type: 'Security group', href: '#/groups' },
+];
+
+const EXAMPLE_VIEW_FAVORITES: FavoriteEntry[] = [
+  { id: 'example-custom-view', name: 'My Custom View', type: 'View', href: '#/users' },
+  { id: 'example-users-in-my-ou', name: 'Users in My OU', type: 'View', href: '#/tree/o1d-test-ou' },
+];
+
+function isViewFavorite(entry: FavoriteEntry): boolean {
+  return entry.type.toLowerCase().includes('view');
+}
+
+function favoriteIcon(entry: FavoriteEntry): string {
+  const type = entry.type.toLowerCase();
+  if (type.includes('view')) return 'Star';
+  if (type.includes('organizational unit') || type.includes('folder')) return 'FolderStar';
+  if (type.includes('computer') || type.includes('device')) return 'Devices';
+  if (type.includes('user')) return 'User';
+  if (type.includes('group')) return 'UsersThree';
+  return 'Star';
+}
+
+type HomeRecentItem = Omit<RecentItem, 'kind'> & { kind: RecentItem['kind'] | 'group' | 'ou' };
+
+const EXAMPLE_RECENT_ITEMS: HomeRecentItem[] = [
+  {
+    id: 'recent-user-isabella-clark',
+    kind: 'user',
+    label: 'Isabella Clark',
+    icon: 'User',
+    secondary: 'User · O1D.local',
+    hash: '#/users/isabella-clark',
+  },
+  {
+    id: 'recent-group-domain-admins',
+    kind: 'group',
+    label: 'Domain Admins',
+    icon: 'UsersThree',
+    secondary: 'Security group · O1D.local',
+    hash: '#/groups',
+  },
+  {
+    id: 'recent-ou-test-ou',
+    kind: 'ou',
+    label: 'Test OU',
+    icon: 'Folder',
+    secondary: 'Organizational unit · O1D.local',
+    hash: '#/tree/o1d-test-ou',
+  },
 ];
 
 const EXAMPLE_APPROVALS = [
@@ -49,43 +95,27 @@ const EXAMPLE_CUSTOM_LINKS = [
   },
 ];
 
-const NEEDS_ATTENTION_KPIS = AR_GOVERNANCE_KPIS
-  .filter((kpi) => kpi.value > 0)
-  .sort((first, second) => second.value - first.value || first.label.localeCompare(second.label))
-  .slice(0, 3);
-
-const SAMPLE_ENVIRONMENT = [
-  {
-    id: 'servers',
-    label: 'Active Roles servers',
-    detail: '6 of 7 responding',
-    status: '1 unavailable',
-    tone: 'warning' as const,
-  },
-  {
-    id: 'configuration',
-    label: 'Configuration database',
-    detail: 'ARConfigDb01 · Primary',
-    status: 'Connected',
-    tone: 'success' as const,
-  },
-  {
-    id: 'history',
-    label: 'Management History database',
-    detail: 'ARHistoryDb01 · Primary',
-    status: 'Connected',
-    tone: 'success' as const,
-  },
-];
-
 /**
  * HomePage — Home surface for the Active Roles vertical (`#/home`). Mirrors
  * the Identity Manager Home layout: a greeting and search launcher followed
- * by My work and Favorites.
+ * by approvals, recent items, quick links, and favorites.
  */
 export function HomePage() {
+  const [storedRecentItems] = useState(() => getRecentItems());
+  const recentItems: HomeRecentItem[] = storedRecentItems.length ? storedRecentItems : EXAMPLE_RECENT_ITEMS;
   const { entries: storedFavoriteEntries } = useFavorites();
-  const favoriteEntries = storedFavoriteEntries.length ? storedFavoriteEntries : EXAMPLE_FAVORITES;
+  const storedViews = storedFavoriteEntries.filter(isViewFavorite);
+  const storedObjects = storedFavoriteEntries.filter((entry) => !isViewFavorite(entry));
+  const viewFavorites = storedViews.length
+    ? storedViews
+    : storedFavoriteEntries.length
+      ? []
+      : EXAMPLE_VIEW_FAVORITES;
+  const objectFavorites = storedObjects.length
+    ? storedObjects
+    : storedFavoriteEntries.length
+      ? []
+      : EXAMPLE_FAVORITES;
 
   const open = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
     event.preventDefault();
@@ -109,31 +139,13 @@ export function HomePage() {
 
         <hr className={styles.divider} />
 
-        <section className={styles.environmentStatus} aria-labelledby="environment-status-title">
-          <div className={styles.environmentHeader}>
-            <CardTitleIcon icon="Devices" />
-            <h2 className={styles.environmentTitle} id="environment-status-title">Environment status</h2>
-          </div>
-          <div className={styles.environmentPanel}>
-            <div className={styles.environmentGrid}>
-              {SAMPLE_ENVIRONMENT.map((component) => (
-                <div className={styles.environmentItem} key={component.id}>
-                  <span className={styles.environmentLabel}>{component.label}</span>
-                  <span className={styles.environmentDetail}>{component.detail}</span>
-                  <Badge tone={component.tone}>{component.status}</Badge>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         <div className={styles.activityGrid}>
           <div className={styles.primaryWorkArea}>
             <section className={styles.activitySection} aria-labelledby="my-work-title">
               <div className={`${styles.sectionHeader} ${styles.workHeader}`}>
                 <div className={styles.headingContext}>
                   <h2 className={styles.sectionTitle} id="my-work-title">My work</h2>
-                  <span className={styles.sampleLabel}>Sample data · Pending approvals</span>
+                  <span className={styles.sampleLabel}>Pending approvals</span>
                 </div>
                 <Link href="#/approval" onClick={(event) => open(event, '#/approval')}>
                   View approvals
@@ -158,31 +170,28 @@ export function HomePage() {
               </div>
             </section>
 
-            <section className={styles.needsAttention} aria-labelledby="needs-attention-title">
+            <section className={styles.activitySection} aria-labelledby="recently-viewed-title">
               <div className={styles.sectionHeader}>
                 <div className={styles.headingContext}>
-                  <h2 className={styles.sectionTitle} id="needs-attention-title">Needs attention</h2>
-                  <span className={styles.sampleLabel}>Sample Governance and Risk data</span>
+                  <h2 className={styles.sectionTitle} id="recently-viewed-title">Recently viewed</h2>
                 </div>
-                <Link href="#/insights/dashboard/active-roles" onClick={(event) => open(event, '#/insights/dashboard/active-roles')}>
-                  View all
-                </Link>
               </div>
-              <div className={styles.attentionList}>
-                {NEEDS_ATTENTION_KPIS.map((kpi) => {
-                  const href = `#/insights/dashboard/active-roles/${encodeURIComponent(kpi.id)}`;
-                  return (
-                    <a key={kpi.id} className={styles.itemLink} href={href} onClick={(event) => open(event, href)}>
-                      <Icon name="Warning" size="20px" className={styles.attentionIcon} />
-                      <span className={styles.itemText}>
-                        <span className={styles.itemName}>{kpi.label}</span>
-                        <span className={styles.itemMeta}>{kpi.value.toLocaleString('en-US')} objects · Governance and Risk</span>
-                      </span>
-                      <Badge tone="warning">Review</Badge>
-                      <Icon name="ArrowRight" size="16px" className={styles.itemArrow} />
-                    </a>
-                  );
-                })}
+              <div className={styles.itemList}>
+                {recentItems.slice(0, 5).map((item) => (
+                  <a
+                    key={item.id}
+                    className={styles.itemLink}
+                    href={item.hash}
+                    onClick={(event) => open(event, item.hash)}
+                  >
+                    <Icon name={item.icon} size="20px" className={styles.itemIcon} />
+                    <span className={styles.itemText}>
+                      <span className={styles.itemName}>{item.label}</span>
+                      <span className={styles.itemMeta}>{item.secondary ?? (item.kind === 'user' ? 'User' : 'Page')}</span>
+                    </span>
+                    <Icon name="ArrowRight" size="16px" className={styles.itemArrow} />
+                  </a>
+                ))}
               </div>
             </section>
 
@@ -220,27 +229,43 @@ export function HomePage() {
                 </Link>
               )}
             </div>
-            {favoriteEntries.length ? (
-              <div className={styles.itemList}>
-                {favoriteEntries.slice(0, 5).map((item) => (
-                  <a
-                    key={item.id}
-                    className={styles.itemLink}
-                    href={item.href}
-                    onClick={(event) => open(event, item.href)}
-                  >
-                    <Icon name="Star" size="20px" className={styles.itemIcon} />
-                    <span className={styles.itemText}>
-                      <span className={styles.itemName}>{item.name}</span>
-                      <span className={styles.itemMeta}>{item.type}</span>
-                    </span>
-                    <Icon name="ArrowRight" size="16px" className={styles.itemArrow} />
-                  </a>
-                ))}
-              </div>
-            ) : (
-              <p className={styles.emptyState}>Star directory objects to keep them close at hand.</p>
-            )}
+            <div className={styles.favoriteGroups}>
+              <section className={styles.favoriteGroup} aria-labelledby="favorite-views-title">
+                <h3 className={styles.favoriteGroupTitle} id="favorite-views-title">Views</h3>
+                {viewFavorites.length ? (
+                  <div className={styles.itemList}>
+                    {viewFavorites.slice(0, 5).map((item) => (
+                      <a key={item.id} className={`${styles.itemLink} ${styles.favoriteItemLink}`} href={item.href} onClick={(event) => open(event, item.href)}>
+                        <Icon name={favoriteIcon(item)} size="16px" className={styles.itemIcon} />
+                        <span className={styles.itemText}>
+                          <span className={styles.itemName}>{item.name}</span>
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                ) : (
+                  <p className={styles.emptyState}>No saved views.</p>
+                )}
+              </section>
+
+              <section className={styles.favoriteGroup} aria-labelledby="favorite-objects-title">
+                <h3 className={styles.favoriteGroupTitle} id="favorite-objects-title">Objects and folders</h3>
+                {objectFavorites.length ? (
+                  <div className={styles.itemList}>
+                    {objectFavorites.slice(0, 5).map((item) => (
+                      <a key={item.id} className={`${styles.itemLink} ${styles.favoriteItemLink}`} href={item.href} onClick={(event) => open(event, item.href)}>
+                        <Icon name={favoriteIcon(item)} size="16px" className={styles.itemIcon} />
+                        <span className={styles.itemText}>
+                          <span className={styles.itemName}>{item.name}</span>
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                ) : (
+                  <p className={styles.emptyState}>Star directory objects to keep them close at hand.</p>
+                )}
+              </section>
+            </div>
           </section>
         </div>
       </div>
