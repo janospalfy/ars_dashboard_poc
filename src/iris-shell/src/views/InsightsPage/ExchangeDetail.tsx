@@ -114,61 +114,59 @@ export function ExchangeDetail() {
                 if (!expanded && selectedKpi?.categoryId === category.id) setSelectedKpi(null);
               }}
             >
-              <div className={styles.accordionList}>
-                {category.kpis.map((kpi) => {
-                  const selected = selectedKpi?.id === kpi.id;
-                  return (
-                    <CollapsibleSection
-                      key={kpi.id}
-                      title={kpi.label}
-                      count={kpi.value.toLocaleString('en-US')}
-                      collapsible
-                      variant="accordion"
-                      className={styles.metricAccordion}
-                      expanded={selected}
-                      sectionRef={selected ? detailsRef : undefined}
-                      onExpandedChange={(expanded) => {
-                        setSelectedKpi(expanded ? kpi : null);
-                        setPage(1);
+              {category.kpis.map((kpi) => {
+                const selected = selectedKpi?.id === kpi.id;
+                return (
+                  <CollapsibleSection
+                    key={kpi.id}
+                    title={kpi.label}
+                    count={kpi.value.toLocaleString('en-US')}
+                    collapsible
+                    variant="accordion"
+                    className={styles.metricAccordion}
+                    expanded={selected}
+                    sectionRef={selected ? detailsRef : undefined}
+                    onExpandedChange={(expanded) => {
+                      setSelectedKpi(expanded ? kpi : null);
+                      setPage(1);
+                    }}
+                  >
+                    <DataTable
+                      rows={rows}
+                      columns={columns}
+                      ariaLabel={`${kpi.label} Exchange objects`}
+                      rowLabel={(row) => String(row.name)}
+                      rowActions={(row) => {
+                        const message = 'Navigation is not connected yet.';
+                        const label = `Open ${row.name} in Web Interface`;
+                        return (
+                          <Tooltip label={message}>
+                            <span className={styles.rowAction} aria-label={label}>
+                              <IconButton
+                                icon="ArrowSquareOut"
+                                ariaLabel={label}
+                                variant="ghost"
+                                size="s"
+                                onClick={() => showToast(message)}
+                              />
+                            </span>
+                          </Tooltip>
+                        );
                       }}
-                    >
-                      <DataTable
-                        rows={rows}
-                        columns={columns}
-                        ariaLabel={`${kpi.label} Exchange objects`}
-                        rowLabel={(row) => String(row.name)}
-                        rowActions={(row) => {
-                          const message = 'Navigation is not connected yet.';
-                          const label = `Open ${row.name} in Web Interface`;
-                          return (
-                            <Tooltip label={message}>
-                              <span className={styles.rowAction} aria-label={label}>
-                                <IconButton
-                                  icon="ArrowSquareOut"
-                                  ariaLabel={label}
-                                  variant="ghost"
-                                  size="s"
-                                  onClick={() => showToast(message)}
-                                />
-                              </span>
-                            </Tooltip>
-                          );
-                        }}
-                        emptyState={{ title: 'No matching objects', description: 'This KPI currently has no matching objects.' }}
+                      emptyState={{ title: 'No matching objects', description: 'This KPI currently has no matching objects.' }}
+                    />
+                    {kpi.value > EXCHANGE_PAGE_SIZE && (
+                      <Pagination
+                        page={page}
+                        pageCount={Math.ceil(kpi.value / EXCHANGE_PAGE_SIZE)}
+                        onPageChange={setPage}
+                        variant="simplified"
+                        ariaLabel={`${kpi.label} pages`}
                       />
-                      {kpi.value > EXCHANGE_PAGE_SIZE && (
-                        <Pagination
-                          page={page}
-                          pageCount={Math.ceil(kpi.value / EXCHANGE_PAGE_SIZE)}
-                          onPageChange={setPage}
-                          variant="simplified"
-                          ariaLabel={`${kpi.label} pages`}
-                        />
-                      )}
-                    </CollapsibleSection>
-                  );
-                })}
-              </div>
+                    )}
+                  </CollapsibleSection>
+                );
+              })}
               {category.id === 'mailboxes' && (
                 <div className={styles.distributionSection}>
                   <Card title="Mailboxes by Type" helper="Exchange mailboxes by type" className={styles.configurationDonutCard}>
