@@ -24,6 +24,7 @@ export interface StatCardProps {
   animateValue?: boolean;
   valueFirst?: boolean;
   showOptions?: boolean;
+  fillHeight?: boolean;
   className?: string;
   variant?: 'default' | 'dashboard';
   description?: string;
@@ -47,6 +48,7 @@ export function StatCard({
   animateValue = true,
   valueFirst = false,
   showOptions = true,
+  fillHeight = false,
   className,
   variant = 'default',
   description,
@@ -56,7 +58,7 @@ export function StatCard({
   const displayTrend = useCountUp(trend?.value ?? '', !!trend);
   const isDashboard = variant === 'dashboard';
   return (
-    <section className={cx(styles.card, valueFirst && styles.valueFirstCard, isDashboard && styles.dashboardCard, className)}>
+    <section className={cx(styles.card, valueFirst && styles.valueFirstCard, isDashboard && styles.dashboardCard, fillHeight && styles.fillHeight, className)}>
       {isDashboard ? (
         <header className={cx(styles.header, styles.dashboardHeader)}>
           <div className={styles.dashboardTitleGroup}>

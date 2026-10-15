@@ -8,6 +8,7 @@ import { showToast } from '../../lib/toastStore.js';
 import { CURRENT_MANAGED_OBJECTS } from './licensingData.js';
 import { AD_CATEGORIES, AD_KPIS } from './activeDirectoryKpis.js';
 import { AR_CONFIGURATION_KPIS } from './activeRolesKpis.js';
+import { EXCHANGE_CATEGORIES, EXCHANGE_KPIS, EXCHANGE_OVERVIEW } from './exchangeKpis.js';
 import { STAT_CARDS } from './mockInsights.js';
 import styles from './InsightsExportDialog.module.css';
 
@@ -18,6 +19,7 @@ const DASHBOARDS = [
   { value: 'active-roles', label: 'Active Roles' },
   { value: 'active-directory', label: 'Active Directory' },
   { value: 'entra-id', label: 'Entra ID' },
+  { value: 'exchange', label: 'Microsoft Exchange' },
   { value: 'licensing', label: 'Licensing' },
 ];
 
@@ -32,6 +34,10 @@ const CATEGORY_GROUPS = [
     { value: 'active-directory/governance', label: 'Governance and Risk' },
     ...AD_CATEGORIES.map((category) => ({ value: `active-directory/${category.id}`, label: category.title })),
   ] },
+  { label: 'Microsoft Exchange', items: [
+    { value: 'exchange/overview', label: 'Overview' },
+    ...EXCHANGE_CATEGORIES.map((category) => ({ value: `exchange/${category.id}`, label: category.title })),
+  ] },
   { label: 'Licensing', items: [{ value: 'licensing', label: 'Licensing' }] },
 ];
 
@@ -39,6 +45,10 @@ const KPI_GROUPS = [
   { label: 'Overview', items: STAT_CARDS.map((kpi) => ({ value: `overview/${kpi.id}`, label: kpi.label })) },
   { label: 'Active Roles', items: AR_CONFIGURATION_KPIS.map((kpi) => ({ value: `active-roles/${kpi.id}`, label: kpi.label })) },
   { label: 'Active Directory', items: AD_KPIS.map((kpi) => ({ value: `active-directory/${kpi.id}`, label: kpi.label })) },
+  { label: 'Microsoft Exchange', items: [
+    ...EXCHANGE_OVERVIEW.map((kpi) => ({ value: `exchange/${kpi.id}`, label: kpi.label })),
+    ...EXCHANGE_KPIS.map((kpi) => ({ value: `exchange/${kpi.id}`, label: kpi.label })),
+  ] },
   { label: 'Licensing', items: [{ value: 'licensing/managed-objects', label: `Managed Objects (${CURRENT_MANAGED_OBJECTS.toLocaleString('en-US')})` }] },
 ].filter((group) => group.items.length > 0);
 

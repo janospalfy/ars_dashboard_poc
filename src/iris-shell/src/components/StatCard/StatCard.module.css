@@ -140,6 +140,10 @@
   transition: background-color var(--oi-motion-duration-short) var(--oi-motion-ease-enter);
 }
 
+.fillHeight .metric {
+  flex: 1;
+}
+
 .dashboardCard .value {
   font-size: var(--oi-font-size-xxl);
   line-height: var(--oi-line-height-xxl);

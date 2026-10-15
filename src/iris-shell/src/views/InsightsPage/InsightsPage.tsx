@@ -14,6 +14,7 @@ import { navigate } from '../../lib/router.js';
 import { ActiveRolesDetail } from './ActiveRolesDetail.js';
 import { ActiveDirectoryDetail } from './ActiveDirectoryDetail.js';
 import { EntraIdDetail } from './EntraIdDetail.js';
+import { ExchangeDetail } from './ExchangeDetail.js';
 import { LicensingDetail } from './LicensingDetail.js';
 import { InsightsExportDialog } from './InsightsExportDialog.js';
 import { DOMAIN_OPTIONS, TENANT_OPTIONS, getOverviewData } from './mockInsights.js';
@@ -26,6 +27,7 @@ const TABS: TabItem[] = [
   { value: 'active-roles', label: 'Active Roles', icon: 'UsersThree' },
   { value: 'active-directory', label: 'Active Directory', icon: 'TreeStructure' },
   { value: 'entra-id', label: 'Entra ID', icon: 'CloudCheck' },
+  { value: 'exchange', label: 'Microsoft Exchange', icon: 'Mailbox' },
   { value: 'licensing', label: 'Licensing', icon: 'ShieldCheck' },
 ];
 
@@ -44,6 +46,11 @@ const CATEGORY_DETAILS: Record<string, { title: string; description: string; ico
     icon: 'TreeStructure',
   },
   'entra-id': { title: 'Entra ID', description: 'Entra ID KPIs', icon: 'CloudCheck' },
+  exchange: {
+    title: 'Microsoft Exchange',
+    description: 'Microsoft Exchange (on-premises) KPIs',
+    icon: 'Mailbox',
+  },
   licensing: {
     title: 'Licensing',
     description: 'Licensing and compliance KPIs',
@@ -189,7 +196,7 @@ export function InsightsPage({ initialTab, initialKpiId }: { initialTab?: string
             <div className={
               tab === 'active-roles' || tab === 'active-directory'
                 ? styles.filters
-                : tab === 'licensing' || tab === 'entra-id'
+                : tab === 'licensing' || tab === 'entra-id' || tab === 'exchange'
                   ? `${styles.titleRow} ${styles.licensingTitleRow}`
                   : styles.titleRow
             }>
@@ -197,7 +204,7 @@ export function InsightsPage({ initialTab, initialKpiId }: { initialTab?: string
                 <div className={styles.filtersLeft}>
                   <Select label="Domains: All Domains" />
                 </div>
-              ) : tab !== 'licensing' && tab !== 'entra-id' ? (
+              ) : tab !== 'licensing' && tab !== 'entra-id' && tab !== 'exchange' ? (
                 <h2 className={styles.pageTitle}>{category.title}</h2>
               ) : null}
               <div className={styles.filtersRight}>
@@ -220,6 +227,8 @@ export function InsightsPage({ initialTab, initialKpiId }: { initialTab?: string
               <ActiveDirectoryDetail />
             ) : tab === 'entra-id' ? (
               <EntraIdDetail />
+            ) : tab === 'exchange' ? (
+              <ExchangeDetail />
             ) : tab === 'licensing' ? (
               <LicensingDetail />
             ) : (
