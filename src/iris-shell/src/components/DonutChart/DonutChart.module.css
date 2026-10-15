@@ -14,13 +14,17 @@
   container-type: inline-size;
 }
 
-/* Below ~360px the fixed 200px donut + a 3-column legend stops fitting,
-   so push the legend onto its own row and center the donut above it. */
-@container (max-width: 360px) {
+/* Move the legend below the chart before its single-line labels get cramped. */
+@container (max-width: 560px) {
   .legend {
     flex-basis: 100%;
   }
+
   .svg {
+    margin-inline: auto;
+  }
+
+  .fullGraphic {
     margin-inline: auto;
   }
 }
@@ -233,13 +237,11 @@
 .legendLabel {
   color: var(--oi-content-color-secondary);
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .legendValue {
-  width: 8ch;
+  width: 5ch;
   text-align: right;
   white-space: nowrap;
   font-weight: var(--oi-text-caption-strong-font-weight);
@@ -249,7 +251,7 @@
 
 .legendButton {
   display: grid;
-  grid-template-columns: 12px minmax(0, 1fr) 8ch;
+  grid-template-columns: 12px minmax(0, 1fr) 5ch;
   align-items: center;
   gap: var(--oi-spacing-s);
   width: 100%;
