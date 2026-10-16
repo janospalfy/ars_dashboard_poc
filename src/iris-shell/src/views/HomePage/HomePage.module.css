@@ -122,10 +122,10 @@
   background-color: var(--oi-background-color-primary);
   color: var(--oi-content-color-primary);
   text-decoration: none;
+  transition: background-color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
 }
 
 .infoTile:hover {
-  border-color: var(--oi-border-color-default);
   background-color: var(--oi-background-color-secondary);
 }
 
@@ -268,7 +268,7 @@
   display: flex;
   align-items: center;
   gap: var(--oi-spacing-m);
-  padding: var(--oi-spacing-m) var(--oi-spacing-xs);
+  padding: var(--oi-spacing-m);
   border-bottom: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
   color: var(--oi-content-color-primary);
   text-decoration: none;
@@ -345,6 +345,7 @@
   background-color: var(--oi-background-color-primary);
   color: var(--oi-content-color-primary);
   text-decoration: none;
+  transition: background-color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
 }
 
 .customLinkCard:hover {
@@ -439,5 +440,12 @@
   .customLinkCard .itemArrow {
     flex: 0 0 auto;
     margin-top: var(--oi-spacing-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .infoTile,
+  .customLinkCard {
+    transition: none;
   }
 }
