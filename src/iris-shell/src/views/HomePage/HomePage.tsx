@@ -1,4 +1,4 @@
-import { useState, type MouseEvent } from 'react';
+import { type MouseEvent } from 'react';
 import { AppShell } from '../AppShell/AppShell.js';
 import { HomeLauncher } from '../../components/HomeLauncher/HomeLauncher.js';
 import { Icon } from '../../components/Icon/Icon.js';
@@ -6,7 +6,7 @@ import { Link } from '../../components/Link/Link.js';
 import { PAGE_ITEMS } from '../../lib/commands.js';
 import { CURRENT_USER } from '../../lib/currentUser.js';
 import { navigate } from '../../lib/router.js';
-import { getRecentItems, type RecentItem } from '../../lib/searchHistoryStore.js';
+import { type RecentItem } from '../../lib/searchHistoryStore.js';
 import { useFavorites, type FavoriteEntry } from '../../lib/useFavorites.js';
 import styles from './HomePage.module.css';
 
@@ -18,9 +18,11 @@ const EXAMPLE_FAVORITES: FavoriteEntry[] = [
 ];
 
 const EXAMPLE_VIEW_FAVORITES: FavoriteEntry[] = [
-  { id: 'example-custom-view', name: 'My Custom View', type: 'View', href: '#/users' },
+  { id: 'example-isabella-search', name: 'Isabella Clark search', type: 'View', href: '#/users' },
   { id: 'example-users-in-my-ou', name: 'Users in My OU', type: 'View', href: '#/tree/o1d-test-ou' },
 ];
+
+const FILTERED_VIEW_FAVORITE_ID = 'example-isabella-search';
 
 function isViewFavorite(entry: FavoriteEntry): boolean {
   return entry.type.toLowerCase().includes('view');
@@ -36,7 +38,20 @@ function favoriteIcon(entry: FavoriteEntry): string {
   return 'Star';
 }
 
-type HomeRecentItem = Omit<RecentItem, 'kind'> & { kind: RecentItem['kind'] | 'group' | 'ou' };
+function formatLastViewed(timestamp?: number): string | null {
+  if (timestamp === undefined) return null;
+  const elapsedSeconds = Math.max(0, (Date.now() - timestamp) / 1000);
+  const relativeTime = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+  if (elapsedSeconds < 60) return 'Viewed just now';
+  if (elapsedSeconds < 3600) return `Viewed ${relativeTime.format(-Math.floor(elapsedSeconds / 60), 'minute')}`;
+  if (elapsedSeconds < 86400) return `Viewed ${relativeTime.format(-Math.floor(elapsedSeconds / 3600), 'hour')}`;
+  return `Viewed ${relativeTime.format(-Math.floor(elapsedSeconds / 86400), 'day')}`;
+}
+
+type HomeRecentItem = Omit<RecentItem, 'kind'> & {
+  kind: RecentItem['kind'] | 'group' | 'ou';
+  lastViewedAt?: number;
+};
 
 const EXAMPLE_RECENT_ITEMS: HomeRecentItem[] = [
   {
@@ -46,6 +61,7 @@ const EXAMPLE_RECENT_ITEMS: HomeRecentItem[] = [
     icon: 'User',
     secondary: 'User · O1D.local',
     hash: '#/users/isabella-clark',
+    lastViewedAt: Date.now() - 12 * 60 * 1000,
   },
   {
     id: 'recent-group-domain-admins',
@@ -54,6 +70,7 @@ const EXAMPLE_RECENT_ITEMS: HomeRecentItem[] = [
     icon: 'UsersThree',
     secondary: 'Security group · O1D.local',
     hash: '#/groups',
+    lastViewedAt: Date.now() - 42 * 60 * 1000,
   },
   {
     id: 'recent-ou-test-ou',
@@ -62,6 +79,34 @@ const EXAMPLE_RECENT_ITEMS: HomeRecentItem[] = [
     icon: 'Folder',
     secondary: 'Organizational unit · O1D.local',
     hash: '#/tree/o1d-test-ou',
+    lastViewedAt: Date.now() - 3 * 60 * 60 * 1000,
+  },
+  {
+    id: 'recent-user-liam-bennett',
+    kind: 'user',
+    label: 'Liam Bennett',
+    icon: 'User',
+    secondary: 'User · O1D.local',
+    hash: '#/users/liam-bennett',
+    lastViewedAt: Date.now() - 24 * 60 * 60 * 1000,
+  },
+  {
+    id: 'recent-page-users',
+    kind: 'page',
+    label: 'Users',
+    icon: 'UsersThree',
+    secondary: 'Users · O1D.local',
+    hash: '#/users',
+    lastViewedAt: Date.now() - 2 * 24 * 60 * 60 * 1000,
+  },
+  {
+    id: 'recent-page-o1d-local',
+    kind: 'page',
+    label: 'O1D.local',
+    icon: 'SquaresFour',
+    secondary: 'Directory · Active Directory',
+    hash: '#/tree/o1d-local',
+    lastViewedAt: Date.now() - 4 * 24 * 60 * 60 * 1000,
   },
 ];
 
@@ -101,8 +146,7 @@ const EXAMPLE_CUSTOM_LINKS = [
  * by approvals, recent items, quick links, and favorites.
  */
 export function HomePage() {
-  const [storedRecentItems] = useState(() => getRecentItems());
-  const recentItems: HomeRecentItem[] = storedRecentItems.length ? storedRecentItems : EXAMPLE_RECENT_ITEMS;
+  const recentItems: HomeRecentItem[] = EXAMPLE_RECENT_ITEMS;
   const { entries: storedFavoriteEntries } = useFavorites();
   const storedViews = storedFavoriteEntries.filter(isViewFavorite);
   const storedObjects = storedFavoriteEntries.filter((entry) => !isViewFavorite(entry));
@@ -139,6 +183,38 @@ export function HomePage() {
 
         <hr className={styles.divider} />
 
+        <section className={`${styles.activitySection} ${styles.recentSection}`} aria-labelledby="pick-up-title">
+          <div className={styles.sectionHeader}>
+            <div className={styles.headingContext}>
+              <h2 className={styles.sectionTitle} id="pick-up-title">Recently opened</h2>
+            </div>
+          </div>
+          <div className={styles.recentTileGrid}>
+            {recentItems.slice(0, 6).map((item) => (
+              <a
+                key={item.id}
+                className={styles.infoTile}
+                href={item.hash}
+                onClick={(event) => open(event, item.hash)}
+              >
+                <span className={styles.infoTileHeading}>
+                  <span className={styles.iconWell}>
+                    <Icon name={item.icon} size="18px" className={styles.wellIcon} />
+                  </span>
+                  <span className={styles.infoTileName}>{item.label}</span>
+                </span>
+                <span className={styles.infoTileMeta}>
+                  <span className={styles.infoTileMetaText}>{item.secondary ?? (item.kind === 'user' ? 'User' : 'Page')}</span>
+                </span>
+                <span className={styles.infoTileFooter}>
+                  <span>{formatLastViewed(item.lastViewedAt)}</span>
+                  <Icon name="ArrowRight" size="16px" className={styles.itemArrow} />
+                </span>
+              </a>
+            ))}
+          </div>
+        </section>
+
         <div className={styles.activityGrid}>
           <div className={styles.primaryWorkArea}>
             <section className={styles.activitySection} aria-labelledby="my-work-title">
@@ -162,32 +238,9 @@ export function HomePage() {
                     <Icon name="ClipboardText" size="20px" className={styles.itemIcon} />
                     <span className={styles.itemText}>
                       <span className={styles.itemName}>{item.action}</span>
-                      <span className={styles.itemMeta}>{item.requester} · {item.age}</span>
-                    </span>
-                    <Icon name="ArrowRight" size="16px" className={styles.itemArrow} />
-                  </a>
-                ))}
-              </div>
-            </section>
-
-            <section className={styles.activitySection} aria-labelledby="recently-viewed-title">
-              <div className={styles.sectionHeader}>
-                <div className={styles.headingContext}>
-                  <h2 className={styles.sectionTitle} id="recently-viewed-title">Recently viewed</h2>
-                </div>
-              </div>
-              <div className={styles.itemList}>
-                {recentItems.slice(0, 5).map((item) => (
-                  <a
-                    key={item.id}
-                    className={styles.itemLink}
-                    href={item.hash}
-                    onClick={(event) => open(event, item.hash)}
-                  >
-                    <Icon name={item.icon} size="20px" className={styles.itemIcon} />
-                    <span className={styles.itemText}>
-                      <span className={styles.itemName}>{item.label}</span>
-                      <span className={styles.itemMeta}>{item.secondary ?? (item.kind === 'user' ? 'User' : 'Page')}</span>
+                      <span className={styles.itemMeta}>
+                        {item.requester}<span className={styles.itemAge}> · {item.age}</span>
+                      </span>
                     </span>
                     <Icon name="ArrowRight" size="16px" className={styles.itemArrow} />
                   </a>
@@ -208,7 +261,9 @@ export function HomePage() {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <Icon name={item.icon} size="20px" className={styles.itemIcon} />
+                    <span className={styles.iconWell}>
+                      <Icon name={item.icon} size="20px" className={styles.wellIcon} />
+                    </span>
                     <span className={styles.customLinkText}>
                       <span className={styles.customLinkTitle}>{item.title}</span>
                       <span className={styles.itemMeta}>{item.description}</span>
@@ -234,14 +289,23 @@ export function HomePage() {
                 <h3 className={styles.favoriteGroupTitle} id="favorite-views-title">Views</h3>
                 {viewFavorites.length ? (
                   <div className={styles.itemList}>
-                    {viewFavorites.slice(0, 5).map((item) => (
-                      <a key={item.id} className={`${styles.itemLink} ${styles.favoriteItemLink}`} href={item.href} onClick={(event) => open(event, item.href)}>
-                        <Icon name={favoriteIcon(item)} size="16px" className={styles.itemIcon} />
-                        <span className={styles.itemText}>
-                          <span className={styles.itemName}>{item.name}</span>
-                        </span>
-                      </a>
-                    ))}
+                    {viewFavorites.slice(0, 5).map((item) => {
+                      const filterCount = item.id === FILTERED_VIEW_FAVORITE_ID ? 1 : undefined;
+                      return (
+                        <a key={item.id} className={`${styles.itemLink} ${styles.favoriteItemLink}`} href={item.href} onClick={(event) => open(event, item.href)}>
+                          <Icon name={favoriteIcon(item)} size="16px" className={styles.itemIcon} />
+                          <span className={styles.itemText}>
+                            <span className={styles.itemName}>{item.name}</span>
+                          </span>
+                          {filterCount && (
+                            <span className={styles.favoriteFilterIndicator} aria-label={`${filterCount} active filter`}>
+                              <Icon name="FunnelSimple" size="14px" />
+                              <span className={styles.filterCountBadge}>{filterCount}</span>
+                            </span>
+                          )}
+                        </a>
+                      );
+                    })}
                   </div>
                 ) : (
                   <p className={styles.emptyState}>No saved views.</p>

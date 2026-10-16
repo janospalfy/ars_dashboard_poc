@@ -61,7 +61,13 @@
   min-width: 0;
 }
 
+.recentSection {
+  width: 100%;
+  max-width: 936px;
+}
+
 .favoritesSection {
+  min-width: 0;
   padding: var(--oi-spacing-xl);
   border-radius: var(--oi-border-radius-l);
   background-color: var(--oi-background-color-secondary);
@@ -95,6 +101,126 @@
 
 .favoriteItemLink .itemText {
   gap: 0;
+}
+
+.recentTileGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 232px), 1fr));
+  gap: var(--oi-spacing-s);
+}
+
+.infoTile {
+  min-width: 0;
+  min-height: 96px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--oi-spacing-xs);
+  padding: var(--oi-spacing-m);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-default);
+  background-color: var(--oi-background-color-primary);
+  color: var(--oi-content-color-primary);
+  text-decoration: none;
+}
+
+.infoTile:hover {
+  border-color: var(--oi-border-color-default);
+  background-color: var(--oi-background-color-secondary);
+}
+
+.infoTile:focus-visible {
+  outline: var(--oi-border-width-l) var(--oi-border-style-solid) var(--oi-border-color-focus);
+  outline-offset: calc(-1 * var(--oi-border-width-l));
+}
+
+.infoTileHeading {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+}
+
+.iconWell {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--oi-border-radius-default);
+  background-color: var(--oi-background-color-secondary);
+  color: var(--oi-content-color-secondary);
+}
+
+.wellIcon {
+  flex: 0 0 auto;
+}
+
+.infoTileName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--oi-text-body-s-strong-font-size);
+  line-height: var(--oi-text-body-s-strong-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+}
+
+.infoTileMeta {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-2);
+  color: var(--oi-content-color-secondary);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
+.infoTileMetaText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.favoriteFilterIndicator {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+  color: var(--oi-content-color-secondary);
+}
+
+.filterCountBadge {
+  min-width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  padding: 0 var(--oi-spacing-2);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) transparent;
+  border-radius: var(--oi-border-radius-s);
+  background-color: var(--oi-button-background-primary);
+  color: var(--oi-content-color-constant);
+  font-size: var(--oi-text-caption-strong-font-size);
+  line-height: 1;
+  font-weight: var(--oi-text-caption-strong-font-weight);
+}
+
+.infoTileFooter {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--oi-spacing-s);
+  color: var(--oi-content-color-tertiary);
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+}
+
+.infoTileFooter > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sectionHeader {
@@ -190,6 +316,10 @@
   line-height: var(--oi-text-body-s-line-height);
 }
 
+.itemAge {
+  color: var(--oi-content-color-tertiary);
+}
+
 .customLinks {
   width: 100%;
   min-width: 0;
@@ -226,7 +356,7 @@
   outline-offset: calc(-1 * var(--oi-border-width-l));
 }
 
-.customLinkCard .itemIcon {
+.customLinkCard .iconWell {
   grid-column: 1;
   grid-row: 1;
 }
@@ -282,6 +412,10 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .recentTileGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .customLinkCard {
     min-height: 88px;
     display: flex;
@@ -290,7 +424,7 @@
     padding: 20px;
   }
 
-  .customLinkCard .itemIcon {
+  .customLinkCard .iconWell {
     flex: 0 0 auto;
     margin-top: var(--oi-spacing-2);
   }
