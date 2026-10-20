@@ -53,6 +53,13 @@ type HomeRecentItem = Omit<RecentItem, 'kind'> & {
   lastViewedAt?: number;
 };
 
+function recentIconTone(kind: HomeRecentItem['kind']): 'info' | 'warning' | 'success' | 'brand' {
+  if (kind === 'user') return 'info';
+  if (kind === 'group') return 'warning';
+  if (kind === 'ou') return 'success';
+  return 'brand';
+}
+
 const EXAMPLE_RECENT_ITEMS: HomeRecentItem[] = [
   {
     id: 'recent-user-isabella-clark',
@@ -198,7 +205,7 @@ export function HomePage() {
                 onClick={(event) => open(event, item.hash)}
               >
                 <span className={styles.infoTileHeading}>
-                  <span className={styles.iconWell}>
+                  <span className={`${styles.iconWell} ${styles[`iconWell_${recentIconTone(item.kind)}`]}`}>
                     <Icon name={item.icon} size="18px" className={styles.wellIcon} />
                   </span>
                   <span className={styles.infoTileName}>{item.label}</span>

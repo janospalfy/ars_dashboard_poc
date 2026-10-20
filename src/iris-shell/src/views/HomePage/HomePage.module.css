@@ -152,6 +152,26 @@
   color: var(--oi-content-color-secondary);
 }
 
+.iconWell_info {
+  background-color: var(--oi-background-color-info);
+  color: var(--oi-content-color-info);
+}
+
+.iconWell_warning {
+  background-color: var(--oi-background-color-warning);
+  color: var(--oi-content-color-warning);
+}
+
+.iconWell_success {
+  background-color: var(--oi-background-color-success);
+  color: var(--oi-content-color-success);
+}
+
+.iconWell_brand {
+  background-color: var(--oi-background-color-brand);
+  color: var(--oi-content-color-brand);
+}
+
 .wellIcon {
   flex: 0 0 auto;
 }
