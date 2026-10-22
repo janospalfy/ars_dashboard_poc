@@ -215,7 +215,6 @@ export function HomePage() {
                 </span>
                 <span className={styles.infoTileFooter}>
                   <span>{formatLastViewed(item.lastViewedAt)}</span>
-                  <Icon name="ArrowRight" size="16px" className={styles.itemArrow} />
                 </span>
               </a>
             ))}
@@ -249,7 +248,6 @@ export function HomePage() {
                         {item.requester}<span className={styles.itemAge}> · {item.age}</span>
                       </span>
                     </span>
-                    <Icon name="ArrowRight" size="16px" className={styles.itemArrow} />
                   </a>
                 ))}
               </div>
@@ -275,7 +273,6 @@ export function HomePage() {
                       <span className={styles.customLinkTitle}>{item.title}</span>
                       <span className={styles.itemMeta}>{item.description}</span>
                     </span>
-                    <Icon name="ArrowSquareOut" size="16px" className={styles.itemArrow} />
                   </a>
                 ))}
               </div>

@@ -303,8 +303,7 @@
   outline-offset: calc(-1 * var(--oi-border-width-l));
 }
 
-.itemIcon,
-.itemArrow {
+.itemIcon {
   flex: 0 0 auto;
   color: var(--oi-content-color-secondary);
 }
@@ -355,7 +354,7 @@
   min-width: 0;
   min-height: 144px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto 1fr;
   align-content: start;
   gap: var(--oi-spacing-m);
@@ -399,11 +398,6 @@
 
 .customLinkText .itemMeta {
   white-space: normal;
-}
-
-.customLinkCard .itemArrow {
-  grid-column: 2;
-  grid-row: 1;
 }
 
 @media (max-width: 1100px) {
@@ -457,10 +451,6 @@
     gap: var(--oi-spacing-s);
   }
 
-  .customLinkCard .itemArrow {
-    flex: 0 0 auto;
-    margin-top: var(--oi-spacing-2);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
